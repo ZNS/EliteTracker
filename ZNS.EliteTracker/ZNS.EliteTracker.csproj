@@ -192,6 +192,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\FactionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\SolarSystemController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
@@ -239,6 +240,7 @@
     <Compile Include="Models\Views\SolarSystemTasksView.cs" />
     <Compile Include="Models\Views\TaskEditView.cs" />
     <Compile Include="Models\Views\CommanderIndexView.cs" />
+    <Compile Include="Models\Views\FactionIndexView.cs" />
     <Compile Include="Models\Views\TaskIndexView.cs" />
     <Compile Include="Models\Views\TaskViewView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -362,6 +364,7 @@
     <Content Include="Views\Shared\Partials\_Pager.cshtml" />
     <Content Include="Views\SolarSystem\Tasks.cshtml" />
     <Content Include="Views\Commander\Manage.cshtml" />
+    <Content Include="Views\Import\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

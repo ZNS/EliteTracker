@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Raven.Client;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 using ZNS.EliteTracker.Models.Views;
@@ -11,17 +12,28 @@ namespace ZNS.EliteTracker.Controllers
 {
     public class FactionController : BaseController
     {
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            List<Faction> factions = new List<Faction>();
+            page = page ?? 0;
+            var view = new FactionIndexView();
             using (var session = DB.Instance.GetSession())
             {
-                factions = session.Query<Faction>()
+                RavenQueryStatistics stats = null;
+                view.Factions = session.Query<Faction>()
+                    .Statistics(out stats)
                     .OrderBy(x => x.HomeSolarSystem.Name)
                     .ThenBy(x => x.Name)
+                    .Skip(page.Value * 25)
+                    .Take(25)
                     .ToList();
+                view.Pager = new Pager
+                {
+                    Count = stats.TotalResults,
+                    Page = page.Value,
+                    PageSize = 25
+                };
             }
-            return View(factions);
+            return View(view);
         }       
 
         public ActionResult Edit(int? id)
