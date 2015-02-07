@@ -9,10 +9,18 @@
     <div id="comments">
         @foreach (var comment in Model.Comments)
         {
-            <div class="comment">
-                <span><b>@comment.Commander.Name</b> @comment.Date</span>
-                <p>@Html.RenderBBCode(comment.Body)</p>
+            <div class="comment media">
+                <div class="media-left">
+                    <img src="/data/commanders/image_@(comment.Commander.Id).jpg" alt="" width="50" />
+                </div>
+                <div class="media-body">
+                    <span><b><a href="@Url.Action("View", "Commander", new { id = comment.Commander.Id })">@comment.Commander.Name</a></b> <i time-ago>@comment.Date</i></span>
+                    <p>@Html.RenderBBCode(comment.Body)</p>
+                </div>
             </div>
         }
     </div>
+</div>
+<div class="clearfix">
+    @Html.Partial("Partials/_Pager", Model.Pager)
 </div>

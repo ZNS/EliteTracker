@@ -34,8 +34,10 @@
                 series: [],
                 data: []
             };
+            var labelIdx = -1;
             angular.forEach(data, function (status) {
                 $scope.chart.labels.push(moment(status.Date).format("l"));
+                labelIdx += 1;
                 angular.forEach(status.FactionStatus, function (faction) {
                     //Find correct series index
                     var index = -1;
@@ -48,7 +50,17 @@
                     //Add data
                     if (index == -1) {
                         $scope.chart.series.push(faction.Faction.Name);
-                        $scope.chart.data.push([faction.Influence]);
+                        if (labelIdx > 0) {
+                            $scope.chart.data.push([]);
+                            //Pad
+                            for (var i = 0; i < labelIdx; i++) {
+                                $scope.chart.data[$scope.chart.data.length - 1].push(0);
+                            }
+                            $scope.chart.data[$scope.chart.data.length - 1].push(faction.Influence);
+                        }
+                        else {
+                            $scope.chart.data.push([faction.Influence]);
+                        }
                     }
                     else {
                         $scope.chart.data[index].push(faction.Influence);
@@ -65,6 +77,19 @@
             State: 0,
             PendingStates: []
         });
+    };
+
+    $scope.removeFaction = function (id) {
+        var index = -1;
+        angular.forEach($scope.currentStatus.FactionStatus, function (faction, idx) {
+            if (faction.Faction.Id == id) {
+                index = idx;
+                return false;
+            }
+        });
+        if (index > -1) {
+            $scope.currentStatus.FactionStatus.splice(index, 1);
+        }
     };
 
     $scope.saveCurrentStatus = function () {

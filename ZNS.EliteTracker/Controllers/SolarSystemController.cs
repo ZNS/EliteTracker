@@ -47,8 +47,9 @@ namespace ZNS.EliteTracker.Controllers
             return View(system);
         }
 
-        public ActionResult Comments(int id)
+        public ActionResult Comments(int id, int? page)
         {
+            page = page ?? 0;
             var view = new SolarSystemCommentsView();
             view.Comments = new CommentView
             {
@@ -56,14 +57,49 @@ namespace ZNS.EliteTracker.Controllers
             };
             using (var session = DB.Instance.GetSession())
             {
+                RavenQueryStatistics stats = null;
                 view.SolarSystem = session.Load<SolarSystem>(id);
                 view.Comments.Comments = session.Advanced.DocumentQuery<Comment>()
+                    .Statistics(out stats)
                     .WhereEquals(x => x.DocumentId, view.Comments.DocumentId)
                     .OrderByDescending(x => x.Date)
+                    .Skip(page.Value * 15)
                     .Take(15)
                     .ToList();
+                view.Comments.Pager = new Pager
+                {
+                    Count = stats.TotalResults,
+                    Page = page.Value,
+                    PageSize = 15
+                };
             }
             return View(view);
+        }
+
+        public ActionResult Tasks(int id, int? page)
+        {
+            page = page ?? 0;
+            var view = new SolarSystemTasksView();
+            using (var session = DB.Instance.GetSession())
+            {
+                RavenQueryStatistics stats = null;
+                view.SolarSystem = session.Load<SolarSystem>(id);
+                view.Tasks = session.Query<Task>()
+                    .Statistics(out stats)
+                    .Where(x => x.SolarSystem.Id == id && x.Status != TaskStatus.Completed)
+                    .OrderByDescending(x => x.Priority)
+                    .ThenByDescending(x => x.Date)
+                    .Skip(page.Value * 20)
+                    .Take(20)
+                    .ToList();
+                view.Pager = new Pager
+                {
+                    Count = stats.TotalResults,
+                    Page = page.Value,
+                    PageSize = 20
+                };
+                return View(view);
+            }
         }
 
         public ActionResult Edit(int? id)

@@ -10,5 +10,14 @@ namespace ZNS.EliteTracker.Models.Views
     {
         public string DocumentId { get; set; }
         public List<Comment> Comments { get; set; }
+        public Pager Pager { get; set; }
+
+        public CommentView()
+        {
+            Pager = new Pager
+            {
+                PageSize = 20
+            };
+        }
     }
 }

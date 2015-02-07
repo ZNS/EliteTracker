@@ -12,7 +12,7 @@
     <ul class="nav nav-tabs">
         <li class="active"><a href="#">Overview</a></li>
         <li><a href="@Url.Action("Comments", new { id = Model.Id })">Comments</a></li>
-        <li><a href="#">Tasks</a></li>
+        <li><a href="@Url.Action("Tasks", new { id = Model.Id })">Tasks</a></li>
     </ul>
     <ul class="info">
         <li><b>Population</b> <span>@Model.Population <i class="fa @(Model.Population > Model.PopulationPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
@@ -30,6 +30,7 @@
                         <th>Influence</th>
                         <th>State</th>
                         <th>Pending states</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +38,8 @@
                         <td>@Html.DropDownList("faction", factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control input-sm", ng_model = "faction.Faction.Id" })</td>
                         <td><input type="text" class="form-control input-sm" ng-model="faction.Influence" /></td>
                         <td>@Html.EnumDropDown("state", typeof(ZNS.EliteTracker.Models.Documents.FactionState), new { @class = "form-control input-sm", ng_model = "faction.State" })</td>
+                        <td></td>
+                        <td><a href="javascript://remove" ng-click="removeFaction(faction.Faction.Id)"><span class="fa fa-remove"></span></a></td>
                     </tr>
                 </tbody>
             </table>

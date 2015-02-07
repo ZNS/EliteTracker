@@ -1,6 +1,6 @@
 ﻿@model ZNS.EliteTracker.Models.Documents.Task
 <div class="task">
-    <h4><a href="@Url.Action("View", "Task", new { id = Model.Id })">@Model.Heading</a></h4>
+    <h4><a href="@Url.Action("View", "Task", new { id = Model.Id })">@Model.Heading</a> <small>in @Model.SolarSystem.Name</small></h4>
     @Html.TaskPriorityLabel(Model.Priority, "tag")
     @if (Model.AssignedCommanders != null && Model.AssignedCommanders.Count > 0)
     {

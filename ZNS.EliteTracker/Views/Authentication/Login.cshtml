@@ -2,23 +2,43 @@
 @{
     Layout = null;
 }
-
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title></title>
+    <title>Elite tracker</title>
+    @Styles.Render("~/css/lib")
 </head>
 <body>
-    @using (Html.BeginForm())
-    {
+    <div class="login">
         <div>
-            Name: @Html.TextBoxFor(x => x.CommanderName)
-            Password: @Html.PasswordFor(x => x.Password)
-            @Html.CheckBoxFor(x => x.Persist)
-            <button type="submit">Log on</button>
+            <h4>Elite tracker</h4>  
+            @using (Html.BeginForm("Login", "Authentication", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                <div class="form-group">
+                    <label for="CommanderName" class="col-sm-4 control-label">CMDR:</label>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(x => x.CommanderName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Password" class="col-sm-4 control-label">Password:</label>
+                    <div class="col-sm-8">
+                        @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(x => x.Persist) Remember me
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary pull-right">Log on</button>
+            }
         </div>
-    }
+    </div>
 </body>
 </html>

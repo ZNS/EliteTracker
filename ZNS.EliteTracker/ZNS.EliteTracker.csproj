@@ -235,6 +235,7 @@
     <Compile Include="Models\Views\Pager.cs" />
     <Compile Include="Models\Views\SolarSystemCommentsView.cs" />
     <Compile Include="Models\Views\SolarSystemIndexView.cs" />
+    <Compile Include="Models\Views\SolarSystemTasksView.cs" />
     <Compile Include="Models\Views\TaskEditView.cs" />
     <Compile Include="Models\Views\CommanderIndexView.cs" />
     <Compile Include="Models\Views\TaskIndexView.cs" />
@@ -341,7 +342,6 @@
     <Content Include="Views\Faction\Edit.cshtml" />
     <Content Include="Content\Css\Content.less" />
     <Content Include="Views\Authentication\Login.cshtml" />
-    <Content Include="Views\Authentication\Register.cshtml" />
     <Content Include="Views\SolarSystem\Comments.cshtml" />
     <Content Include="Views\Shared\Partials\_Comments.cshtml" />
     <Content Include="Content\Css\Plugins\fonts\wysibbiconfont-wb.eot" />
@@ -359,6 +359,7 @@
     <Content Include="Views\Commander\View.cshtml" />
     <Content Include="Views\Commander\Edit.cshtml" />
     <Content Include="Views\Shared\Partials\_Pager.cshtml" />
+    <Content Include="Views\SolarSystem\Tasks.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

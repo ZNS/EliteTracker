@@ -8,5 +8,6 @@
 <ul class="nav nav-tabs">
     <li><a href="@Url.Action("Index", new { id = Model.SolarSystem.Id })">Overview</a></li>
     <li class="active"><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
+    <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
 </ul>
 @Html.Partial("Partials/_Comments", Model.Comments)

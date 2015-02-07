@@ -5,7 +5,10 @@
 <div id="TaskView" ng-controller="taskView">
     <div class="page-header">
         <h1>@Model.Task.Heading</h1>
+        @if (Model.Task.Id == ViewBag.CommanderId)
+        {
         <a href="@Url.Action("Edit", new { id = Model.Task.Id })"><span class="fa fa-pencil-square-o"></span></a>
+        }
     </div>
     <div class="panel panel-default">
         <div class="panel-heading">Incoming transmission from <b>CMDR @Model.Task.Owner.Name</b></div>

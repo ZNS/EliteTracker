@@ -15,6 +15,7 @@ namespace ZNS.EliteTracker.Models.Documents
         Terraforming = 5,
         Tourism = 6,
         Service = 7,
-        Military = 8
+        Military = 8,
+        Industrial = 9
     }
 }

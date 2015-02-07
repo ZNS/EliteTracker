@@ -10,6 +10,7 @@
 
 #SiteContent {
     padding: 20px;
+    padding-bottom: 200px;
 }
 
 header {
@@ -56,11 +57,27 @@ header {
     }
 }
 
+.login {
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    height: 240px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 5px;
+    box-shadow: 3px 3px 5px #666;
+}
+
 .alert.fixed {
     position: fixed;
     top: 20px;
-    left: 10%;
+    left: 0;
+    right: 0;
+    margin: auto;
     width: 80%;
+    max-width: 1130px;
 }
 
 .nav-tabs {
@@ -122,6 +139,10 @@ ul.info {
     box-shadow: 2px 2px 1px #eee;
     margin-bottom: 15px;
 
+    h4 > small {
+        font-size: 65%;
+    }
+
     .tag {
         position: absolute;
         top: 10px;
@@ -132,6 +153,19 @@ ul.info {
 .table.stations {
     .main {
         font-weight: bold;
+    }
+}
+
+.comment {
+    margin-bottom:35px;
+
+    span {
+        font-size: 85%;
+         
+        i {
+            font-style: normal;
+            color:#bbb;
+        }
     }
 }
 

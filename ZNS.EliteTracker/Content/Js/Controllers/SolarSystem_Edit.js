@@ -1,7 +1,8 @@
 ﻿angular.module('elitetracker')
-.controller('solarSystemEdit', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+.controller('solarSystemEdit', ['$scope', '$http', '$q', '$timeout', function ($scope, $http, $q, $timeout) {
     $scope.stations = [];
     $scope.economies = null;
+    $scope.showMsg = false;
 
     //Load stations
     $scope.init = function (id) {
@@ -48,16 +49,23 @@
     };
 
     $scope.saveStations = function () {
-        //Sequential saving
-        var previous = $q.when(null)
-        for (var i = 0; i < $scope.stations.length; i++) {
-            (function (i) {
-                previous = previous.then(function () {
-                    return postStation($scope.stations[i]);
-                });
-            }(i))
-        }
+        doAsyncSeries($scope.stations).then(function () {
+            $scope.msg = "Save complete";
+            $scope.msgStatus = 1;
+            $scope.showMsg = true;
+            $timeout(function () {
+                $scope.showMsg = false;
+            }, 3000);
+        });
     };
+
+    function doAsyncSeries(arr) {
+        return arr.reduce(function (promise, item) {
+            return promise.then(function() {
+                return postStation(item);
+            });
+        }, $q.when());
+    }
 
     function postStation(station)
     {

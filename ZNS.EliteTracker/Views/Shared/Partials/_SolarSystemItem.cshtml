@@ -12,9 +12,18 @@
             attitudeClass = "label-danger";
             break;
     }
+    var economies = Model.Stations.SelectMany(x => x.Economy).Distinct();
 }   
 <div class="system">
-    <h4><a href="@Url.Action("View", "SolarSystem", new { id = Model.Id })">@Model.Name</a></h4>
+    <h4>
+        <a href="@Url.Action("View", "SolarSystem", new { id = Model.Id })">@Model.Name</a>
+        <small>
+            @foreach(var e in economies)
+            {
+                @e<text>,</text>
+            }
+        </small>
+    </h4>
     <span class="tag label @attitudeClass">@Model.Attitude</span>
     @if (Model.ActiveCommanders != null && Model.ActiveCommanders.Count > 0)
     {
