@@ -5,11 +5,11 @@
         copy: {
             lib: {
                 src: [
-                    "bower_components/jquery/dist/jquery.js",
-                    "bower_components/angular/angular.js",
-                    "bower_components/moment/moment.js",
-                    "bower_components/chartjs/chart.js",
-                    "bower_components/angular-chart.js/angular-chart.js"
+                    "bower_components/jquery/dist/jquery.min.js",
+                    "bower_components/angular/angular.min.js",
+                    "bower_components/moment/min/moment.min.js",
+                    "bower_components/chartjs/chart.min.js",
+                    "bower_components/angular-chart.js/dist/angular-chart.js"
                     ],
                 dest: "../Content/Js/lib/",
                 expand: true,

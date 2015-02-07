@@ -141,6 +141,14 @@ namespace ZNS.EliteTracker.Controllers
             using (var session = DB.Instance.GetSession())
             {
                 var commander = session.Load<Commander>(CommanderId);
+                if (commander.Country == null)
+                {
+                    commander.Country = new Country
+                    {
+                        Code = "",
+                        Name = "Unknown"
+                    };
+                }
                 return View(commander);
             }
         }

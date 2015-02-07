@@ -24,7 +24,10 @@
         <div class="media-body">
             <ul class="info">
                 <li><b>Player name:</b><span>@Model.Commander.PlayerName</span></li>
+                @if (Model.Commander.Country != null)
+                {
                 <li><b>Country:</b><span>@Model.Commander.Country.Name</span></li>
+                }
             </ul>
             @if (!String.IsNullOrEmpty(Model.Commander.Story))
             {

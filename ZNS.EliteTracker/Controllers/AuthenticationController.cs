@@ -47,7 +47,12 @@ namespace ZNS.EliteTracker.Controllers
                             {
                                 Name = input.CommanderName,
                                 Enabled = true,
-                                Roles = new List<string>() { "administrator" }
+                                Roles = new List<string>() { "administrator" },
+                                Country = new Country
+                                {
+                                    Code = "",
+                                    Name = "Unknown"
+                                }
                             };
                             cmdr.Salt = Password.GenerateSalt();
                             cmdr.Password = Password.HashPassword(input.Password, cmdr.Salt);
