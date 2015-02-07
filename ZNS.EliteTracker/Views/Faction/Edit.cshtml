@@ -1,0 +1,42 @@
+﻿@model ZNS.EliteTracker.Models.Views.FactionEditView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm())
+{
+    <div id="SolarSystemEdit">
+        <div class="panel panel-default">
+            <div class="panel-heading">@Model.Faction.Name info</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="Name">Name</label>
+                    @Html.TextBoxFor(x => x.Faction.Name, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Government">Government</label>
+                    @Html.EnumDropDownListFor(x => x.Faction.Government, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Allegiance">Allegiance</label>
+                    @Html.EnumDropDownListFor(x => x.Faction.Allegiance, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="HomeSolarSystem">Home solar system</label>
+                    @Html.DropDownListFor(x => x.Faction.HomeSolarSystem.Id, Model.Systems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Ally">Attitude towards faction</label>
+                    @Html.EnumDropDownListFor(x => x.Faction.Attitude, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Solar systems</label>
+                    @foreach (var system in Model.Systems)
+                    {
+                        <span>@system.Name <input type="checkbox" name="PostedSystems" value="@system.Id" @{if (Model.Faction.SolarSystems.Any(x => x.Id == system.Id)) { <text> checked="checked" </text>  } }></span>
+                    }
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,20 @@
+﻿@model ZNS.EliteTracker.Models.Views.SolarSystemIndexView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="SolarSystemIndex">
+    <div class="page-header">
+        <h1>Solar systems</h1>
+        <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
+    </div>
+    <div class="items">
+        @foreach (var system in Model.SolarSystems)
+        {
+            @Html.Partial("Partials/_SolarSystemItem", system)
+        }
+    </div>
+    <div class="clearfix">
+        @Html.Partial("Partials/_Pager", Model.Pager)
+    </div>
+</div>
+

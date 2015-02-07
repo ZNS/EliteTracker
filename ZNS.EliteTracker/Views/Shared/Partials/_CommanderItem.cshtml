@@ -1,0 +1,11 @@
+﻿@model ZNS.EliteTracker.Models.Documents.Commander
+@{
+    string bg = null;
+    if (!String.IsNullOrEmpty(Model.ImageUrl))
+    {
+        bg = "background-image:url('" + Model.ImageUrl + "');";
+    }
+}
+<div class="commander col-xs-3" style="@bg">
+    <a href="@Url.Action("View", "Commander", new { id = Model.Id })"><h4>@Model.Name</h4></a>
+</div>

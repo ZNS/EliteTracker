@@ -1,0 +1,86 @@
+﻿@model ZNS.EliteTracker.Models.Documents.SolarSystem
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var factions = (List<ZNS.EliteTracker.Models.Documents.Faction>)ViewBag.Factions;
+}
+
+<div id="SolarSystemView" ng-controller="solarSystemView" ng-init="init(@Model.Id)">
+    <div class="page-header">
+        <h1>@Model.Name</h1>
+        <a href="@Url.Action("Edit", new { id = Model.Id })"><span class="fa fa-pencil-square-o"></span></a>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">Overview</a></li>
+        <li><a href="@Url.Action("Comments", new { id = Model.Id })">Comments</a></li>
+        <li><a href="#">Tasks</a></li>
+    </ul>
+    <ul class="info">
+        <li><b>Population</b> <span>@Model.Population <i class="fa @(Model.Population > Model.PopulationPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
+        <li><b>Security</b> <span>@Model.Security <i class="fa @((int)Model.Security > (int)Model.SecurityPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
+    </ul>
+    <div class="panel panel-default">
+        <div class="panel-heading">Faction status</div>
+        <div class="panel-body">
+            <canvas id="line" class="chart chart-line" data="chart.data" labels="chart.labels" series="chart.series" legend="true" style="width:100%;height:250px;"></canvas>
+            <table class="table">
+                <caption>Todays status @DateTime.UtcNow.Date.ToShortDateString() <span class="label label-warning" ng-show="currentStatus.Id == 0">Not entered</span></caption>
+                <thead>
+                    <tr>
+                        <th>Faction</th>
+                        <th>Influence</th>
+                        <th>State</th>
+                        <th>Pending states</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="faction in currentStatus.FactionStatus">
+                        <td>@Html.DropDownList("faction", factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control input-sm", ng_model = "faction.Faction.Id" })</td>
+                        <td><input type="text" class="form-control input-sm" ng-model="faction.Influence" /></td>
+                        <td>@Html.EnumDropDown("state", typeof(ZNS.EliteTracker.Models.Documents.FactionState), new { @class = "form-control input-sm", ng_model = "faction.State" })</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="buttonrow">
+                <button class="btn btn-primary" type="button" ng-click="saveCurrentStatus()">Save</button>
+                <button class="btn btn-default" type="button" ng-click="addFaction()">Add faction</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Stations</div>
+        <table class="table stations">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Economy</th>
+                    <th>Type</th>
+                    <th>Distance</th>
+                    <th>Faction</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var station in Model.Stations.OrderByDescending(x => x.Main).ThenBy(x => x.Name))
+                {
+                    var cssClass = "main";
+                    if (!station.Main)
+                    {
+                        cssClass = null;
+                    }
+                    <tr>
+                        <td class="@cssClass">@station.Name</td>
+                        <td>
+                            @foreach (var e in station.Economy)
+                            {
+                                <span>@e.ToString(),</span>
+                            }
+                        </td>
+                        <td>@station.Type</td>
+                        <td>@station.Distance</td>
+                        <td><a href="@Url.Action("Edit", "Faction", new { id = station.Faction.Id })">@station.Faction.Name</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="alert fixed" ng-class="{'alert-success':msgStatus=1,'alert-error':msgStatus=2}" ng-show="showMsg">{{msg}}</div>
+</div>

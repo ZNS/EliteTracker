@@ -1,0 +1,83 @@
+﻿@model ZNS.EliteTracker.Models.Views.CommanderViewView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="CommanderView">
+    <div class="page-header">
+        <h1>CMDR @Model.Commander.Name</h1>
+    </div>
+    @if (Model.Commander.Id == ViewBag.CommanderId)
+    {
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="@Url.Action("View", new { id = Model.Commander.Id })">View</a></li>
+        <li><a href="@Url.Action("Edit")">Edit</a></li>
+    </ul>
+    }
+    <div class="media">
+        <div class="media-left">
+            <img src="@Model.Commander.ImageUrl" alt="" class="pull-left" width="240" />
+        </div>
+        <div class="media-body">
+            <ul class="info">
+                <li><b>Player name:</b><span>@Model.Commander.PlayerName</span></li>
+                <li><b>Country:</b><span>@Model.Commander.Country.Name</span></li>
+            </ul>
+            @if (!String.IsNullOrEmpty(Model.Commander.Story))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">Log</div>
+                    <div class="panel-body">
+                        @Html.RenderBBCode(Model.Commander.Story)
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    @if (Model.Commander.Ships != null && Model.Commander.Ships.Count > 0)
+    {
+    <div class="panel panel-default">
+        <div class="panel-heading">Ships</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Name</th>
+                    <th>Fitting</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ship in Model.Commander.Ships)
+                {
+                    <tr>
+                        <td>@ship.Model</td>
+                        <td>@ship.Name</td>
+                        <td>@ship.Fittings.ToString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    <div class="panel panel-default">
+        <div class="panel-heading"><span class="fa fa-tasks"></span> <b>Tasks</b></div>
+        <div class="panel-body">
+            <div class="items">
+                @foreach (var task in Model.Tasks)
+                {
+                    @Html.Partial("Partials/_TaskItem", task)
+                }
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><span class="fa fa-sun-o"></span> <b>Solar systems</b></div>
+        <div class="panel-body">
+            <div class="items">
+                @foreach (var system in Model.SolarSystems)
+                {
+                    @Html.Partial("Partials/_SolarSystemItem", system)
+                }
+            </div>
+        </div>
+    </div>
+</div>

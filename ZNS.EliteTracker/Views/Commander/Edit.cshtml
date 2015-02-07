@@ -1,0 +1,61 @@
+﻿@model ZNS.EliteTracker.Models.Documents.Commander
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="CommanderEdit" ng-controller="commanderEdit" ng-init="init(@Model.Id)">
+    <div class="page-header">
+        <h1>CMDR @Model.Name</h1>
+    </div>
+    <ul class="nav nav-tabs">
+        <li><a href="@Url.Action("View", new { id = Model.Id })">View</a></li>
+        <li class="active"><a href="@Url.Action("Edit")">Edit</a></li>
+    </ul>
+    @using (Html.BeginForm("Edit", "Commander", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">Info</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="PlayerName">Player name</label>
+                    @Html.TextBoxFor(x => x.PlayerName, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Country.Code">Country</label>
+                    @Html.DropDownListFor(x => x.Country.Code, (List<SelectListItem>)ViewBag.Countries, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="file">Image - 480x640 or other 4/3 format is best</label>
+                    <input type="file" name="file" />
+                </div>
+                <div class="form-group">
+                    <label for="Story">Log</label>
+                    @Html.TextAreaFor(x => x.Story, new { @class = "form-control", rows = 10, wysibb = "wysibb" })
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    }
+    <div class="panel panel-default">
+        <div class="panel-heading">Ships</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Name</th>
+                    <th>Fitting</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ship in ships">
+                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipModel), new { @class = "form-control", ng_model = "ship.Model" })</td>
+                    <td><input type="text" name="name" class="form-control" ng-model="ship.Name" /></td>
+                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipFittings), new { @class = "form-control", ng_model = "ship.Fittings" })</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttonrow">
+            <button type="button" class="btn btn-primary" ng-click="saveShips()">Save ships</button>
+            <button type="button" class="btn btn-default" ng-click="addShip()">Add ship</button>
+        </div>
+    </div>
+</div>

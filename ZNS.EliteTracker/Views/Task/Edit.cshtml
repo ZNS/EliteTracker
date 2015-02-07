@@ -1,0 +1,39 @@
+﻿@model ZNS.EliteTracker.Models.Views.TaskEditView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="TaskEdit">
+    @using (Html.BeginForm())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">Editing task</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="Heading">Heading</label>
+                    @Html.TextBoxFor(x => x.Task.Heading, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Type">Type</label>
+                    @Html.EnumDropDownListFor(x => x.Task.Type, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Type">Type</label>
+                    @Html.EnumDropDownListFor(x => x.Task.Priority, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Type">Type</label>
+                    @Html.EnumDropDownListFor(x => x.Task.Status, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="SolarSystem">System (optional)</label>
+                    @Html.DropDownListFor(x => x.Task.SolarSystem.Id, Model.Systems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), "None", new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    @Html.TextAreaFor(x => x.Task.Description, new { @class = "form-control", rows = 10, wysibb = "wysibb" })
+                </div>
+                <button type="submit" class="btn btn-primary">Save task</button>
+            </div>
+        </div>
+    }
+</div>

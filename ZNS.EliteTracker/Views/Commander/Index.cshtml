@@ -1,0 +1,21 @@
+﻿@model ZNS.EliteTracker.Models.Views.CommanderIndexView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="CommanderIndex">
+    <div class="page-header">
+        <h1>Commanders</h1>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var commander in Model.Commanders)
+            {
+                @Html.Partial("Partials/_CommanderItem", commander)
+            }
+        </div>
+    </div>
+    <div class="clearfix">
+        @Html.Partial("Partials/_Pager", Model.Pager)
+    </div>
+</div>
+

@@ -1,0 +1,24 @@
+﻿@model ZNS.EliteTracker.Models.Views.LoginView
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        <div>
+            Name: @Html.TextBoxFor(x => x.CommanderName)
+            Password: @Html.PasswordFor(x => x.Password)
+            @Html.CheckBoxFor(x => x.Persist)
+            <button type="submit">Log on</button>
+        </div>
+    }
+</body>
+</html>

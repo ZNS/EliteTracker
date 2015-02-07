@@ -1,0 +1,31 @@
+﻿@model ZNS.EliteTracker.Models.Views.Pager
+@{
+    int pageCount = Convert.ToInt32(Math.Ceiling((double)Model.Count / (double)Model.PageSize));
+}
+@if (pageCount > 1)
+{
+<nav>
+    <ul class="pagination">
+        @if (Model.Page > 0)
+        {
+        <li>
+            <a href="@Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { page = Model.Page - 1 })" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        }
+        @for (int i = 0; i < pageCount; i++)
+        {
+        <li><a href="@Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { page = i })">@(i + 1)</a></li>
+        }
+        @if (Model.Page < pageCount - 1)
+        {
+        <li>
+            <a href="@Url.Action(ViewContext.RouteData.Values["Action"].ToString(), new { page = Model.Page + 1 })" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        }
+    </ul>
+</nav>
+}

@@ -1,0 +1,15 @@
+﻿@model ZNS.EliteTracker.Models.Documents.Faction
+<div class="task">
+    <h4><a href="@Url.Action("Edit", "Faction", new { id = Model.Id })">@Model.Name</a></h4>
+    <div>
+        @foreach (var system in Model.SolarSystems)
+        {
+            var cssClass = "label-info";
+            if (Model.HomeSolarSystem != null && Model.HomeSolarSystem.Id == system.Id)
+            {
+                cssClass = "label-success";
+            }
+            <span class="label @cssClass">@system.Name</span>
+        }
+    </div>
+</div>

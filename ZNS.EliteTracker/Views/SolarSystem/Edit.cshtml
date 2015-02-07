@@ -1,0 +1,80 @@
+﻿@using ZNS.EliteTracker.Models.Extensions
+@model ZNS.EliteTracker.Models.Documents.SolarSystem
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var factions = (List<ZNS.EliteTracker.Models.Documents.Faction>)ViewBag.Factions;
+}
+
+<div id="SolarSystemEdit" ng-controller="solarSystemEdit" ng-init="init(@Model.Id)">
+    @using (Html.BeginForm())
+    {
+    <div class="panel panel-default">
+        <div class="panel-heading">@Model.Name info</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="Name">Name</label>
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="Population">Population</label>
+                @Html.TextBoxFor(x => x.Population, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="Security">Security</label>
+                @Html.EnumDropDownListFor(x => x.Security, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="Population">Coordinate X</label>
+                @Html.TextBoxFor(x => x.Coordinates.X, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="Population">Coordinate Y</label>
+                @Html.TextBoxFor(x => x.Coordinates.Y, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="Population">Coordinate Z</label>
+                @Html.TextBoxFor(x => x.Coordinates.Z, new { @class = "form-control" })
+            </div>
+            <button type="submit" class="btn btn-default btn-primary">Save</button>
+        </div>
+    </div>
+    }
+    @if (Model.Id != 0)
+    {
+    <div class="panel panel-default">
+        <div class="panel-heading">@Model.Name stations</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Economy</th>
+                    <th>Type</th>
+                    <th>Faction</th>
+                    <th>Distance</th>
+                    <th title="Check if this is the main/controlling station in the system">Is Main</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="station in stations">
+                    <td><input type="hidden" ng-model="station.Guid" /><input type="text" class="form-control" ng-model="station.Name" /></td>
+                    <td>
+                        <tags-input min-tags="1" max-tags="2" add-from-autocomplete-only="true" ng-model="station.EconomyTags" placeholder="Add economy">
+                            <auto-complete source="loadEconomies()" min-length="1"></auto-complete>
+                        </tags-input>
+                    </td>
+                    <td>@Html.EnumDropDown("type", typeof(ZNS.EliteTracker.Models.Documents.StationType), new { @class = "form-control", ng_model = "station.Type" })</td>
+                    <td>@Html.DropDownList("faction", factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control", ng_model = "station.Faction.Id" })</td>
+                    <td><input type="text" class="form-control" ng-model="station.Distance" /></td>
+                    <td><input type="checkbox" class="form-control" ng-model="station.Main" /></td>
+                    <td><span class="fa fa-remove" ng-click="removeStation($index)"></span></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttonrow">
+            <button type="button" class="btn btn-primary" ng-click="saveStations()">Save stations</button>
+            <button type="button" class="btn btn-default" ng-click="addStation()">Add station</button>
+        </div>
+    </div>
+    }
+</div>

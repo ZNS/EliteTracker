@@ -1,0 +1,34 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["Controller"].ToString().ToLower();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/css/lib")
+    @Scripts.Render("~/js/lib")
+</head>
+<body ng-app="elitetracker">
+    <div id="SiteOuter">
+        <div id="SiteInner">
+            <header class="clearfix">
+                <nav class="clearfix">
+                    <ul>
+                        <li class="@(controller == "home" ? "active" : "")"><a href="@Url.Action("Index", "Home")"><span class="fa fa-home"></span></a></li>
+                        <li class="@(controller == "solarsystem" ? "active" : "")"><a href="@Url.Action("Index", "SolarSystem")"><span class="fa fa-sun-o"></span>Systems</a></li>
+                        <li class="@(controller == "task" ? "active" : "")"><a href="@Url.Action("Index", "Task")"><span class="fa fa-tasks"></span>Tasks</a></li>
+                        <li class="@(controller == "commander" ? "active" : "")"><a href="@Url.Action("Index", "Commander")"><span class="fa fa-venus-mars"></span>Commanders</a></li>
+                        <li class="@(controller == "faction" ? "active" : "")"><a href="@Url.Action("Index", "Faction")"><span class="fa fa-sitemap"></span>Factions</a></li>
+                    </ul>
+                </nav>
+                <span class="clock"></span>
+            </header>
+
+            <div id="SiteContent">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+﻿@model ZNS.EliteTracker.Models.Views.TaskViewView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="TaskView" ng-controller="taskView">
+    <div class="page-header">
+        <h1>@Model.Task.Heading</h1>
+        <a href="@Url.Action("Edit", new { id = Model.Task.Id })"><span class="fa fa-pencil-square-o"></span></a>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Incoming transmission from <b>CMDR @Model.Task.Owner.Name</b></div>
+        <div class="panel-body">
+            <ul class="info">
+                <li>Type: <span>@Model.Task.Type.ToString()</span></li>
+                <li>Priority: <span>@Model.Task.Priority.ToString()</span></li>
+                <li>Status: <span>@Model.Task.Status.ToString()</span></li>
+                @if (Model.Task.SolarSystem != null)
+                {
+                    <li>System: <span><a href="@Url.Action("Index", "SolarSystem", new { id = Model.Task.SolarSystem.Id })">@Model.Task.SolarSystem.Name</a></span></li>
+                }
+            </ul>
+            <p>@Html.RenderBBCode(Model.Task.Description)</p>
+        </div>
+    </div>
+    <ul class="info">
+        <li class="clearfix">
+            Assigned commanders:
+            <span>
+                @foreach (var cmdr in Model.Task.AssignedCommanders)
+                {
+                    <b class="label label-info">@cmdr.Name</b>
+                }
+            </span>
+            @if (Model.Task.AssignedCommanders.Any(x => x.Id == (int)ViewBag.CommanderId))
+            {
+                <button type="button" class="btn btn-danger pull-right" ng-click="withdraw(@Model.Task.Id)">Withdraw</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-success pull-right" ng-click="signUp(@Model.Task.Id)">Sign up now</button>
+            }
+        </li>
+    </ul>
+</div>
+<hr />
+@Html.Partial("Partials/_Comments", Model.Comments)

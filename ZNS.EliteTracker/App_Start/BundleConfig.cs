@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Optimization;
+using BundleTransformer.Core.Orderers;
+
+namespace ZNS.EliteTracker
+{
+    public class BundleConfig
+    {
+        public static void RegisterBundles(BundleCollection bundles)
+        {
+            var css = new Bundle("~/Css/lib");
+            css.Include("~/Content/Css/Bootstrap/bootstrap.less");
+            css.Include("~/Content/Css/Fontawesome/css/font-awesome.css");
+            css.IncludeDirectory("~/Content/Css/Plugins", "*.css");
+            css.IncludeDirectory("~/Content/Css", "*.less");
+            css.Orderer = new NullOrderer();
+            bundles.Add(css);
+
+            var js = new Bundle("~/Js/lib");
+            js.Include("~/Content/Js/lib/jquery.js");
+            js.Include("~/Content/Js/lib/angular.js");
+            js.Include("~/Content/Js/lib/moment.js");
+            js.Include("~/Content/Js/lib/chart.js");
+            js.Include("~/Content/Js/lib/angular-chart.js");
+            js.Include("~/Content/Js/lib/jquery.wysibb.js");
+            js.Include("~/Content/Js/lib/ng-tags-input.js");
+            js.Include("~/Content/Js/app.js");
+            js.IncludeDirectory("~/Content/Js/Controllers", "*.js");
+            js.IncludeDirectory("~/Content/Js/Directives", "*.js");
+            js.Orderer = new NullOrderer();
+            bundles.Add(js);
+        }
+    }
+}

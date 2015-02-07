@@ -1,0 +1,18 @@
+﻿@model ZNS.EliteTracker.Models.Views.CommentView
+<div ng-controller="comment" ng-init="documentId='@Model.DocumentId'">
+    <div class="form-group">
+        <label for="body">Awaiting input...</label>
+        <textarea id="commentBody" name="body" class="form-control" rows="4" wysibb></textarea>
+    </div>
+    <button class="btn btn-primary" ng-click="postComment()">Execute</button>
+    <hr />
+    <div id="comments">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <span><b>@comment.Commander.Name</b> @comment.Date</span>
+                <p>@Html.RenderBBCode(comment.Body)</p>
+            </div>
+        }
+    </div>
+</div>

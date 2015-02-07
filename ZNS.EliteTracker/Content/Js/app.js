@@ -1,0 +1,1 @@
+﻿angular.module('elitetracker', ['chart.js', 'ngTagsInput']);
