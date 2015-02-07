@@ -173,6 +173,25 @@ namespace ZNS.EliteTracker.Controllers
         }
 
         [HttpPost]
+        public ActionResult RemoveStation(int id, string guid)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var system = session.Load<SolarSystem>(id);
+                if (system != null)
+                {
+                    var station = system.Stations.FirstOrDefault(x => x.Guid == guid);
+                    if (station != null)
+                    {
+                        system.Stations.Remove(station);
+                        session.SaveChanges();
+                    }
+                }
+            }
+            return new JsonResult { Data = new { status = "OK" } };
+        }
+
+        [HttpPost]
         public ActionResult SaveStatus(int id, SolarSystemStatus status)
         {
             //Convert date to UTC

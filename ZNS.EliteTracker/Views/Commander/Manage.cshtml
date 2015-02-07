@@ -1,0 +1,48 @@
+﻿@model ZNS.EliteTracker.Models.Documents.Commander
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-header">
+    @if (!String.IsNullOrEmpty(Model.Name))
+    {
+    <h1>CMDR @Model.Name</h1>
+    }
+    else
+    {
+        <h1>New Commander</h1>
+    }
+</div>
+<ul class="nav nav-tabs">
+    @if (Model.Id != 0)
+    {
+    <li><a href="@Url.Action("View", new { id = Model.Id })">View</a></li>
+    }
+    <li class="active"><a href="@Url.Action("Manage", new { id = Model.Id })">Manage</a></li>
+</ul>
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <label for="Name">Commander name</label>
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="pwd">New password</label>
+        @Html.TextBox("pwd", null, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="Role">Role</label>
+        @Html.DropDownList("Role",
+            new List<SelectListItem>() {
+                new SelectListItem { Text = "User", Value = "user", Selected = Model.Roles.Contains("user") },
+                new SelectListItem { Text = "Administrator", Value = "administrator", Selected = Model.Roles.Contains("administrator") }
+            },
+            new { @class = "form-control" })
+    </div>
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(x => x.Enabled)
+            Enabled
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+}

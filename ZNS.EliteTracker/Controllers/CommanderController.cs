@@ -57,6 +57,69 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        public ActionResult Manage(int? id)
+        {
+            if (!@User.IsInRole("administrator"))
+            {
+                return new HttpUnauthorizedResult("I'm sorry, " + User.Identity.Name + ". I'm afraid I can't do that. ");
+            }
+            
+            using (var session = DB.Instance.GetSession())
+            {
+                if (id.HasValue)
+                {
+                    return View(session.Load<Commander>(id));
+                }
+                return View(new Commander());
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Manage(int? id, FormCollection form)
+        {
+            if (!@User.IsInRole("administrator"))
+            {
+                return new HttpUnauthorizedResult("I'm sorry, " + User.Identity.Name + ". I'm afraid I can't do that. ");
+            }
+
+            var commander = new Commander();
+            using (var session = DB.Instance.GetSession())
+            {
+                if (id.HasValue)
+                {
+                    commander = session.Load<Commander>(id.Value);
+                }
+
+                commander.Name = form["Name"].Trim();
+                commander.Roles.Clear();
+                commander.Roles.Add(form["Role"]);
+                commander.Enabled = form["Enabled"].Split(',').Contains("true");
+                
+                var password = form["pwd"].Trim();
+                if (!String.IsNullOrEmpty(password))
+                {
+                    commander.Salt = Password.GenerateSalt();
+                    commander.Password = Password.HashPassword(password, commander.Salt);
+                }
+                else if (!id.HasValue)
+                {
+                    throw new Exception("No password entered");
+                }
+
+                if (!id.HasValue)
+                {
+                    commander.Country = new Country
+                    {
+                        Code = "",
+                        Name = "Unknown"
+                    };
+                    session.Store(commander);
+                }
+                session.SaveChanges();
+            }
+            return RedirectToAction("View", new { id = id.HasValue ? id.Value : commander.Id });
+        }
+
         public ActionResult Edit()
         {
             //Countries

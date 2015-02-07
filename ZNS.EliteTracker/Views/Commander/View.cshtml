@@ -11,6 +11,10 @@
     <ul class="nav nav-tabs">
         <li class="active"><a href="@Url.Action("View", new { id = Model.Commander.Id })">View</a></li>
         <li><a href="@Url.Action("Edit")">Edit</a></li>
+        @if (User.IsInRole("administrator"))
+        {
+            <li><a href="@Url.Action("Manage", new { id = Model.Commander.Id })">Manage</a></li>
+        }
     </ul>
     }
     <div class="media">

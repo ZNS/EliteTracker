@@ -45,17 +45,18 @@
     };
 
     $scope.removeStation = function (idx) {
-        $scope.stations.splice(idx, 1);
+        if (confirm('Delete station?')) {
+            var guid = $scope.stations[idx].Guid;
+            $scope.stations.splice(idx, 1);
+            $http.post('/solarsystem/removestation/' + $scope.systemId, { guid: guid }).success(function () {
+                showMessage("Station removed", 1);
+            });
+        }
     };
 
     $scope.saveStations = function () {
         doAsyncSeries($scope.stations).then(function () {
-            $scope.msg = "Save complete";
-            $scope.msgStatus = 1;
-            $scope.showMsg = true;
-            $timeout(function () {
-                $scope.showMsg = false;
-            }, 3000);
+            showMessage("Stations saved", 1);
         });
     };
 
@@ -78,5 +79,14 @@
             url: '/solarsystem/savestation/' + $scope.systemId,
             method: 'POST',
             data: station});
+    }
+
+    function showMessage(msg, status) {
+        $scope.msg = msg;
+        $scope.msgStatus = status;
+        $scope.showMsg = true;
+        $timeout(function () {
+            $scope.showMsg = false;
+        }, 3000);
     }
 }]);

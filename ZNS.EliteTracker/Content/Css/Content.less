@@ -172,12 +172,23 @@ ul.info {
 #CommanderIndex {
     .commander {
         position: relative;
-        width: 240px;
-        height:320px;
+        width: 100%;
         background: url(/content/images/commander_placeholder.png);
         background-size: cover;
         border-radius: 5px;
         box-shadow: 2px 2px 2px #999;
+
+        &:before {
+            content: "";
+            float: left;
+            padding-bottom: 133.333%;
+        }
+
+        &:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
 
         h4 {
             position: absolute;
@@ -187,13 +198,11 @@ ul.info {
             background: rgba(0,0,0,0.5);
             padding: 15px;
             margin: 0;
+            color: #fff;
         }        
 
         a {
-            display:block;
-            width:100%;
-            height:100%;
-	        color: #fff;
+	        color: #fff !important;
         }
     }
 }

@@ -67,7 +67,7 @@
                     <td>@Html.DropDownList("faction", factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control", ng_model = "station.Faction.Id" })</td>
                     <td><input type="text" class="form-control" ng-model="station.Distance" /></td>
                     <td><input type="checkbox" class="form-control" ng-model="station.Main" /></td>
-                    <td><span class="fa fa-remove" ng-click="removeStation($index)"></span></td>
+                    <td><a href="javascript://remove" ng-click="removeStation($index)"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </tbody>
         </table>
