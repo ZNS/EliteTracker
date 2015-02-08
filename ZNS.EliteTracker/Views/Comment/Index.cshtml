@@ -1,0 +1,21 @@
+﻿@model ZNS.EliteTracker.Models.Views.CommentIndexView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="CommentIndex" ng-controller="commentIndex">
+    <div class="pager-header">
+        <h1>Comments</h1>
+    </div>
+    <div class="items">
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <div class="clearfix">
+                    <b>@comment.Commander.Name</b> commented on <i>@comment.DocumentId</i>, <span>@comment.Date</span>
+                    <button type="button" class="btn btn-danger pull-right" ng-click="deleteComment(@comment.Id)">Delete</button>
+                </div>
+                <p>@Html.RenderBBCode(comment.Body)</p>
+            </div>
+        }
+    </div>
+</div>

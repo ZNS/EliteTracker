@@ -1,6 +1,8 @@
 ﻿angular.module('elitetracker')
-.controller('commanderEdit', ['$scope', '$http', '$q', function ($scope, $http, $q) {
+.controller('commanderEdit', ['$scope', '$http', '$q', '$timeout', function ($scope, $http, $q, $timeout) {
     $scope.ships = [];
+    $scope.showMsg = false;
+    $scope.isSaving = false;
 
     $scope.init = function (id) {
         $scope.commanderId = id;
@@ -15,20 +17,30 @@
     };
 
     $scope.removeShip = function (idx) {
-        $scope.ships.splice(idx, 1);
+        if (confirm('Remove ship?')) {
+            var guid = $scope.ships[idx].Guid;
+            $scope.ships.splice(idx, 1);
+            $http.post('/commander/removeship/' + $scope.commanderId, { guid: guid }).success(function () {
+                showMessage("Ship removed", 1);
+            });
+        }
     };
 
     $scope.saveShips = function () {
-        //Sequential saving
-        var previous = $q.when(null)
-        for (var i = 0; i < $scope.ships.length; i++) {
-            (function (i) {
-                previous = previous.then(function () {
-                    return postShip($scope.ships[i]);
-                });
-            }(i));
-        }
+        $scope.isSaving = true;
+        doAsyncSeries($scope.ships).then(function () {
+            showMessage("Ships saved", 1);
+            $scope.isSaving = false;
+        });
     };
+
+    function doAsyncSeries(arr) {
+        return arr.reduce(function (promise, item) {
+            return promise.then(function () {
+                return postShip(item);
+            });
+        }, $q.when());
+    }
 
     function postShip(ship)
     {
@@ -36,5 +48,14 @@
             url: '/commander/saveship/' + $scope.commanderId,
             method: 'POST',
             data: ship});
+    }
+
+    function showMessage(msg, status) {
+        $scope.msg = msg;
+        $scope.msgStatus = status;
+        $scope.showMsg = true;
+        $timeout(function () {
+            $scope.showMsg = false;
+        }, 3000);
     }
 }]);

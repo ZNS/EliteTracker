@@ -176,12 +176,15 @@
     <Content Include="Content\Css\Plugins\ng-tags-input.bootstrap.css" />
     <Content Include="Content\Css\Plugins\ng-tags-input.base.css" />
     <Content Include="Content\Css\Plugins\wbbtheme.css" />
+    <Content Include="Content\Images\commander_placeholder.png" />
     <Content Include="Content\Images\dark_mosaic.png" />
     <Content Include="Content\Js\app.js" />
     <Content Include="Content\Js\Controllers\Commander_Edit.js" />
     <Content Include="Content\Js\Controllers\Comment.js" />
+    <Content Include="Content\Js\Controllers\Comment_Index.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_Edit.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_View.js" />
+    <Content Include="Content\Js\Controllers\Task_Edit.js" />
     <Content Include="Content\Js\Controllers\Task_View.js" />
     <Content Include="Content\Js\Directives\Clock.js" />
     <Content Include="Content\Js\Directives\TimeAgo.js" />
@@ -244,6 +247,7 @@
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\Views\CommanderViewView.cs" />
+    <Compile Include="Models\Views\CommentIndexView.cs" />
     <Compile Include="Models\Views\CommentView.cs" />
     <Compile Include="Models\Views\FactionEditView.cs" />
     <Compile Include="Models\Views\HomeView.cs" />
@@ -376,6 +380,7 @@
     <Content Include="Views\SolarSystem\Tasks.cshtml" />
     <Content Include="Views\Commander\Manage.cshtml" />
     <Content Include="Views\Import\Index.cshtml" />
+    <Content Include="Views\Comment\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -388,6 +393,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Models\Indexes\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

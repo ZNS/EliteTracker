@@ -154,13 +154,23 @@ namespace ZNS.EliteTracker.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Commander input, HttpPostedFileBase file)
+        public ActionResult Edit(Commander input, string pwd, HttpPostedFileBase file)
         {
             using (var session = DB.Instance.GetSession())
             {
                 var commander = session.Load<Commander>(CommanderId);
                 commander.PlayerName = input.PlayerName;
                 commander.Story = input.Story;
+                //Password
+                if (!String.IsNullOrEmpty(pwd))
+                {
+                    if (pwd.Length < 6)
+                    {
+                        throw new Exception("Password must be at least 6 characters long");
+                    }
+                    commander.Salt = Password.GenerateSalt();
+                    commander.Password = Password.HashPassword(pwd, commander.Salt);
+                }
                 //Country
                 foreach (var ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
                 {
@@ -179,7 +189,7 @@ namespace ZNS.EliteTracker.Controllers
                 if (IsImage(file))
                 {
                     var ext = Path.GetExtension(file.FileName);
-                    var imagePath = "/data/commanders/image_" + CommanderId + "." + ext.Trim('.');
+                    var imagePath = "/App_Data/upload/commander_" + CommanderId + ".jpg";
                     using (file.InputStream)
                     {
                         using (FileStream fs = new FileStream(Server.MapPath(imagePath), FileMode.Create))
@@ -187,19 +197,19 @@ namespace ZNS.EliteTracker.Controllers
                             using (ImageFactory imageFactory = new ImageFactory())
                             {
                                 imageFactory.Load(file.InputStream)
-                                    .Quality(80)
+                                    .Quality(60)
                                     .Resize(new ImageProcessor.Imaging.ResizeLayer(
                                         anchorPosition: ImageProcessor.Imaging.AnchorPosition.Center,
                                         resizeMode: ImageProcessor.Imaging.ResizeMode.Crop,
                                         upscale: false,
                                         size: new System.Drawing.Size
                                         {
-                                            Width = 480,
-                                            Height = 640
+                                            Width = 360,
+                                            Height = 480
                                         }
                                     ))
+                                    .Format(new ImageProcessor.Imaging.Formats.JpegFormat())
                                     .Save(fs);
-                                commander.ImageUrl = imagePath;
                             }
                         }
                     }
@@ -207,6 +217,16 @@ namespace ZNS.EliteTracker.Controllers
                 session.SaveChanges();
             }
             return RedirectToAction("View", new { id = CommanderId });
+        }
+
+        public ActionResult Image(int id)
+        {
+            var imagePath = Server.MapPath("/App_Data/upload/commander_" + id + ".jpg");
+            if (!System.IO.File.Exists(imagePath))
+            {
+                return File(Server.MapPath("/content/images/commander_placeholder.png"), "image/png");
+            }
+            return File(imagePath, System.Net.Mime.MediaTypeNames.Image.Jpeg);
         }
 
         private bool IsImage(HttpPostedFileBase postedFile)
@@ -219,7 +239,6 @@ namespace ZNS.EliteTracker.Controllers
             if (postedFile.ContentType.ToLower() != "image/jpg" &&
                         postedFile.ContentType.ToLower() != "image/jpeg" &&
                         postedFile.ContentType.ToLower() != "image/pjpeg" &&
-                        postedFile.ContentType.ToLower() != "image/gif" &&
                         postedFile.ContentType.ToLower() != "image/x-png" &&
                         postedFile.ContentType.ToLower() != "image/png")
             {
@@ -231,7 +250,6 @@ namespace ZNS.EliteTracker.Controllers
             //-------------------------------------------
             if (Path.GetExtension(postedFile.FileName).ToLower() != ".jpg"
                 && Path.GetExtension(postedFile.FileName).ToLower() != ".png"
-                && Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
                 && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg")
             {
                 return false;
@@ -274,6 +292,25 @@ namespace ZNS.EliteTracker.Controllers
                     commander.Ships.Add(ship);
                 }
                 session.SaveChanges();
+            }
+            return new JsonResult { Data = new { status = "OK" } };
+        }
+
+        [HttpPost]
+        public ActionResult RemoveShip(int id, string guid)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var commander = session.Load<Commander>(id);
+                if (commander != null)
+                {
+                    var ship = commander.Ships.FirstOrDefault(x => x.Guid == guid);
+                    if (ship != null)
+                    {
+                        commander.Ships.Remove(ship);
+                        session.SaveChanges();
+                    }
+                }
             }
             return new JsonResult { Data = new { status = "OK" } };
         }

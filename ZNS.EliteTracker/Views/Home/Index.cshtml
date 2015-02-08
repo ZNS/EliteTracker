@@ -4,6 +4,7 @@
 }
 <div class="page-header">
     <h1>Welcome CMDR @ViewBag.CommanderName</h1>
+    <button type="button" class="btn btn-primary" ng-click="goTo('@Url.Action("Edit", "Commander")')">Edit profile</button>
 </div>
 <div class="panel panel-default">
     <div class="panel-heading"><span class="fa fa-tasks"></span> <b>Assigned tasks</b></div>
@@ -61,7 +62,10 @@
                 }
                 <div class="comment">
                     <div><b>@comment.Commander.Name</b> commented on <a href="@Url.Action(action, controller, new { id = comment.Entity.Id })">@comment.Entity.Name</a>, <span time-ago>@comment.Date</span></div>
+                    @if (!String.IsNullOrEmpty(comment.Body))
+                    {
                     <p>@Html.RenderBBCode(comment.Body.Substring(0, comment.Body.Length > 150 ? 150 : comment.Body.Length))</p>
+                    }
                 </div>
             }
         </div>

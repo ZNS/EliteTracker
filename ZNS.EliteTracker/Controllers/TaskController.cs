@@ -124,6 +124,34 @@ namespace ZNS.EliteTracker.Controllers
         }
 
         [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var task = session.Load<Task>(id);
+                if (task != null)
+                {
+                    if (task.Owner.Id != CommanderId)
+                    {
+                        return new HttpUnauthorizedResult("Unauthorized access detected..");
+                    }
+                    //Delete comments
+                    var comments = session.Query<Comment>()
+                        .Where(x => x.DocumentId == "Tasks/" + id)
+                        .ToList();
+                    foreach (var comment in comments)
+                    {
+                        session.Delete<Comment>(comment);
+                    }
+                    //Delete task
+                    session.Delete<Task>(task);
+                    session.SaveChanges();
+                }
+            }
+            return new JsonResult { Data = new { status = "ok" } };
+        }
+
+        [HttpPost]
         public ActionResult Signup(int id)
         {
             using (var session = DB.Instance.GetSession())

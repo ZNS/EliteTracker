@@ -9,7 +9,6 @@ namespace ZNS.EliteTracker.Models.Documents
     {
         public string Name { get; set; }
         public string PlayerName { get; set; }
-        public string ImageUrl { get; set; }
         public Country Country { get; set; }
         public List<Ship> Ships { get; set; }
         public string Story { get; set; }
@@ -17,6 +16,12 @@ namespace ZNS.EliteTracker.Models.Documents
         public string Password { get; set; }
         public string Salt { get; set; }
         public List<string> Roles { get; set; }
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public string ImageUrl {
+            get {
+                return "/commander/image/" + Id;
+            }
+        }
 
         public Commander()
         {

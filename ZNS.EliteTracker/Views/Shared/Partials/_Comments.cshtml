@@ -11,7 +11,7 @@
         {
             <div class="comment media">
                 <div class="media-left">
-                    <img src="/data/commanders/image_@(comment.Commander.Id).jpg" alt="" width="50" />
+                    <img src="/commander/image/@(comment.Commander.Id)" alt="" width="50" />
                 </div>
                 <div class="media-body">
                     <span><b><a href="@Url.Action("View", "Commander", new { id = comment.Commander.Id })">@comment.Commander.Name</a></b> <i time-ago>@comment.Date</i></span>

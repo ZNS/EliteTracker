@@ -2,7 +2,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div id="TaskEdit">
+<div id="TaskEdit" ng-controller="taskEdit">
     @using (Html.BeginForm())
     {
         <div class="panel panel-default">
@@ -32,7 +32,10 @@
                     <label for="Description">Description</label>
                     @Html.TextAreaFor(x => x.Task.Description, new { @class = "form-control", rows = 10, wysibb = "wysibb" })
                 </div>
-                <button type="submit" class="btn btn-primary">Save task</button>
+                <div class="clearfix">
+                    <button type="submit" class="btn btn-primary">Save task</button>
+                    <button type="button" class="btn btn-danger pull-right" ng-click="deleteTask(@Model.Task.Id)">Delete task</button>
+                </div>
             </div>
         </div>
     }

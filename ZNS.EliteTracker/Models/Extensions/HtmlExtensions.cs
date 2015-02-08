@@ -38,6 +38,8 @@ namespace ZNS.EliteTracker.Models.Extensions
 
         public static IHtmlString RenderBBCode(this System.Web.Mvc.HtmlHelper html, string bbcode)
         {
+            if (String.IsNullOrEmpty(bbcode))
+                return html.Raw("");
             bbcode = bbcode.Replace("\n", "[br]");
             return html.Raw(DefaultBBCodeParser.ToHtml(bbcode));
         }

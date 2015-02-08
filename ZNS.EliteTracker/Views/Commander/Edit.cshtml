@@ -24,8 +24,12 @@
                     @Html.DropDownListFor(x => x.Country.Code, (List<SelectListItem>)ViewBag.Countries, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
-                    <label for="file">Image - 480x640 or other 4/3 format is best</label>
+                    <label for="file">Image - 360x480 or other 4/3 format is best. Only jpg and png.</label>
                     <input type="file" name="file" />
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Change Password - leave blank to not change password</label>
+                    <input type="text" id="pwd" name="pwd" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="Story">Log</label>
@@ -43,6 +47,7 @@
                     <th>Model</th>
                     <th>Name</th>
                     <th>Fitting</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -50,12 +55,14 @@
                     <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipModel), new { @class = "form-control", ng_model = "ship.Model" })</td>
                     <td><input type="text" name="name" class="form-control" ng-model="ship.Name" /></td>
                     <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipFittings), new { @class = "form-control", ng_model = "ship.Fittings" })</td>
+                    <td><a href="javascript://remove" ng-click="removeShip($index)"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </tbody>
         </table>
         <div class="buttonrow">
-            <button type="button" class="btn btn-primary" ng-click="saveShips()">Save ships</button>
+            <button type="button" class="btn btn-primary" ng-click="saveShips()" ng-disabled="isSaving">Save ships</button>
             <button type="button" class="btn btn-default" ng-click="addShip()">Add ship</button>
         </div>
     </div>
+    <div class="alert fixed" ng-class="{'alert-success':msgStatus=1,'alert-error':msgStatus=2}" ng-show="showMsg">{{msg}}</div>
 </div>

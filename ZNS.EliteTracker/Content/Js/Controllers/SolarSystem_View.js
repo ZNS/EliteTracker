@@ -4,9 +4,12 @@
     $scope.showMsg = false;
     $scope.statusTo = moment.utc([now.year(), now.month(), now.date()]);
     $scope.statusFrom = moment($scope.statusTo).subtract(1, 'month');
-    $scope.historicStatus = [];
+    $scope.statuses = [];
+    $scope.isSaving = false;
 
     $scope.init = function (id) {
+        $scope.systemId = id;
+
         $scope.currentStatus = {
             Id: 0,
             SolarSystem: id,
@@ -17,7 +20,9 @@
         $http({ method: 'GET', url: '/solarsystem/getstatus/' + id, params: { from: $scope.statusFrom.toISOString(), to: $scope.statusTo.toISOString() } })
         .success(function (data) {
             if (data.length > 0) {
+                $scope.statuses = data;
                 $scope.currentStatus = data[data.length - 1];
+
                 //If the last status is not for the current day use it as a new status template
                 if (!moment($scope.currentStatus.Date).isSame(moment.utc(), 'day')) {
                     $scope.currentStatus.Id = 0;
@@ -27,6 +32,9 @@
                     });
                 }
             }
+
+            //Track current date
+            $scope.currentStatusDate = moment($scope.currentStatus.Date);
 
             //Create chart data
             $scope.chart = {
@@ -70,6 +78,45 @@
         });
     };
 
+    $scope.prevStatus = function () {
+        $scope.currentStatusDate = $scope.currentStatusDate.subtract(1, 'days');
+        updateCurrentStatus();
+    };
+
+    $scope.nextStatus = function () {
+        if (!$scope.currentStatusDate.isSame(moment.utc(), 'day')) {
+            $scope.currentStatusDate = $scope.currentStatusDate.add(1, 'days');
+            updateCurrentStatus();
+        }
+    };
+
+    function updateCurrentStatus()
+    {
+        var exists = false;
+        angular.forEach($scope.statuses, function (status) {
+            if (moment(status.Date).isSame($scope.currentStatusDate, 'day'))
+            {
+                $scope.currentStatus = status;
+                exists = true;
+                return false;
+            }
+        });
+
+        if (!exists) {
+            var clone = $.extend(true, {}, $scope.currentStatus);
+            clone.Id = 0;
+            clone.Date = $scope.currentStatusDate.toISOString();
+            angular.forEach(clone.FactionStatus, function (fs) {
+                fs.Influence = 0;
+            });
+            $scope.statuses.push(clone);
+            $scope.statuses.sort(function (a, b) {
+                return (a.Date < b.Date) ? -1 : 1;
+            });
+            $scope.currentStatus = clone;
+        }
+    }
+
     $scope.addFaction = function () {
         $scope.currentStatus.FactionStatus.push({
             Faction: { Id: 0, Name: '' },
@@ -93,9 +140,30 @@
     };
 
     $scope.saveCurrentStatus = function () {
+        $scope.isSaving = true;
         $http.post('/solarsystem/saveStatus/' + $scope.currentStatus.Id, $scope.currentStatus)
-        .success(function () {
+        .success(function (response) {
+            angular.forEach($scope.statuses, function (status) {
+                if (moment(status.Date).isSame(moment(response.date), 'day'))
+                {
+                    status.Id = response.id;
+                    return false;
+                }
+            });
             $scope.showMessage('Save successful', 1);
+            $scope.isSaving = false;
+        });
+    };
+
+    $scope.addActiveCommander = function() {
+        $http.post('/solarsystem/addactivecommander/' + $scope.systemId).success(function () {
+            window.location.reload();
+        });
+    };
+
+    $scope.removeActiveCommander = function () {
+        $http.post('/solarsystem/removeactivecommander/' + $scope.systemId).success(function () {
+            window.location.reload();
         });
     };
 

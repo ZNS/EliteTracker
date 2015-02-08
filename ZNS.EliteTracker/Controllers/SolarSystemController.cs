@@ -208,7 +208,7 @@ namespace ZNS.EliteTracker.Controllers
                 session.Store(status);
                 session.SaveChanges();
             }
-            return new JsonResult { Data = new { status = "OK" } };
+            return new JsonResult { Data = new { status = "OK", id = status.Id, date = status.Date.ToString("o") } };
         }
 
         public ActionResult GetStations(int id)
@@ -246,6 +246,45 @@ namespace ZNS.EliteTracker.Controllers
                 Content = Newtonsoft.Json.JsonConvert.SerializeObject(economies)
             };
         }
+
+        [HttpPost]
+        public ActionResult AddActiveCommander(int id)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var system = session.Load<SolarSystem>(id);
+                if (system != null && !system.ActiveCommanders.Any(x => x.Id == CommanderId))
+                {
+                    system.ActiveCommanders.Add(new CommanderRef
+                    {
+                        Id = CommanderId,
+                        Name = User.Identity.Name
+                    });
+                    session.SaveChanges();
+                }
+            }
+            return new JsonResult { Data = new { status = "ok" } };
+        }
+
+        [HttpPost]
+        public ActionResult RemoveActiveCommander(int id)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var system = session.Load<SolarSystem>(id);
+                if (system != null)
+                {
+                    var cmdr = system.ActiveCommanders.FirstOrDefault(x => x.Id == CommanderId);
+                    if (cmdr != null)
+                    {
+                        system.ActiveCommanders.Remove(cmdr);
+                    }
+                    session.SaveChanges();
+                }
+            }
+            return new JsonResult { Data = new { status = "ok" } };
+        }
+
         #endregion
     }
 }

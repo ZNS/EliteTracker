@@ -3,6 +3,7 @@
     $scope.stations = [];
     $scope.economies = null;
     $scope.showMsg = false;
+    $scope.isSaving = false;
 
     //Load stations
     $scope.init = function (id) {
@@ -55,8 +56,10 @@
     };
 
     $scope.saveStations = function () {
+        $scope.isSaving = true;
         doAsyncSeries($scope.stations).then(function () {
             showMessage("Stations saved", 1);
+            $scope.isSaving = false;
         });
     };
 
