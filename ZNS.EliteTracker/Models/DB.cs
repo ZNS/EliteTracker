@@ -3,6 +3,7 @@ using Raven.Client;
 using Raven.Client.Connection;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
+using ZNS.EliteTracker.Models.Indexes;
 
 namespace ZNS.EliteTracker.Models
 {
@@ -20,7 +21,7 @@ namespace ZNS.EliteTracker.Models
         private ICredentials _Credentials = null;
 
         DB()
-        {
+        {            
 #if DEBUG
             _Store = new EmbeddableDocumentStore
             {
@@ -38,6 +39,9 @@ namespace ZNS.EliteTracker.Models
 #endif
             _Store.Conventions.SaveEnumsAsIntegers = true;
             _Store.Initialize();
+            
+            //Create indexes
+            new SolarSystem_Query().Execute(_Store);
         }
 
         public IDocumentSession GetSession()

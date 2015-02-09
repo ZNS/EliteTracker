@@ -159,6 +159,9 @@
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
+    <Reference Include="Xemio.RavenDB.NGramAnalyzer">
+      <HintPath>..\packages\Xemio-RavenDB-NGramAnalyzer.1.0.2\lib\net40\Xemio.RavenDB.NGramAnalyzer.dll</HintPath>
+    </Reference>
     <Reference Include="Yahoo.Yui.Compressor">
       <HintPath>..\packages\YUICompressor.NET.2.7.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
     </Reference>
@@ -245,6 +248,7 @@
     <Compile Include="Models\Documents\TaskStatus.cs" />
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
+    <Compile Include="Models\Indexes\SolarSystem_Query.cs" />
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\Views\CommanderViewView.cs" />
     <Compile Include="Models\Views\CommentIndexView.cs" />
@@ -254,6 +258,7 @@
     <Compile Include="Models\Views\LoginView.cs" />
     <Compile Include="Models\Views\Pager.cs" />
     <Compile Include="Models\Views\SolarSystemCommentsView.cs" />
+    <Compile Include="Models\Views\SolarSystemDistanceView.cs" />
     <Compile Include="Models\Views\SolarSystemIndexView.cs" />
     <Compile Include="Models\Views\SolarSystemTasksView.cs" />
     <Compile Include="Models\Views\TaskEditView.cs" />
@@ -381,6 +386,7 @@
     <Content Include="Views\Commander\Manage.cshtml" />
     <Content Include="Views\Import\Index.cshtml" />
     <Content Include="Views\Comment\Index.cshtml" />
+    <Content Include="Views\SolarSystem\Distance.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -393,7 +399,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Indexes\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

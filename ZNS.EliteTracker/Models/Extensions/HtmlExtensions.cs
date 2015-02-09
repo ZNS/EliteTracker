@@ -25,14 +25,19 @@ namespace ZNS.EliteTracker.Models.Extensions
             new BBTag("video", "<div class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/${content}\" frameborder=\"0\" allowfullscreen></iframe></div>", "", false, true),
         });
 
-        public static IHtmlString EnumDropDown(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null)
+        public static IHtmlString EnumDropDown(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null, string defaultItem = null, int selectedValue = 0)
         {
             var values = Enum.GetValues(tEnum).Cast<Object>();
             var items = values.Select(x => new SelectListItem
             {
                 Text = Enum.GetName(tEnum, x),
-                Value = ((int)x).ToString()
-            });
+                Value = ((int)x).ToString(),
+                Selected = selectedValue == (int)x
+            }).ToList();
+            if (!String.IsNullOrEmpty(defaultItem))
+            {
+                items.Insert(0, new SelectListItem() { Text = defaultItem, Value = "0", Selected = selectedValue == 0 });
+            }
             return html.DropDownList(name, items, htmlAttributes);
         }
 
@@ -60,6 +65,24 @@ namespace ZNS.EliteTracker.Models.Extensions
                     break;
             }
             return html.Raw(@"<span class=""label " + labelClass + " " + cssClass + @""">" + prio.ToString() + "</span>");
+        }
+
+        public static IHtmlString AttitudeLabel(this System.Web.Mvc.HtmlHelper html, FactionAttitude attitude, string cssClass = "")
+        {
+            string labelClass = "label-default";
+            switch (attitude)
+            {
+                case FactionAttitude.Ally:
+                    labelClass = "label-success";
+                    break;
+                case FactionAttitude.Friendly:
+                    labelClass = "label-info";
+                    break;
+                case FactionAttitude.Hostile:
+                    labelClass = "label-danger";
+                    break;
+            }
+            return html.Raw(@"<span class=""label " + labelClass + " " + cssClass + @""">" + attitude.ToString() + "</span>");
         }
     }
 }

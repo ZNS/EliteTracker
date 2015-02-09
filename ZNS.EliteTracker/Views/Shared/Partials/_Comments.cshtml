@@ -4,7 +4,7 @@
         <label for="body">Awaiting input...</label>
         <textarea id="commentBody" name="body" class="form-control" rows="4" wysibb></textarea>
     </div>
-    <button class="btn btn-primary" ng-click="postComment()">Execute</button>
+    <button class="btn btn-primary" ng-click="postComment()" ng-disabled="isSaving">Execute</button>
     <hr />
     <div id="comments">
         @foreach (var comment in Model.Comments)

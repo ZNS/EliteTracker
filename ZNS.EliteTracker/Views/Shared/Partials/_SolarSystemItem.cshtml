@@ -1,33 +1,10 @@
 ﻿@model ZNS.EliteTracker.Models.Documents.SolarSystem
-@{
-    string attitudeClass = "label-info";
-    switch(Model.Attitude) {
-        case ZNS.EliteTracker.Models.Documents.FactionAttitude.Ally:
-            attitudeClass = "label-success";
-            break;
-        case ZNS.EliteTracker.Models.Documents.FactionAttitude.Friendly:
-            attitudeClass = "label-primary";
-            break;
-        case ZNS.EliteTracker.Models.Documents.FactionAttitude.Hostile:
-            attitudeClass = "label-danger";
-            break;
-    }
-    var economies = Model.Stations.SelectMany(x => x.Economy).Distinct();
-}   
 <div class="system">
     <h4>
         <a href="@Url.Action("View", "SolarSystem", new { id = Model.Id })">@Model.Name</a>
-        @if (economies != null && economies.Count() > 0)
-        {
-        <small>
-            @foreach(var e in economies)
-            {
-                @e<text>,</text>
-            }
-        </small>
-        }
+        <small>@String.Join(",", Model.Economies.Select(x => x.ToString()).ToArray())</small>
     </h4>
-    <span class="tag label @attitudeClass">@Model.Attitude</span>
+    @Html.AttitudeLabel(Model.Attitude, "tag")
     @if (Model.ActiveCommanders != null && Model.ActiveCommanders.Count > 0)
     {
         <b>Observing commanders:</b>

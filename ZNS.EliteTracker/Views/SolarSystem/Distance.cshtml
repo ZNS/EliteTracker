@@ -1,0 +1,35 @@
+﻿@model ZNS.EliteTracker.Models.Views.SolarSystemDistanceView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-header">
+    <h1>@Model.SolarSystem.Name</h1>
+</div>
+<ul class="nav nav-tabs">
+    <li><a href="@Url.Action("View", new { id = Model.SolarSystem.Id })">Overview</a></li>
+    <li class="active"><a href="@Url.Action("Distance", new { id = Model.SolarSystem.Id })">Nearby</a></li>
+    <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
+    <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
+</ul>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Distance</th>
+            <th>Attitude</th>
+            <th>Economies</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var system in Model.Systems)
+        {
+            var attitudeClass = "label-info";
+            <tr>
+                <td>@system.Name</td>
+                <td>@Math.Round(system.Distance, 1)ly</td>
+                <td>@Html.AttitudeLabel(system.Attitude)</td>
+                <td>@String.Join(",", system.Economies.Select(x => x.ToString()).ToArray())</td>
+            </tr>
+        }
+    </tbody>
+</table>

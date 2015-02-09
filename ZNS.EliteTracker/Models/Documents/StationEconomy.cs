@@ -5,7 +5,6 @@ using System.Web;
 
 namespace ZNS.EliteTracker.Models.Documents
 {
-    [Flags]
     public enum StationEconomy
     {
         Agriculture = 1,

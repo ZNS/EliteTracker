@@ -6,30 +6,69 @@ using System.Web.Mvc;
 using Raven.Client;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
+using ZNS.EliteTracker.Models.Indexes;
 using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
     public class SolarSystemController : BaseController
     {
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, SolarSystemIndexView.Form form)
         {
             page = page ?? 0;
             var view = new SolarSystemIndexView();
             using (var session = DB.Instance.GetSession())
             {
+                //Query
                 RavenQueryStatistics stats = null;
-                view.SolarSystems = session.Query<SolarSystem>()
+                var query = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
                     .Statistics(out stats)
                     .OrderBy(x => x.Name)
                     .Skip(page.Value * 20)
-                    .Take(20)
-                    .ToList();
+                    .Take(20);
+                if (!String.IsNullOrEmpty(form.Query))
+                {
+                    query = query.Where(x => x.NamePartial == form.Query);
+                }
+                if (form.Economy != 0)
+                {
+                    var enumEconomy = (StationEconomy)Enum.Parse(typeof(StationEconomy), form.Economy.ToString());
+                    query = query.Where(x => x.Economies.Any(e => e == enumEconomy));
+                }
+                switch (form.Status)
+                {
+                    case 1:
+                        query = query.Where(x => x.Attitude == FactionAttitude.Ally);
+                        break;
+                    case 2:
+                        query = query.Where(x => x.Attitude == FactionAttitude.Hostile);
+                        break;
+                    case 3:
+                        query = query.Where(x => x.Attitude != FactionAttitude.Hostile);
+                        break;
+                    case 4:
+                        query = query.Where(x => x.Attitude == FactionAttitude.Hostile && x.HasAlly);
+                        break;
+                }
+
+                //Set up view
+                view.SolarSystems = query.OfType<SolarSystem>().ToList();
+                view.Query = form;
                 view.Pager = new Pager
                 {
                     Count = stats.TotalResults,
                     Page = page.Value,
                     PageSize = 20
+                };
+ 
+                //Select list item
+                view.Statuses = new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "All statuses", Value = "0", Selected = form.Status == 0 },
+                    new SelectListItem { Text = "Allied", Value = "1", Selected = form.Status == 1 },
+                    new SelectListItem { Text = "Hostile", Value = "2", Selected = form.Status == 2 },
+                    new SelectListItem { Text = "Not hostile", Value = "3", Selected = form.Status == 3 },
+                    new SelectListItem { Text = "Allied faction not in control", Value = "4", Selected = form.Status == 4 }
                 };
                 return View(view); 
             }
@@ -100,6 +139,31 @@ namespace ZNS.EliteTracker.Controllers
                 };
                 return View(view);
             }
+        }
+
+        public ActionResult Distance(int id)
+        {
+            var view = new SolarSystemDistanceView();
+            using (var session = DB.Instance.GetSession())
+            {
+                view.SolarSystem = session.Load<SolarSystem>(id);
+                view.Systems = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
+                    .Where(x => x.HasCoordinates)
+                    .Take(512)
+                    .OfType<SolarSystem>()
+                    .ToList();
+                foreach (var system in view.Systems)
+                {
+                    system.Distance = Math.Sqrt(
+                        Math.Pow(((double)system.Coordinates.X - (double)view.SolarSystem.Coordinates.X), 2) +
+                        Math.Pow(((double)system.Coordinates.Y - (double)view.SolarSystem.Coordinates.Y), 2) +
+                        Math.Pow(((double)system.Coordinates.Z - (double)view.SolarSystem.Coordinates.Z), 2)
+                        );
+                }
+                view.Systems.RemoveAll(x => x.Id == view.SolarSystem.Id);
+                view.Systems = view.Systems.OrderBy(x => x.Distance).ToList();
+            }
+            return View(view);
         }
 
         public ActionResult Edit(int? id)

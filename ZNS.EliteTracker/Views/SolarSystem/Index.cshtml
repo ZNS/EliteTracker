@@ -7,6 +7,19 @@
         <h1>Solar systems</h1>
         <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
     </div>
+    @using (Html.BeginForm("Index", "SolarSystem", FormMethod.Get, new { @class = "form-inline" }))
+    {
+        <div class="form-group">
+            @Html.TextBox("query", Model.Query.Query ?? "", new { @class = "form-control", placeholder = "Search" })
+        </div>
+        <div class="form-group">
+            @Html.EnumDropDown("economy", typeof(ZNS.EliteTracker.Models.Documents.StationEconomy), new { @class = "form-control" }, "All economies", Model.Query.Economy)
+        </div>        
+        <div class="form-group">
+            @Html.DropDownList("status", Model.Statuses, new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    }
     <div class="items">
         @foreach (var system in Model.SolarSystems)
         {

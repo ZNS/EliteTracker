@@ -54,11 +54,14 @@ namespace ZNS.EliteTracker.Controllers
         public ActionResult Edit(int? id, FactionEditView input)
         {
             var faction = input.Faction;
+            List<SolarSystem> postedSystems = new List<SolarSystem>();
+            List<SolarSystem> oldSystems = null;
             using (var session = DB.Instance.GetSession())
             {
                 if (id.HasValue)
                 {
                     faction = session.Load<Faction>(id.Value);
+                    oldSystems = session.Load<SolarSystem>(faction.SolarSystems.Select(x => x.Id).Cast<ValueType>()).ToList();
                     faction.Name = input.Faction.Name;
                     faction.Government = input.Faction.Government;
                     faction.Attitude = input.Faction.Attitude;
@@ -70,24 +73,51 @@ namespace ZNS.EliteTracker.Controllers
                 if (input.PostedSystems.Count > 0)
                 {
                     var systemIds = input.PostedSystems.Select(x => int.Parse(x)).Cast<System.ValueType>();
-                    var systems = session.Load<SolarSystem>(systemIds);
-                    faction.SolarSystems = systems.Select(x => SolarSystemRef.FromSolarSystem(x)).ToList();
-                    homeSystem = systems.FirstOrDefault(x => x.Id == input.Faction.HomeSolarSystem.Id);
+                    postedSystems = session.Load<SolarSystem>(systemIds).ToList();
+                    faction.SolarSystems = postedSystems.Select(x => SolarSystemRef.FromSolarSystem(x)).ToList();
+                    //Try to set homesystem by checking posted systems
+                    homeSystem = postedSystems.FirstOrDefault(x => x.Id == input.Faction.HomeSolarSystem.Id);
                 }
                 else
                 {
                     faction.SolarSystems.Clear();
                 }
 
+                //If homesystem was not among posted systems
                 if (homeSystem == null)
                 {
                     homeSystem = session.Load<SolarSystem>(input.Faction.HomeSolarSystem.Id);
+                    postedSystems.Add(homeSystem);
+                    //Make sure it's added to posted systems
+                    if (!faction.SolarSystems.Any(x => x.Id == homeSystem.Id))
+                    {
+                        faction.SolarSystems.Add(SolarSystemRef.FromSolarSystem(homeSystem));
+                    }
                 }
+                //Create ref
                 faction.HomeSolarSystem = SolarSystemRef.FromSolarSystem(homeSystem);
 
+                //Store faction, attaches id
                 if (!id.HasValue)
                 {
                     session.Store(faction);
+                }
+
+                //Remove faction from removed systems
+                if (oldSystems != null)
+                {
+                    foreach (var system in oldSystems.Except(postedSystems))
+                    {
+                        system.Factions.RemoveAll(x => x.Id == faction.Id);
+                    }
+                }
+                //Add allied factions to current systems
+                foreach (var system in postedSystems)
+                {
+                    if (!system.Factions.Any(x => x.Id == faction.Id))
+                    {
+                        system.Factions.Add(FactionRef.FromFaction(faction));
+                    }
                 }
 
                 session.SaveChanges();

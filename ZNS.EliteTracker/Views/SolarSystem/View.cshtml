@@ -18,7 +18,8 @@
         }
     </div>
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#">Overview</a></li>
+        <li class="active"><a href="@Url.Action("View", new { id = Model.Id })">Overview</a></li>
+        <li><a href="@Url.Action("Distance", new { id = Model.Id })">Nearby</a></li>
         <li><a href="@Url.Action("Comments", new { id = Model.Id })">Comments</a></li>
         <li><a href="@Url.Action("Tasks", new { id = Model.Id })">Tasks</a></li>
     </ul>
