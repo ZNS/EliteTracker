@@ -17,8 +17,10 @@ namespace ZNS.EliteTracker.Models.Documents
         public List<CommanderRef> ActiveCommanders { get; set; }
         public List<FactionRef> Factions { get; set; }
 
+        
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public double Distance { get; set; }
+        
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public FactionAttitude Attitude
         {
@@ -32,12 +34,22 @@ namespace ZNS.EliteTracker.Models.Documents
                 return FactionAttitude.Neutral;
             }
         }
+        
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public List<StationEconomy> Economies
         {
             get
             {
                 return Stations.SelectMany(x => x.Economy).Distinct().ToList();
+            }
+        }
+
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public bool HasCoordinates
+        {
+            get
+            {
+                return (Coordinates != null && Coordinates.X != 0 && Coordinates.Y != 0 && Coordinates.Z != 0);
             }
         }
 

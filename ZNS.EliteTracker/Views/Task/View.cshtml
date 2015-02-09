@@ -19,7 +19,7 @@
                 <li>Status: <span>@Model.Task.Status.ToString()</span></li>
                 @if (Model.Task.SolarSystem != null)
                 {
-                    <li>System: <span><a href="@Url.Action("Index", "SolarSystem", new { id = Model.Task.SolarSystem.Id })">@Model.Task.SolarSystem.Name</a></span></li>
+                    <li>System: <span><a href="@Url.Action("View", "SolarSystem", new { id = Model.Task.SolarSystem.Id })">@Model.Task.SolarSystem.Name</a></span></li>
                 }
             </ul>
             <p>@Html.RenderBBCode(Model.Task.Description)</p>

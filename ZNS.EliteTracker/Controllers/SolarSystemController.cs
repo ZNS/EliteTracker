@@ -147,21 +147,28 @@ namespace ZNS.EliteTracker.Controllers
             using (var session = DB.Instance.GetSession())
             {
                 view.SolarSystem = session.Load<SolarSystem>(id);
-                view.Systems = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
-                    .Where(x => x.HasCoordinates)
-                    .Take(512)
-                    .OfType<SolarSystem>()
-                    .ToList();
-                foreach (var system in view.Systems)
+                if (view.SolarSystem.HasCoordinates)
                 {
-                    system.Distance = Math.Sqrt(
-                        Math.Pow(((double)system.Coordinates.X - (double)view.SolarSystem.Coordinates.X), 2) +
-                        Math.Pow(((double)system.Coordinates.Y - (double)view.SolarSystem.Coordinates.Y), 2) +
-                        Math.Pow(((double)system.Coordinates.Z - (double)view.SolarSystem.Coordinates.Z), 2)
-                        );
+                    view.Systems = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
+                        .Where(x => x.HasCoordinates)
+                        .Take(512)
+                        .OfType<SolarSystem>()
+                        .ToList();
+                    foreach (var system in view.Systems)
+                    {
+                        system.Distance = Math.Sqrt(
+                            Math.Pow(((double)system.Coordinates.X - (double)view.SolarSystem.Coordinates.X), 2) +
+                            Math.Pow(((double)system.Coordinates.Y - (double)view.SolarSystem.Coordinates.Y), 2) +
+                            Math.Pow(((double)system.Coordinates.Z - (double)view.SolarSystem.Coordinates.Z), 2)
+                            );
+                    }
+                    view.Systems.RemoveAll(x => x.Id == view.SolarSystem.Id);
+                    view.Systems = view.Systems.OrderBy(x => x.Distance).ToList();
                 }
-                view.Systems.RemoveAll(x => x.Id == view.SolarSystem.Id);
-                view.Systems = view.Systems.OrderBy(x => x.Distance).ToList();
+                else
+                {
+                    view.Systems = new List<SolarSystem>();
+                }
             }
             return View(view);
         }

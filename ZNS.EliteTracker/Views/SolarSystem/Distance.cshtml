@@ -11,6 +11,8 @@
     <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
     <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
 </ul>
+@if (Model.SolarSystem.HasCoordinates)
+{ 
 <table class="table">
     <thead>
         <tr>
@@ -23,9 +25,8 @@
     <tbody>
         @foreach (var system in Model.Systems)
         {
-            var attitudeClass = "label-info";
             <tr>
-                <td>@system.Name</td>
+                <td><a href="@Url.Action("View", new { id = system.Id})">@system.Name</a></td>
                 <td>@Math.Round(system.Distance, 1)ly</td>
                 <td>@Html.AttitudeLabel(system.Attitude)</td>
                 <td>@String.Join(",", system.Economies.Select(x => x.ToString()).ToArray())</td>
@@ -33,3 +34,7 @@
         }
     </tbody>
 </table>
+}
+else {
+<span>Unable to comply. Please <a href="@Url.Action("Edit", new { id = Model.SolarSystem.Id})">enter coordinates</a>..</span>
+}
