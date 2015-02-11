@@ -49,7 +49,7 @@ namespace ZNS.EliteTracker.Models.Documents
         {
             get
             {
-                return (Coordinates != null && Coordinates.X != 0 && Coordinates.Y != 0 && Coordinates.Z != 0);
+                return (Coordinates != null && !(Coordinates.X == 0 && Coordinates.Y == 0 && Coordinates.Z == 0));
             }
         }
 

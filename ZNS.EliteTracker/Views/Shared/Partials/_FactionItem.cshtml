@@ -1,6 +1,10 @@
 ﻿@model ZNS.EliteTracker.Models.Documents.Faction
 <div class="task">
     <h4><a href="@Url.Action("Edit", "Faction", new { id = Model.Id })">@Model.Name</a></h4>
+    @if (Model.State != ZNS.EliteTracker.Models.Documents.FactionState.None && (int)Model.State != 0)
+    {
+        @Html.FactionStateLabel(Model.State, "tag")
+    }
     <div>
         @foreach (var system in Model.SolarSystems)
         {

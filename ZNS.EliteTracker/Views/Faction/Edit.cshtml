@@ -5,6 +5,10 @@
 @using (Html.BeginForm())
 {
     <div id="FactionEdit">
+        @if (!String.IsNullOrEmpty(Model.ErrorStatus))
+        {
+            <div class="alert alert-warning">@Model.ErrorStatus</div>
+        }
         <div class="panel panel-default">
             <div class="panel-heading">@Model.Faction.Name info</div>
             <div class="panel-body">

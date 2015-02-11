@@ -30,7 +30,7 @@ namespace ZNS.EliteTracker.Models.Indexes
                                  Economies = system.Stations.SelectMany(x => x.Economy).Distinct(),
                                  Attitude = system.Stations.Where(x => x.Main).Select(x => x.Faction.Attitude).FirstOrDefault(),
                                  HasAlly = system.Factions.Any(x => x.Attitude == FactionAttitude.Ally),
-                                 HasCoordinates = (system.Coordinates != null && system.Coordinates.X != 0 && system.Coordinates.Y != 0 && system.Coordinates.Z != 0)
+                                 HasCoordinates = (system.Coordinates != null && !(system.Coordinates.X == 0 && system.Coordinates.Y == 0 && system.Coordinates.Z == 0))
                              };
 
             Indexes.Add(x => x.NamePartial, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);

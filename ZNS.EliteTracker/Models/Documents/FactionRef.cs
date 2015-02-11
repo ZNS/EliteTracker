@@ -13,6 +13,8 @@ namespace ZNS.EliteTracker.Models.Documents
 
         public static FactionRef FromFaction(Faction faction)
         {
+            if (faction == null)
+                return null;
             return new FactionRef
             {
                 Id = faction.Id,

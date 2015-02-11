@@ -11,6 +11,7 @@ namespace ZNS.EliteTracker.Models.Views
         public Faction Faction { get; set; }
         public List<SolarSystem> Systems { get; set; }
         public List<string> PostedSystems { get; set; }
+        public string ErrorStatus { get; set; }
 
         public FactionEditView()
         {

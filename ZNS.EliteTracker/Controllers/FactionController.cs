@@ -36,7 +36,7 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }       
 
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, string status)
         {            
             var view = new FactionEditView();
             using (var session = DB.Instance.GetSession())
@@ -46,6 +46,10 @@ namespace ZNS.EliteTracker.Controllers
                     view.Faction = session.Load<Faction>(id);
                 }
                 view.Systems = session.Query<SolarSystem>().OrderBy(x => x.Name).ToList();
+            }
+            if (!String.IsNullOrEmpty(status))
+            {
+                view.ErrorStatus = status;
             }
             return View(view);
         }
@@ -58,6 +62,16 @@ namespace ZNS.EliteTracker.Controllers
             List<SolarSystem> oldSystems = null;
             using (var session = DB.Instance.GetSession())
             {
+                //Check if faction exists?
+                if (!id.HasValue)
+                {
+                    var existing = session.Query<Faction>().Where(x => x.Name == input.Faction.Name).ToList().FirstOrDefault(x => x.Name.Equals(input.Faction.Name, StringComparison.CurrentCultureIgnoreCase));
+                    if (existing != null)
+                    {
+                        return RedirectToAction("Edit", new { status = "Faction already exists" });
+                    }
+                }
+
                 if (id.HasValue)
                 {
                     faction = session.Load<Faction>(id.Value);
@@ -70,7 +84,7 @@ namespace ZNS.EliteTracker.Controllers
                 
                 //Solar systems
                 SolarSystem homeSystem = null;
-                if (input.PostedSystems.Count > 0)
+                if (input.PostedSystems != null && input.PostedSystems.Count > 0)
                 {
                     var systemIds = input.PostedSystems.Select(x => int.Parse(x)).Cast<System.ValueType>();
                     postedSystems = session.Load<SolarSystem>(systemIds).ToList();

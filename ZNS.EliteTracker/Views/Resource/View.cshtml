@@ -1,0 +1,43 @@
+﻿@model ZNS.EliteTracker.Models.Views.ResourceViewView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="ResourceView" ng-controller="resourceView">
+    <div class="page-header">
+        <h1>@Model.Resource.Heading</h1>
+        <a href="@Url.Action("Edit", new { id = Model.Resource.Id })"><span class="fa fa-pencil-square-o"></span></a>
+    </div>
+    <p>
+        @Html.RenderBBCode(@Model.Resource.Body)
+    </p>
+    <hr />
+    <div class="edits">
+        <a href="javascript://" class="small" ng-click="showEdits=!showEdits"><span class="fa" ng-class="{'fa-plus':!showEdits,'fa-minus':showEdits}">&nbsp;&nbsp;&nbsp;History</span></a>
+        <table class="table small" ng-show="showEdits">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Commander</th>
+                    <th>Comment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Resource.Created.ToString() UTC</td>
+                    <td>@Model.Resource.Owner.Name</td>
+                    <td>Created</td>
+                </tr>
+                @foreach (var edit in Model.Resource.Edits)
+                {
+                    <tr>
+                        <td>@edit.Date.ToString() UTC</td>
+                        <td>@edit.Commander.Name</td>
+                        <td>@edit.Comment</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<hr />
+@Html.Partial("Partials/_Comments", Model.Comments)

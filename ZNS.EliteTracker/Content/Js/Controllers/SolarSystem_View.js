@@ -1,6 +1,6 @@
 ﻿angular.module('elitetracker')
 .controller('solarSystemView', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
-    var now = moment();
+    var now = moment().utc();
     $scope.showMsg = false;
     $scope.statusTo = moment.utc([now.year(), now.month(), now.date()]);
     $scope.statusFrom = moment($scope.statusTo).subtract(1, 'month');
@@ -21,7 +21,7 @@
         .success(function (data) {
             if (data.length > 0) {
                 $scope.statuses = data;
-                $scope.currentStatus = data[data.length - 1];
+                $scope.currentStatus = $.extend(true, {}, data[data.length - 1]);
 
                 //If the last status is not for the current day use it as a new status template
                 if (!moment($scope.currentStatus.Date).isSame(moment.utc(), 'day')) {
@@ -75,6 +75,15 @@
                     }
                 });
             });
+
+            //Check if only 1 data point
+            if ($scope.chart.labels.length == 1) {
+                var prev = moment.utc($scope.chart.labels[0]).subtract(1, 'day');
+                $scope.chart.labels.unshift(prev.format('l'));
+                angular.forEach($scope.chart.data, function (d) {
+                    d.unshift(0);
+                });
+            }
         });
     };
 
@@ -143,6 +152,7 @@
         $scope.isSaving = true;
         $http.post('/solarsystem/saveStatus/' + $scope.currentStatus.Id, $scope.currentStatus)
         .success(function (response) {
+            $scope.currentStatus.Id = response.id;
             angular.forEach($scope.statuses, function (status) {
                 if (moment(status.Date).isSame(moment(response.date), 'day'))
                 {

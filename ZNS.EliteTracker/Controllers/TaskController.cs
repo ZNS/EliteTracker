@@ -36,8 +36,9 @@ namespace ZNS.EliteTracker.Controllers
             }
         }
 
-        public ActionResult View(int id)
+        public ActionResult View(int id, int? page)
         {
+            page = page ?? 0;
             var view = new TaskViewView();
             using (var session = DB.Instance.GetSession())
             {
@@ -46,12 +47,20 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     DocumentId = "Tasks/" + id
                 };
+                RavenQueryStatistics stats = null;
                 view.Comments.Comments = session.Query<Comment>()
+                    .Statistics(out stats)
                     .Where(x => x.DocumentId == view.Comments.DocumentId)
                     .OrderByDescending(x => x.Date)
+                    .Skip(page.Value * 15)
                     .Take(15)
                     .ToList();
-
+                view.Comments.Pager = new Pager
+                {
+                    Count = stats.TotalResults,
+                    Page = page.Value,
+                    PageSize = 15
+                };
                 return View(view);
             }
         }

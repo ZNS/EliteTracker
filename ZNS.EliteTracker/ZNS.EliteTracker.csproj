@@ -185,6 +185,7 @@
     <Content Include="Content\Js\Controllers\Commander_Edit.js" />
     <Content Include="Content\Js\Controllers\Comment.js" />
     <Content Include="Content\Js\Controllers\Comment_Index.js" />
+    <Content Include="Content\Js\Controllers\Resource_View.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_Edit.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_View.js" />
     <Content Include="Content\Js\Controllers\Task_Edit.js" />
@@ -213,6 +214,8 @@
     <Compile Include="Controllers\FactionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
+    <Compile Include="Controllers\JobController.cs" />
+    <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Controllers\SolarSystemController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
@@ -232,6 +235,8 @@
     <Compile Include="Models\Documents\FactionStatus.cs" />
     <Compile Include="Models\Documents\ICommentable.cs" />
     <Compile Include="Models\Documents\Power.cs" />
+    <Compile Include="Models\Documents\Resource.cs" />
+    <Compile Include="Models\Documents\ResourceEdit.cs" />
     <Compile Include="Models\Documents\Ship.cs" />
     <Compile Include="Models\Documents\ShipFittings.cs" />
     <Compile Include="Models\Documents\ShipModel.cs" />
@@ -248,6 +253,7 @@
     <Compile Include="Models\Documents\TaskStatus.cs" />
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
+    <Compile Include="Models\Indexes\Faction_State.cs" />
     <Compile Include="Models\Indexes\SolarSystem_Query.cs" />
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\Views\CommanderViewView.cs" />
@@ -257,6 +263,8 @@
     <Compile Include="Models\Views\HomeView.cs" />
     <Compile Include="Models\Views\LoginView.cs" />
     <Compile Include="Models\Views\Pager.cs" />
+    <Compile Include="Models\Views\ResourceIndexView.cs" />
+    <Compile Include="Models\Views\ResourceViewView.cs" />
     <Compile Include="Models\Views\SolarSystemCommentsView.cs" />
     <Compile Include="Models\Views\SolarSystemDistanceView.cs" />
     <Compile Include="Models\Views\SolarSystemIndexView.cs" />
@@ -387,6 +395,10 @@
     <Content Include="Views\Import\Index.cshtml" />
     <Content Include="Views\Comment\Index.cshtml" />
     <Content Include="Views\SolarSystem\Distance.cshtml" />
+    <Content Include="Views\Shared\Partials\_ResourceItem.cshtml" />
+    <Content Include="Views\Resource\Index.cshtml" />
+    <Content Include="Views\Resource\Edit.cshtml" />
+    <Content Include="Views\Resource\View.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

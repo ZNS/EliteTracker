@@ -3,6 +3,12 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     var factions = (List<ZNS.EliteTracker.Models.Documents.Faction>)ViewBag.Factions;
+    var factionSelectList = factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).ToList();
+    factionSelectList.Add(new SelectListItem
+    {
+        Text = "Undefined",
+        Value = "0"
+    });
 }
 
 <div id="SolarSystemEdit" ng-controller="solarSystemEdit" ng-init="init(@Model.Id)">
@@ -64,7 +70,7 @@
                         </tags-input>
                     </td>
                     <td>@Html.EnumDropDown("type", typeof(ZNS.EliteTracker.Models.Documents.StationType), new { @class = "form-control", ng_model = "station.Type" })</td>
-                    <td>@Html.DropDownList("faction", factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control", ng_model = "station.Faction.Id" })</td>
+                    <td>@Html.DropDownList("faction", factionSelectList, new { @class = "form-control", ng_model = "station.Faction.Id" })</td>
                     <td><input type="text" class="form-control" ng-model="station.Distance" /></td>
                     <td><input type="checkbox" class="form-control" ng-model="station.Main" /></td>
                     <td><a href="javascript://remove" ng-click="removeStation($index)"><span class="fa fa-remove"></span></a></td>
@@ -77,5 +83,5 @@
         </div>
     </div>
     }
-    <div class="alert fixed" ng-class="{'alert-success':msgStatus=1,'alert-error':msgStatus=2}" ng-show="showMsg">{{msg}}</div>
+    <div class="alert fixed" ng-class="{'alert-success':msgStatus==1,'alert-danger':msgStatus==2}" ng-show="showMsg">{{msg}}</div>
 </div>

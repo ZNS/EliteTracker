@@ -19,6 +19,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public Faction()
         {
             SolarSystems = new List<SolarSystemRef>();
+            State = FactionState.None;
         }
     }
 }

@@ -23,6 +23,9 @@ namespace ZNS.EliteTracker.Models.Extensions
             new BBTag("br", "<br/>", "", true, false),
             new BBTag("size", "<span style=\"font-size:${size}%\">", "</span>", new BBAttribute("size", ""), new BBAttribute("size", "size")),
             new BBTag("video", "<div class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/${content}\" frameborder=\"0\" allowfullscreen></iframe></div>", "", false, true),
+            new BBTag("hr", "<hr/>", "", true, false),
+            new BBTag("list", "<ul>", "</ul>", true, true, (content => content.Replace("<br/>", ""))),
+            new BBTag("*", "<li>", "</li>")
         });
 
         public static IHtmlString EnumDropDown(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null, string defaultItem = null, int selectedValue = 0)
@@ -83,6 +86,28 @@ namespace ZNS.EliteTracker.Models.Extensions
                     break;
             }
             return html.Raw(@"<span class=""label " + labelClass + " " + cssClass + @""">" + attitude.ToString() + "</span>");
+        }
+
+        public static IHtmlString FactionStateLabel(this System.Web.Mvc.HtmlHelper html, FactionState state, string cssClass = "")
+        {
+            string labelClass = "label-default";
+            switch (state)
+            {
+                case FactionState.CivilWar:
+                case FactionState.War:
+                    labelClass = "label-danger";
+                    break;
+                case FactionState.CivilUnrest:
+                case FactionState.Lockdown:
+                case FactionState.Outbreak:
+                    labelClass = "label-warning";
+                    break;
+                case FactionState.EconomicBoom:
+                case FactionState.Expansion:
+                    labelClass = "label-success";
+                    break;
+            }
+            return html.Raw(@"<span class=""label " + labelClass + " " + cssClass + @""">" + state.ToString() + "</span>");
         }
     }
 }

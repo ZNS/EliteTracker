@@ -92,7 +92,13 @@
                         </td>
                         <td>@station.Type</td>
                         <td>@station.Distance</td>
+                        @if (station.Faction.Id != 0) {
                         <td><a href="@Url.Action("Edit", "Faction", new { id = station.Faction.Id })">@station.Faction.Name</a></td>
+                        }
+                        else
+                        {
+                            <td>@station.Faction.Name</td>
+                        }
                     </tr>
                 }
             </tbody>

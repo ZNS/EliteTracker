@@ -206,6 +206,13 @@ namespace ZNS.EliteTracker.Controllers
                     system.Population = input.Population;
                     system.SecurityPrev = system.Security;
                     system.Security = input.Security;
+                    if (system.Coordinates == null)
+                    {
+                        system.Coordinates = new Coordinate();
+                    }
+                    system.Coordinates.X = input.Coordinates.X;
+                    system.Coordinates.Y = input.Coordinates.Y;
+                    system.Coordinates.Z = input.Coordinates.Z;
                     session.SaveChanges();
                 }
             }
@@ -224,7 +231,19 @@ namespace ZNS.EliteTracker.Controllers
             using (var session = DB.Instance.GetSession())
             {
                 session.Advanced.UseOptimisticConcurrency = true;
+                
                 station.Faction = FactionRef.FromFaction(session.Load<Faction>(station.Faction.Id));
+                //Check for undefined faction
+                if (station.Faction == null)
+                {
+                    station.Faction = new FactionRef
+                    {
+                        Name = "[Undefined]",
+                        Id  = 0,
+                        Attitude = FactionAttitude.Neutral
+                    };
+                }
+
                 var system = session.Load<SolarSystem>(id);
                 if (system != null)
                 {
@@ -272,9 +291,17 @@ namespace ZNS.EliteTracker.Controllers
             using (var session = DB.Instance.GetSession())
             {
                 var factions = session.Load<Faction>(factionIds);
-                foreach (var faction in status.FactionStatus)
+                foreach (var factionStatus in status.FactionStatus)
                 {
-                    faction.Faction = FactionRef.FromFaction(factions.First(x => x.Id == faction.Faction.Id));
+                    var faction = factions.First(x => x.Id == factionStatus.Faction.Id);
+                    //Set faction ref for status
+                    factionStatus.Faction = FactionRef.FromFaction(faction);
+                    //Update faction with current state
+                    if (status.Date.Date == DateTime.UtcNow.Date)
+                    {
+                        faction.State = factionStatus.State;
+                        faction.PendingStates = factionStatus.PendingStates;
+                    }
                 }
                 session.Store(status);
                 session.SaveChanges();

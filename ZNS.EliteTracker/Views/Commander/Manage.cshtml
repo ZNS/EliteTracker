@@ -2,6 +2,13 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<!-- HACKS -->
+<script type="text/javascript">
+    //Reload page every two minutes
+    window.setTimeout(function () { window.location.reload(); }, 120000);
+</script>
+
+
 <div class="page-header">
     @if (!String.IsNullOrEmpty(Model.Name))
     {

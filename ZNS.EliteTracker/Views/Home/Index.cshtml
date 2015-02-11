@@ -60,6 +60,11 @@
                     action = "View";
                     controller = "Task";
                 }
+                else if (comment.Entity.IdPrefix.Equals("resources", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    action = "View";
+                    controller = "Resource";
+                }                
                 <div class="comment">
                     <div><b>@comment.Commander.Name</b> commented on <a href="@Url.Action(action, controller, new { id = comment.Entity.Id })">@comment.Entity.Name</a>, <span time-ago>@comment.Date</span></div>
                     @if (!String.IsNullOrEmpty(comment.Body))

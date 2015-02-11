@@ -15,12 +15,20 @@ namespace ZNS.EliteTracker.Controllers
         // GET: Import
         public ActionResult Index()
         {
+            if (!User.IsInRole("administrator"))
+            {
+                return new HttpUnauthorizedResult();
+            }
             return View();
         }
 
         [HttpPost]
         public ActionResult Index(HttpPostedFileBase file)
         {
+            if (!User.IsInRole("administrator"))
+            {
+                return new HttpUnauthorizedResult();
+            }
             if (file != null)
             {
                 List<Faction> factions = new List<Faction>();
@@ -121,6 +129,45 @@ namespace ZNS.EliteTracker.Controllers
             }
             return View();
         }
+
+        /*[HttpPost]
+        public ActionResult Export()
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                using (StreamWriter writer = new StreamWriter(new MemoryStream()))
+                {
+                    using (var stream = session.Advanced.Stream<SolarSystem>(session.Query<SolarSystem>()))
+                    {
+                        while (stream.MoveNext())
+                        {
+                            FactionRef alliedFaction = stream.Current.Document.Factions.FirstOrDefault(x => x.Attitude == FactionAttitude.Ally);
+                            FactionRef controlingFaction = null;
+                            var mainStation = stream.Current.Document.Stations.FirstOrDefault(x => x.Main);
+                            if (mainStation != null)
+                            {
+                                controlingFaction = mainStation.Faction;
+                            }
+                            writer.WriteLine(
+                                stream.Current.Document.Name + "\t" +
+                                (alliedFaction != null ? alliedFaction.Name : "") + "\t" +
+                                "N/A" + "\t" + //Allegiance
+                                String.Join("/", stream.Current.Document.Economies.ToArray()) + "\t" +
+                                "N/A" + "\t" + //State
+                                stream.Current.Document.Population + "\t" +
+                                "N/A" + "\t" + //Influence
+                                (controlingFaction != null ? controlingFaction.Name : "") + "\t" +
+                                "N/A" + "\t" + //Controlling Allegiance
+                                (stream.Current.Document.Coordinates != null ? stream.Current.Document.Coordinates.X.ToString() : "") + "\t" +
+                                (stream.Current.Document.Coordinates != null ? stream.Current.Document.Coordinates.Y.ToString() : "") + "\t" +
+                                (stream.Current.Document.Coordinates != null ? stream.Current.Document.Coordinates.Z.ToString() : "")
+                                );
+                        }
+                    }
+                }
+            }
+            throw new Exception();
+        }*/
 
         private string Capitalize(string str)
         {

@@ -57,10 +57,33 @@
 
     $scope.saveStations = function () {
         $scope.isSaving = true;
-        doAsyncSeries($scope.stations).then(function () {
-            showMessage("Stations saved", 1);
-            $scope.isSaving = false;
+        //Validate
+        var valid = true;
+        var hasMain = false;
+        angular.forEach($scope.stations, function (station) {
+            if (station.Main == true) {
+                if (hasMain) {
+                    showMessage("There can only be one main station", 2);
+                    valid = false;
+                    return false;
+                }
+                if (station.Faction.Id == 0) {
+                    showMessage("Main station can not have undefined faction", 2);
+                    valid = false;
+                    return false;
+                }
+                hasMain = true;
+            }
         });
+        if (valid) {
+            doAsyncSeries($scope.stations).then(function () {
+                showMessage("Stations saved", 1);
+                $scope.isSaving = false;
+            });
+        }
+        else {
+            $scope.isSaving = false;
+        }
     };
 
     function doAsyncSeries(arr) {
@@ -73,15 +96,18 @@
 
     function postStation(station)
     {
-        //Convert economies to int array
-        station.Economy = [];
-        angular.forEach(station.EconomyTags, function (e) {
-            station.Economy.push(e.value);
-        });
-        return $http({
-            url: '/solarsystem/savestation/' + $scope.systemId,
-            method: 'POST',
-            data: station});
+        if (station.Name.length > 0) {
+            //Convert economies to int array
+            station.Economy = [];
+            angular.forEach(station.EconomyTags, function (e) {
+                station.Economy.push(e.value);
+            });
+            return $http({
+                url: '/solarsystem/savestation/' + $scope.systemId,
+                method: 'POST',
+                data: station
+            });
+        }
     }
 
     function showMessage(msg, status) {

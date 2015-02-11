@@ -1,0 +1,30 @@
+﻿@model ZNS.EliteTracker.Models.Documents.Resource
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="ResourceView">
+    @using (Html.BeginForm())
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">@(Model.Heading ?? "New resource")</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="Heading">Heading</label>
+                    @Html.TextBoxFor(x => x.Heading, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="Body">Content</label>
+                    @Html.TextAreaFor(x => x.Body, new { @class = "form-control", rows = 30, wysibb = "wysibb", wysibb_editor = "1" })
+                </div>
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group">
+                        <label for="Reason">Edit reason</label>
+                        @Html.TextBox("Reason", "", new { @class = "form-control" })
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    }
+</div>
