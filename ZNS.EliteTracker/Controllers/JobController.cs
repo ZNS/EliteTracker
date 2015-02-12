@@ -18,10 +18,17 @@ namespace ZNS.EliteTracker.Controllers
         {
             if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
             {
-                return new HttpUnauthorizedResult();
+                return new JsonResult { Data = new { status = "unauthorized" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             }
 
-            var backupPath = Server.MapPath(ConfigurationManager.AppSettings["backuppath"]);
+            var backupPath = Server.MapPath(ConfigurationManager.AppSettings["backuppath"]).TrimEnd('\\') + "\\dump.raven";
+            
+            //Delete old
+            if (System.IO.File.Exists(backupPath))
+            {
+                System.IO.File.Delete(backupPath);
+            }
+
             var dumper = new DatabaseDataDumper(DB.Instance.Store.DocumentDatabase, new SmugglerDatabaseOptions
             {
                 OperateOnTypes = ItemType.Documents,
@@ -31,7 +38,7 @@ namespace ZNS.EliteTracker.Controllers
             dumper.ExportData(new SmugglerExportOptions<RavenConnectionStringOptions>
 	        {
 		        From = new EmbeddedRavenConnectionStringOptions(),                
-		        ToFile = backupPath.TrimEnd('\\') + "\\dump.raven"
+		        ToFile = backupPath
 	        });
 
             return new JsonResult { Data = new { status = "ok" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };

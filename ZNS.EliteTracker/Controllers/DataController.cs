@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Raven.Abstractions.Data;
+using Raven.Abstractions.Smuggler;
+using Raven.Database.Smuggler;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 
@@ -174,6 +179,32 @@ namespace ZNS.EliteTracker.Controllers
         #endregion
 
         #region Restore
+        public async Task<ActionResult> Restore(string key, string path)
+        {
+            if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
+            {
+                return new JsonResult { Data = new { status = "unauthorized" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+            if (ConfigurationManager.AppSettings["installation"] == null || ConfigurationManager.AppSettings["installation"] != "1")
+            {
+                return new JsonResult { Data = new { status = "need to be in installation mode" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+
+            var backupPath = Server.MapPath(path);
+            var dumper = new DatabaseDataDumper(DB.Instance.Store.DocumentDatabase, new SmugglerDatabaseOptions
+            {
+                OperateOnTypes = ItemType.Documents,
+                Incremental = false
+            });
+
+            await dumper.ImportData(new SmugglerImportOptions<RavenConnectionStringOptions>
+            {
+                To = new EmbeddedRavenConnectionStringOptions(),
+                FromFile = backupPath
+            });
+
+            return new JsonResult { Data = new { status = "restore complete" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
         #endregion
 
         private string Capitalize(string str)

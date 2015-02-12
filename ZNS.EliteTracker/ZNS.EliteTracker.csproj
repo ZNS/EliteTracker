@@ -398,7 +398,7 @@
     <Content Include="Views\Resource\Index.cshtml" />
     <Content Include="Views\Resource\Edit.cshtml" />
     <Content Include="Views\Resource\View.cshtml" />
-    <Content Include="Views\Data\Index.cshtml" />
+    <Content Include="Views\Data\Import.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
