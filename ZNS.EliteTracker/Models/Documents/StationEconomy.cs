@@ -10,7 +10,7 @@ namespace ZNS.EliteTracker.Models.Documents
         Agriculture = 1,
         Refinery = 2,
         Extraction = 3,
-        HighTech = 4,
+        High_Tech = 4,
         Terraforming = 5,
         Tourism = 6,
         Service = 7,

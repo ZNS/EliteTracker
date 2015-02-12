@@ -211,9 +211,9 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CommanderController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\FactionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\JobController.cs" />
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Controllers\SolarSystemController.cs" />
@@ -392,13 +392,13 @@
     <Content Include="Views\Shared\Partials\_Pager.cshtml" />
     <Content Include="Views\SolarSystem\Tasks.cshtml" />
     <Content Include="Views\Commander\Manage.cshtml" />
-    <Content Include="Views\Import\Index.cshtml" />
     <Content Include="Views\Comment\Index.cshtml" />
     <Content Include="Views\SolarSystem\Distance.cshtml" />
     <Content Include="Views\Shared\Partials\_ResourceItem.cshtml" />
     <Content Include="Views\Resource\Index.cshtml" />
     <Content Include="Views\Resource\Edit.cshtml" />
     <Content Include="Views\Resource\View.cshtml" />
+    <Content Include="Views\Data\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

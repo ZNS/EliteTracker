@@ -17,8 +17,8 @@ namespace ZNS.EliteTracker.Models.Documents
         LakonT7 = 8,
         LakonT9 = 9,
         ASP = 10,
-        ImperialClipper = 11,
-        FederalDropship = 12,
+        Imperial_Clipper = 11,
+        Federal_Dropship = 12,
         Orca = 13,
         Python = 14,
         Anaconda = 15

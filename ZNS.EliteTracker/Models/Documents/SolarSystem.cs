@@ -64,7 +64,7 @@ namespace ZNS.EliteTracker.Models.Documents
 
         public SolarSystem()
         {
-            Security = SolarSystemSecurity.Normal;
+            Security = SolarSystemSecurity.Medium;
             Coordinates = new Coordinate();
             Stations = new List<Station>();
             ActiveCommanders = new List<CommanderRef>();

@@ -4,6 +4,9 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Raven.Abstractions.Data;
+using Raven.Abstractions.Smuggler;
+using Raven.Database.Smuggler;
 using ZNS.EliteTracker.Models;
 
 namespace ZNS.EliteTracker.Controllers
@@ -13,17 +16,24 @@ namespace ZNS.EliteTracker.Controllers
     {
         public ActionResult Backup(string key)
         {
-            var backupPath = Server.MapPath(ConfigurationManager.AppSettings["backuppath"]);
-            if (key.Equals(ConfigurationManager.AppSettings["jobkey"]))
+            if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
             {
-                DB.Instance.GetDatabaseCommands()
-                    .GlobalAdmin
-                    .StartBackup(
-                    backupPath,
-                    null,
-                    false,
-                    Raven.Abstractions.Data.Constants.SystemDatabase);
+                return new HttpUnauthorizedResult();
             }
+
+            var backupPath = Server.MapPath(ConfigurationManager.AppSettings["backuppath"]);
+            var dumper = new DatabaseDataDumper(DB.Instance.Store.DocumentDatabase, new SmugglerDatabaseOptions
+            {
+                OperateOnTypes = ItemType.Documents,
+                Incremental = false                
+            });
+            
+            dumper.ExportData(new SmugglerExportOptions<RavenConnectionStringOptions>
+	        {
+		        From = new EmbeddedRavenConnectionStringOptions(),                
+		        ToFile = backupPath.TrimEnd('\\') + "\\dump.raven"
+	        });
+
             return new JsonResult { Data = new { status = "ok" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }

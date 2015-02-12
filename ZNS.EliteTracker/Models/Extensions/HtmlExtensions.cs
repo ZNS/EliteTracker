@@ -93,16 +93,16 @@ namespace ZNS.EliteTracker.Models.Extensions
             string labelClass = "label-default";
             switch (state)
             {
-                case FactionState.CivilWar:
+                case FactionState.Civil_War:
                 case FactionState.War:
                     labelClass = "label-danger";
                     break;
-                case FactionState.CivilUnrest:
+                case FactionState.Civil_Unrest:
                 case FactionState.Lockdown:
                 case FactionState.Outbreak:
                     labelClass = "label-warning";
                     break;
-                case FactionState.EconomicBoom:
+                case FactionState.Boom:
                 case FactionState.Expansion:
                     labelClass = "label-success";
                     break;

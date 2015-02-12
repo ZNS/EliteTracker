@@ -9,16 +9,14 @@ namespace ZNS.EliteTracker.Models
 {
     public sealed class DB
     {
-        private IDocumentStore _Store;
+        private EmbeddableDocumentStore _Store;
         private static DB _Instance = null;
         private static readonly object _Padlock = new object();
 
-        public IDocumentStore Store
+        public EmbeddableDocumentStore Store
         {
             get { return _Store; }
         }
-
-        private ICredentials _Credentials = null;
 
         DB()
         {            
@@ -46,26 +44,12 @@ namespace ZNS.EliteTracker.Models
 
         public IDocumentSession GetSession()
         {
-            if (_Credentials == null)
-            {
-                return _Store.OpenSession();
-            }
-            else
-            {
-                return _Store.OpenSession(new OpenSessionOptions() { Credentials = _Credentials });
-            }
+            return _Store.OpenSession();
         }
 
         public IDatabaseCommands GetDatabaseCommands()
         {
-            if (_Credentials == null)
-            {
-                return _Store.DatabaseCommands.ForSystemDatabase();
-            }
-            else
-            {
-                return _Store.DatabaseCommands.ForSystemDatabase().With(_Credentials);
-            }
+            return _Store.DatabaseCommands.ForSystemDatabase();
         }
 
        public static DB Instance

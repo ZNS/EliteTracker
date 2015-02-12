@@ -8,7 +8,7 @@ namespace ZNS.EliteTracker.Models.Documents
     public enum SolarSystemSecurity
     {
         Low = 1,
-        Normal = 2,
+        Medium = 2,
         High = 3
     }
 }
