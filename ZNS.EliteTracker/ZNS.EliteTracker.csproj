@@ -226,6 +226,9 @@
     <Compile Include="Models\Documents\Commander.cs" />
     <Compile Include="Models\Documents\CommanderRef.cs" />
     <Compile Include="Models\Documents\Comment.cs" />
+    <Compile Include="Models\Documents\Commodity.cs" />
+    <Compile Include="Models\Documents\CommodityAvailability.cs" />
+    <Compile Include="Models\Documents\CommodityType.cs" />
     <Compile Include="Models\Documents\Coordinate.cs" />
     <Compile Include="Models\Documents\Country.cs" />
     <Compile Include="Models\Documents\Faction.cs" />
@@ -268,6 +271,7 @@
     <Compile Include="Models\Views\SolarSystemCommentsView.cs" />
     <Compile Include="Models\Views\SolarSystemDistanceView.cs" />
     <Compile Include="Models\Views\SolarSystemIndexView.cs" />
+    <Compile Include="Models\Views\SolarSystemMarketView.cs" />
     <Compile Include="Models\Views\SolarSystemTasksView.cs" />
     <Compile Include="Models\Views\TaskEditView.cs" />
     <Compile Include="Models\Views\CommanderIndexView.cs" />
@@ -399,6 +403,7 @@
     <Content Include="Views\Resource\Edit.cshtml" />
     <Content Include="Views\Resource\View.cshtml" />
     <Content Include="Views\Data\Import.cshtml" />
+    <Content Include="Views\SolarSystem\Market.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

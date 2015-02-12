@@ -14,9 +14,11 @@ namespace ZNS.EliteTracker.Models.Documents
         public StationType Type { get; set; }
         public int Distance { get; set; }
         public bool Main { get; set; }
+        public List<Commodity> Commodities { get; set; }
 
         public Station() {
             Economy = new List<StationEconomy>();
+            Commodities = new List<Commodity>();
         }
     }
 }

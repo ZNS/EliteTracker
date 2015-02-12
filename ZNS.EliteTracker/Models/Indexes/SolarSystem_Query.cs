@@ -17,6 +17,8 @@ namespace ZNS.EliteTracker.Models.Indexes
             public FactionAttitude Attitude { get; set; }
             public bool HasAlly { get; set; }
             public bool HasCoordinates { get; set; }
+            public List<CommodityType> Supply { get; set; }
+            public List<CommodityType> Demand { get; set; }
         };
 
         public SolarSystem_Query()
@@ -30,7 +32,9 @@ namespace ZNS.EliteTracker.Models.Indexes
                                  Economies = system.Stations.SelectMany(x => x.Economy).Distinct(),
                                  Attitude = system.Stations.Where(x => x.Main).Select(x => x.Faction.Attitude).FirstOrDefault(),
                                  HasAlly = system.Factions.Any(x => x.Attitude == FactionAttitude.Ally),
-                                 HasCoordinates = (system.Coordinates != null && !(system.Coordinates.X == 0 && system.Coordinates.Y == 0 && system.Coordinates.Z == 0))
+                                 HasCoordinates = (system.Coordinates != null && !(system.Coordinates.X == 0 && system.Coordinates.Y == 0 && system.Coordinates.Z == 0)),
+                                 Supply = system.Stations.SelectMany(x => x.Commodities).Where(x => x.Supply != CommodityAvailability.None).Select(x => x.Type).Distinct(),
+                                 Demand = system.Stations.SelectMany(x => x.Commodities).Where(x => x.Demand != CommodityAvailability.None).Select(x => x.Type).Distinct()
                              };
 
             Indexes.Add(x => x.NamePartial, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);

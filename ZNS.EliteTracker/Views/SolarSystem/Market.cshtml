@@ -1,0 +1,69 @@
+﻿@model ZNS.EliteTracker.Models.Views.SolarSystemMarketView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var station = Model.SolarSystem.Stations.FirstOrDefault();
+    if (!String.IsNullOrEmpty(Model.StationGuid))
+    {
+        station = Model.SolarSystem.Stations.FirstOrDefault(x => x.Guid == Model.StationGuid);
+    }
+}
+<div id="SolarSystemMarket">
+    <div class="page-header">
+        <h1>@Model.SolarSystem.Name</h1>
+    </div>
+
+    <ul class="nav nav-tabs">
+        <li><a href="@Url.Action("View", new { id = Model.SolarSystem.Id })">Overview</a></li>
+        <li><a href="@Url.Action("Distance", new { id = Model.SolarSystem.Id })">Nearby</a></li>
+        <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
+        <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
+        <li class="active"><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
+    </ul>
+
+    @if (station != null)
+    { 
+    
+    using (Html.BeginForm("Market", "SolarSystem", new { id = Model.SolarSystem.Id }, FormMethod.Get, new { id = "stationForm", @class = "form-inline" }))
+    {
+        <div class="form-group">
+            <label for="guid">Station</label>
+            @Html.DropDownList(
+        "guid",
+        Model.SolarSystem.Stations.Select(x => new SelectListItem { Text = x.Name, Value = x.Guid, Selected = x.Guid == Model.StationGuid }),
+        new { @class = "form-control", onchange = "document.getElementById('stationForm').submit();" })
+        </div>
+    }
+
+    using (Html.BeginForm())
+    {
+        @Html.Hidden("guid", Model.StationGuid)
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Commodity</th>
+                    <th>Supply</th>
+                    <th>Demand</th>
+                    <!--<th>Price</th>-->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Enum.GetValues(typeof(ZNS.EliteTracker.Models.Documents.CommodityType)).Cast<ZNS.EliteTracker.Models.Documents.CommodityType>())
+                {
+                    var commodity = station.Commodities.FirstOrDefault(x => x.Type == e);
+                    <tr>
+                        <td>@e.ToString()</td>
+                        <td>@Html.EnumDropDown("c__" + ((int)e).ToString() + "_supply", typeof(ZNS.EliteTracker.Models.Documents.CommodityAvailability), new { @class = "form-control" }, null, commodity != null ? (int)commodity.Supply : 0)</td>
+                        <td>@Html.EnumDropDown("c__" + ((int)e).ToString() + "_demand", typeof(ZNS.EliteTracker.Models.Documents.CommodityAvailability), new { @class = "form-control" }, null, commodity != null ? (int)commodity.Demand : 0)</td>
+                        <!--<td>@Html.TextBox("c__" + ((int)e).ToString() + "_price", commodity != null ? commodity.Price : 0, new { @class = "form-control" })</td>-->
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-default btn-primary">Save</button>
+    }
+    }
+    else
+    {
+        <span>Unable to comply. Please <a href="@Url.Action("Edit", new { id = Model.SolarSystem.Id })">add stations</a>.</span>
+    }
+</div>

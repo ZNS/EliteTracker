@@ -14,6 +14,8 @@ namespace ZNS.EliteTracker.Models.Views
             public string Query { get; set; }
             public int Economy { get; set; }
             public int Status { get; set; }
+            public int Supply { get; set; }
+            public int Demand { get; set; }
         }
 
         public List<SolarSystem> SolarSystems { get; set; }

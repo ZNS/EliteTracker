@@ -35,6 +35,16 @@ namespace ZNS.EliteTracker.Controllers
                     var enumEconomy = (StationEconomy)Enum.Parse(typeof(StationEconomy), form.Economy.ToString());
                     query = query.Where(x => x.Economies.Any(e => e == enumEconomy));
                 }
+                if (form.Supply != 0)
+                {
+                    var enumSupply = (CommodityType)Enum.Parse(typeof(CommodityType), form.Supply.ToString());
+                    query = query.Where(x => x.Supply.Any(s => s == enumSupply));
+                }
+                if (form.Demand != 0)
+                {
+                    var enumDemand = (CommodityType)Enum.Parse(typeof(CommodityType), form.Demand.ToString());
+                    query = query.Where(x => x.Demand.Any(s => s == enumDemand));
+                }
                 switch (form.Status)
                 {
                     case 1:
@@ -173,6 +183,79 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        #region Market
+        public ActionResult Market(int id, string guid)
+        {
+            var view = new SolarSystemMarketView();
+            using (var session = DB.Instance.GetSession())
+            {
+                view.SolarSystem = session.Load<SolarSystem>(id);
+                view.StationGuid = guid;
+                if (String.IsNullOrEmpty(view.StationGuid) && view.SolarSystem.Stations != null && view.SolarSystem.Stations.Count > 0)
+                {
+                    view.StationGuid = view.SolarSystem.Stations.First().Guid;
+                }
+            }
+            return View(view);
+        }
+
+        [HttpPost]
+        public ActionResult Market(int id, FormCollection frm)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var guid = frm["guid"];
+                var system = session.Load<SolarSystem>(id);
+                var station = system.Stations.First(x => x.Guid == guid);
+                station.Commodities.Clear();
+                foreach (var post in frm.AllKeys)
+                {
+                    if (post.StartsWith("c__"))
+                    {
+                        var parts = post.Substring(3).Split('_');
+                        
+                        CommodityType type = (CommodityType)Enum.Parse(typeof(CommodityType), parts[0]);
+                        CommodityAvailability supply = CommodityAvailability.None;
+                        CommodityAvailability demand = CommodityAvailability.None;
+                        double price = 0;
+
+                        if (parts[1] == "supply")
+                        {
+                            supply = (CommodityAvailability)Enum.Parse(typeof(CommodityAvailability), frm[post]);
+                        }
+                        if (parts[1] == "demand")
+                        {
+                            demand = (CommodityAvailability)Enum.Parse(typeof(CommodityAvailability), frm[post]);
+                        }
+                        if (parts[1] == "price")
+                        {
+                            price = !String.IsNullOrEmpty(frm[post]) ? int.Parse(frm[post]) : 0;
+                        }
+
+                        if (supply != CommodityAvailability.None || demand != CommodityAvailability.None || price != 0)
+                        {
+                            var commodity = station.Commodities.FirstOrDefault(x => x.Type == type);
+                            if (commodity == null)
+                            {
+                                commodity = new Commodity
+                                {
+                                    Type = type
+                                };
+                                station.Commodities.Add(commodity);
+                            }
+                            commodity.Supply = supply != CommodityAvailability.None ? supply : commodity.Supply;
+                            commodity.Demand = demand != CommodityAvailability.None ? demand : commodity.Demand;
+                            commodity.Price = price != 0 ? price : commodity.Price;
+                        }
+                    }
+                }
+                session.SaveChanges();
+                return RedirectToAction("Market", new { id = system.Id, guid = guid });
+            }
+        }
+        #endregion
+
+        #region Edit
         public ActionResult Edit(int? id)
         {
             SolarSystem system = new SolarSystem();
@@ -223,6 +306,7 @@ namespace ZNS.EliteTracker.Controllers
             }
             return RedirectToAction("Edit", "SolarSystem", new { id = input.Id });
         }
+        #endregion
 
         #region Client requests
         [HttpPost]
