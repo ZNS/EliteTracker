@@ -5,7 +5,7 @@
 <div id="TaskView" ng-controller="taskView">
     <div class="page-header">
         <h1>@Model.Task.Heading</h1>
-        @if (Model.Task.Owner.Id == ViewBag.CommanderId)
+        @if (Model.Task.Owner.Id == ViewBag.CommanderId || User.IsInRole("administrator"))
         {
         <a href="@Url.Action("Edit", new { id = Model.Task.Id })"><span class="fa fa-pencil-square-o"></span></a>
         }

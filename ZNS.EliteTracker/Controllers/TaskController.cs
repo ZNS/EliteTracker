@@ -12,25 +12,50 @@ namespace ZNS.EliteTracker.Controllers
 {
     public class TaskController : BaseController
     {
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, TaskIndexView.Form form)
         {
             page = page ?? 0;
             var view = new TaskIndexView();
             using (var session = DB.Instance.GetSession())
             {
                 RavenQueryStatistics stats = null;
-                view.Tasks = session.Query<Task>()
+                var query = session.Query<Task>()
                     .Statistics(out stats)
                     .OrderByDescending(x => x.Priority)
                     .ThenByDescending(x => x.Date)
                     .Skip(page.Value * 20)
-                    .Take(20)
-                    .ToList();
+                    .Take(20);
+                switch (form.Status)
+                {
+                    case 0:
+                        query = query.Where(x => x.Status != TaskStatus.Completed);
+                        break;
+                    case 1:
+                        query = query.Where(x => x.Status == TaskStatus.New);
+                        break;
+                    case 2:
+                        query = query.Where(x => x.Status == TaskStatus.Completed);
+                        break;
+                }
+                if (form.Type != 0)
+                {
+                    var enumType = (TaskType)Enum.Parse(typeof(TaskType), form.Type.ToString());
+                    query = query.Where(x => x.Type == enumType);
+                }
+
+                view.Tasks = query.ToList();
+                view.Query = form;
                 view.Pager = new Pager
                 {
                     Count = stats.TotalResults,
                     Page = page.Value,
                     PageSize = 20
+                };
+                view.Statuses = new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Incomplete", Value = "0", Selected = form.Status == 0 },
+                    new SelectListItem { Text = "New", Value = "1", Selected = form.Status == 1 },
+                    new SelectListItem { Text = "Complete", Value = "2", Selected = form.Status == 2 }
                 };
                 return View(view);
             }
@@ -75,7 +100,7 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     view.Task = session.Load<Task>(id);
                     //Check if owner
-                    if (view.Task.Owner.Id != CommanderId)
+                    if (view.Task.Owner.Id != CommanderId && !User.IsInRole("administrator"))
                     {
                         return new HttpUnauthorizedResult("Unauthorized access detected!");
                     }

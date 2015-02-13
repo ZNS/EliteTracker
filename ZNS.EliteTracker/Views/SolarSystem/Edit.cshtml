@@ -12,6 +12,11 @@
 }
 
 <div id="SolarSystemEdit" ng-controller="solarSystemEdit" ng-init="init(@Model.Id)">
+    @if (!String.IsNullOrEmpty(Request.QueryString["status"]))
+    {
+        <div class="alert alert-warning">@Request.QueryString["status"]</div>
+    }
+    
     @using (Html.BeginForm())
     {
     <div class="panel panel-default">

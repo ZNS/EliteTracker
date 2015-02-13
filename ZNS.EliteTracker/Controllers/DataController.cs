@@ -247,14 +247,14 @@ namespace ZNS.EliteTracker.Controllers
                                     {
                                         writer.Write("},");
                                     }
-                                    else if (Char.IsUpper(inp, 0))
-                                    {
-                                        writer.Write("\"" + inp.ToLower().Replace(" ", "_") + "\":");
-                                    }
                                     else if (inp.Contains("="))
                                     {
                                         var parts = inp.Split('=');
                                         writer.Write("\"" + parts[0].Trim().ToLower() + "\":" + parts[1].Trim() + ",");
+                                    }
+                                    else if (!inp.StartsWith("\""))
+                                    {
+                                        writer.Write("\"" + inp.ToLower().Replace(" ", "_") + "\":");
                                     }
                                 }
                             }
@@ -422,8 +422,16 @@ namespace ZNS.EliteTracker.Controllers
                                                 {
                                                     saved.Add(systemName, new List<string>());
                                                 }
-                                                saved[systemName].Add(stationName);
+                                                saved[systemName].Add(stationName + " - Imported");
                                             }
+                                        }
+                                        else
+                                        {
+                                            if (!saved.ContainsKey(systemName))
+                                            {
+                                                saved.Add(systemName, new List<string>());
+                                            }
+                                            saved[systemName].Add(stationName + " - Does not exist in tracker");
                                         }
                                     }
                                     catch

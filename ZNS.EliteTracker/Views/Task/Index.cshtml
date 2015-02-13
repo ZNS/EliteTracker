@@ -7,6 +7,16 @@
         <h1>Tasks</h1>
         <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
     </div>
+    @using (Html.BeginForm("Index", "Task", FormMethod.Get, new { @class = "form-inline search" }))
+    {
+    <div class="form-group">
+        @Html.DropDownList("status", Model.Statuses, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.EnumDropDown("type", typeof(ZNS.EliteTracker.Models.Documents.TaskType), new { @class = "form-control" }, "All types", Model.Query.Type)
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    }
     <div class="items">
         @foreach (var task in Model.Tasks)
         {

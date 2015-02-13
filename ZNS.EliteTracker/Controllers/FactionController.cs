@@ -12,20 +12,32 @@ namespace ZNS.EliteTracker.Controllers
 {
     public class FactionController : BaseController
     {
-        public ActionResult Index(int? page)
+        public ActionResult Index(int? page, FactionIndexView.Form form)
         {
             page = page ?? 0;
             var view = new FactionIndexView();
             using (var session = DB.Instance.GetSession())
             {
                 RavenQueryStatistics stats = null;
-                view.Factions = session.Query<Faction>()
+                var query = session.Query<Faction>()
                     .Statistics(out stats)
                     .OrderBy(x => x.HomeSolarSystem.Name)
                     .ThenBy(x => x.Name)
                     .Skip(page.Value * 25)
-                    .Take(25)
-                    .ToList();
+                    .Take(25);
+                if (form.Attitude != 0)
+                {
+                    var enumAttitude = (FactionAttitude)Enum.Parse(typeof(FactionAttitude), form.Attitude.ToString());
+                    query = query.Where(x => x.Attitude == enumAttitude);
+                }
+                if (form.State != 0)
+                {
+                    var enumState = (FactionState)Enum.Parse(typeof(FactionState), form.State.ToString());
+                    query = query.Where(x => x.State == enumState);
+                }
+
+                view.Factions = query.ToList();
+                view.Query = form;
                 view.Pager = new Pager
                 {
                     Count = stats.TotalResults,

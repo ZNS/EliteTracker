@@ -24,8 +24,8 @@ namespace ZNS.EliteTracker.Controllers
                 var query = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
                     .Statistics(out stats)
                     .OrderBy(x => x.Name)
-                    .Skip(page.Value * 20)
-                    .Take(20);
+                    .Skip(page.Value * 35)
+                    .Take(35);
                 if (!String.IsNullOrEmpty(form.Query))
                 {
                     query = query.Where(x => x.NamePartial == form.Query);
@@ -68,7 +68,7 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     Count = stats.TotalResults,
                     Page = page.Value,
-                    PageSize = 20
+                    PageSize = 35
                 };
  
                 //Select list item
@@ -291,6 +291,18 @@ namespace ZNS.EliteTracker.Controllers
         {
             using (var session = DB.Instance.GetSession())
             {
+                //Check if exists
+                if (!id.HasValue)
+                {
+                    var existing = session.Query<SolarSystem>()
+                        .Where(x => x.Name == input.Name).ToList()
+                        .FirstOrDefault(x => x.Name.Equals(input.Name, StringComparison.CurrentCultureIgnoreCase));
+                    if (existing != null)
+                    {
+                        return RedirectToAction("Edit", new { status = "Solar system already exists" });
+                    }
+                }
+
                 if (!id.HasValue)
                 {
                     session.Store(input);
