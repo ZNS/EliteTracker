@@ -151,7 +151,7 @@ namespace ZNS.EliteTracker.Controllers
             }
         }
 
-        public ActionResult Distance(int id)
+        public ActionResult Distance(int id, SolarSystemDistanceView.Form form)
         {
             var view = new SolarSystemDistanceView();
             using (var session = DB.Instance.GetSession())
@@ -159,11 +159,24 @@ namespace ZNS.EliteTracker.Controllers
                 view.SolarSystem = session.Load<SolarSystem>(id);
                 if (view.SolarSystem.HasCoordinates)
                 {
-                    view.Systems = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
+                    var query = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
                         .Where(x => x.HasCoordinates)
-                        .Take(512)
+                        .Take(512);
+                    if (form.Supply != 0)
+                    {
+                        var enumSupply = (CommodityType)Enum.Parse(typeof(CommodityType), form.Supply.ToString());
+                        query = query.Where(x => x.Supply.Any(s => s == enumSupply));
+                    }
+                    if (form.Demand != 0)
+                    {
+                        var enumDemand = (CommodityType)Enum.Parse(typeof(CommodityType), form.Demand.ToString());
+                        query = query.Where(x => x.Demand.Any(s => s == enumDemand));
+                    }
+
+                    view.Systems = query
                         .OfType<SolarSystem>()
                         .ToList();
+
                     foreach (var system in view.Systems)
                     {
                         system.Distance = Math.Sqrt(
@@ -174,6 +187,7 @@ namespace ZNS.EliteTracker.Controllers
                     }
                     view.Systems.RemoveAll(x => x.Id == view.SolarSystem.Id);
                     view.Systems = view.Systems.OrderBy(x => x.Distance).ToList();
+                    view.Query = form;
                 }
                 else
                 {
@@ -246,6 +260,7 @@ namespace ZNS.EliteTracker.Controllers
                             commodity.Supply = supply != CommodityAvailability.None ? supply : commodity.Supply;
                             commodity.Demand = demand != CommodityAvailability.None ? demand : commodity.Demand;
                             commodity.Price = price != 0 ? price : commodity.Price;
+                            commodity.Updated = DateTime.UtcNow;
                         }
                     }
                 }

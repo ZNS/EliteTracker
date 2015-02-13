@@ -31,18 +31,6 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading"><span class="fa fa-tasks"></span> <b>New tasks</b></div>
-    <div class="panel-body">
-        <div class="items">
-            @foreach (var task in Model.NewTasks)
-            {
-                @Html.Partial("Partials/_TaskItem", task)
-            }
-        </div>
-    </div>
-</div>
-
-<div class="panel panel-default">
     <div class="panel-heading"><span class="fa fa-comments"></span> <b>Latest comments</b></div>
     <div class="panel-body">
         <div class="items">
@@ -64,14 +52,26 @@
                 {
                     action = "View";
                     controller = "Resource";
-                }                
+                }
                 <div class="comment">
                     <div><b>@comment.Commander.Name</b> commented on <a href="@Url.Action(action, controller, new { id = comment.Entity.Id })">@comment.Entity.Name</a>, <span time-ago>@comment.Date</span></div>
                     @if (!String.IsNullOrEmpty(comment.Body))
                     {
-                    <p>@Html.RenderBBCode(comment.Body.Substring(0, comment.Body.Length > 150 ? 150 : comment.Body.Length))</p>
+                        <p>@Html.RenderBBCode(comment.Body.Substring(0, comment.Body.Length > 150 ? 150 : comment.Body.Length))</p>
                     }
                 </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><span class="fa fa-tasks"></span> <b>New tasks</b></div>
+    <div class="panel-body">
+        <div class="items">
+            @foreach (var task in Model.NewTasks)
+            {
+                @Html.Partial("Partials/_TaskItem", task)
             }
         </div>
     </div>

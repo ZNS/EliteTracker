@@ -1,4 +1,6 @@
-﻿body {
+﻿@import "bootstrap/src/mixins.less";
+
+body {
     background-image: url(/content/images/dark_mosaic.png);
 }
 
@@ -68,6 +70,10 @@ header {
     background: #fafafa;
     border-radius: 5px;
     box-shadow: 3px 3px 5px #666;
+}
+
+.label-light {
+  .label-variant(#bbb);
 }
 
 .alert.fixed {
@@ -162,8 +168,12 @@ ul.info {
     box-shadow: 2px 2px 1px #eee;
     margin-bottom: 15px;
 
-    h4 > small {
-        font-size: 65%;
+    h4 {
+        font-size: 16px;
+
+        > small {
+            font-size: 75%;
+        }
     }
 
     .tag {
@@ -171,11 +181,28 @@ ul.info {
         top: 10px;
         right: 10px;
     }
+
+    &.comment {
+        font-size: 85%;
+    }
+
+    > b {
+        font-weight: normal;
+        font-size: 90%;
+    }
 }
 
 .table.stations {
     .main {
         font-weight: bold;
+    }
+}
+
+form.search {
+    margin-bottom: 30px;
+
+    input, select {
+        margin-right: 15px;
     }
 }
 
@@ -190,7 +217,6 @@ ul.info {
     }
 }
 
-
 .comment {
     margin-bottom:35px;
 
@@ -200,15 +226,6 @@ ul.info {
         i {
             font-style: normal;
             color:#bbb;
-        }
-    }
-}
-
-#SolarSystemIndex {
-    form {
-        margin-bottom: 30px;
-        input, select {
-            margin-right: 15px;
         }
     }
 }

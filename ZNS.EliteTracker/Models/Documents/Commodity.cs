@@ -11,6 +11,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public CommodityAvailability Demand { get; set; }
         public CommodityAvailability Supply { get; set; }
         public double Price { get; set; }
+        public DateTime Updated { get; set; }
 
         public Commodity()
         {

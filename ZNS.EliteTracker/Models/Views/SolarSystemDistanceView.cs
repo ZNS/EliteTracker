@@ -8,7 +8,14 @@ namespace ZNS.EliteTracker.Models.Views
 {
     public class SolarSystemDistanceView
     {
+        public class Form
+        {
+            public int Supply { get; set; }
+            public int Demand { get; set; }
+        }
+
         public SolarSystem SolarSystem { get; set;}
         public List<SolarSystem> Systems { get; set; }
+        public Form Query { get; set; }
     }
 }

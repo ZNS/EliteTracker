@@ -13,7 +13,19 @@
     <li><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
 </ul>
 @if (Model.SolarSystem.HasCoordinates)
-{ 
+{
+
+    using (Html.BeginForm("Distance", "SolarSystem", FormMethod.Get, new { @class = "form-inline search" }))
+    {
+        <div class="form-group">
+            @Html.EnumDropDown("supply", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control" }, "Unspecific supply", Model.Query.Supply)
+        </div>
+        <div class="form-group">
+            @Html.EnumDropDown("demand", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control" }, "Unspecific demand", Model.Query.Demand)
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    }
+
 <table class="table">
     <thead>
         <tr>
@@ -36,6 +48,8 @@
     </tbody>
 </table>
 }
-else {
-<span>Unable to comply. Please <a href="@Url.Action("Edit", new { id = Model.SolarSystem.Id})">enter coordinates</a>..</span>
+
+else
+{
+    <span>Unable to comply. Please <a href="@Url.Action("Edit", new { id = Model.SolarSystem.Id})">enter coordinates</a>..</span>
 }

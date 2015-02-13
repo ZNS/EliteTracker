@@ -4,9 +4,11 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json.Linq;
 using Raven.Abstractions.Data;
 using Raven.Abstractions.Smuggler;
 using Raven.Database.Smuggler;
@@ -204,6 +206,245 @@ namespace ZNS.EliteTracker.Controllers
             });
 
             return new JsonResult { Data = new { status = "restore complete" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+        #endregion
+
+        #region Commander's log
+        [HttpPost]
+        public ActionResult CommandersLog(HttpPostedFileBase file)
+        {
+            string json = null;
+
+            if (file == null)
+            {
+                return View("CommandersLogError", null, "No file uploaded");
+            }
+
+            var kb = (double)file.ContentLength / 1024d;
+            if (kb > 1024 || kb == 0)
+            {
+                return View("CommandersLogError", null, "File cannot be larger than 1 MB");
+            }
+
+            try
+            {
+                using (var output = new MemoryStream())
+                {
+                    using (var writer = new StreamWriter(output))
+                    {
+                        using (var reader = new StreamReader(file.InputStream))
+                        {
+                            do
+                            {
+                                var inp = reader.ReadLine().Trim();
+                                if (!String.IsNullOrEmpty(inp))
+                                {
+                                    if (inp == "{")
+                                    {
+                                        writer.Write(inp);
+                                    }
+                                    else if (inp == "}")
+                                    {
+                                        writer.Write("},");
+                                    }
+                                    else if (Char.IsUpper(inp, 0))
+                                    {
+                                        writer.Write("\"" + inp.ToLower().Replace(" ", "_") + "\":");
+                                    }
+                                    else if (inp.Contains("="))
+                                    {
+                                        var parts = inp.Split('=');
+                                        writer.Write("\"" + parts[0].Trim().ToLower() + "\":" + parts[1].Trim() + ",");
+                                    }
+                                }
+                            }
+                            while (reader.Peek() != -1);
+                        }
+                    }
+
+                    json = Encoding.UTF8.GetString(output.ToArray());
+                    json = json.Replace(",}", "}");
+                    json = "{" + json.Trim(',') + "}";
+                }
+            }
+            catch
+            {
+                return View("CommandersLogError", null, "Unable to read file.");
+            }
+
+            Dictionary<string, List<string>> saved = new Dictionary<string, List<string>>();
+            List<string> skipped = new List<string>();
+            List<string> failed = new List<string>();
+            
+            if (json != null)
+            {
+                JToken data = null;
+                try
+                {
+                    data = JObject.Parse(json).SelectToken("save_data");
+                }
+                catch
+                {
+                    return View("CommandersLogError", null, "Unable to parse data");
+                }
+
+                var version = Convert.ToInt32(((JValue)data.SelectToken("saveversion")).Value);                
+                if (version != 2)
+                {
+                    return View("CommandersLogError", null, "Incorrect save version. Must be 2.");
+                }
+
+                foreach (var child in data.Children())
+                {
+                    try
+                    {
+                        if (child is JProperty && ((JProperty)child).Value is JObject)
+                        {
+                            var systemName = ((JProperty)child).Name.Replace("_", " ");
+                            using (var session = DB.Instance.GetSession())
+                            {
+                                var solarSystem = session.Query<SolarSystem>()
+                                    .Where(x => x.Name == systemName)
+                                    .FirstOrDefault();
+
+                                if (solarSystem == null)
+                                {
+                                    skipped.Add(Capitalize(systemName));
+                                    continue;
+                                }
+
+                                foreach (var objStation in child)
+                                {
+                                    var stationName = ((JObject)objStation).Properties().First().Name.Replace("_", " ");
+                                    try
+                                    {
+                                        var station = solarSystem.Stations.FirstOrDefault(x => x.Name.Equals(stationName, StringComparison.CurrentCultureIgnoreCase));
+                                        if (station != null)
+                                        {
+                                            var commodities = ((JObject)objStation)
+                                                .Properties()
+                                                .First()
+                                                .Value
+                                                .SelectToken("commodities");
+                                            if (commodities != null)
+                                            {
+                                                //Gather commodities for station
+                                                List<Commodity> stationCommodities = new List<Commodity>();
+                                                foreach (var commodity in commodities)
+                                                {
+                                                    var objCommodity = (JProperty)commodity;
+                                                    var commodityName = objCommodity.Name;
+                                                    CommodityType type = CommodityType.Advanced_Catalysers;
+                                                    if (Enum.TryParse<CommodityType>(commodityName, true, out type))
+                                                    {
+                                                        var status = Convert.ToInt32(((JValue)objCommodity.Value.SelectToken("status")).Value);
+                                                        var price = 0;
+                                                        var tokenPrice = objCommodity.Value.SelectToken("status");
+                                                        if (tokenPrice != null)
+                                                        {
+                                                            int.TryParse(((JValue)tokenPrice).Value.ToString(), out price);
+                                                        }
+                                                        int[] timeArray = null;
+                                                        var tokenTime = objCommodity.Value.SelectToken("modtime");
+                                                        if (tokenTime != null)
+                                                        {
+                                                            timeArray = ((JValue)tokenTime).Value.ToString()
+                                                                .Split(',')
+                                                                .Select(x => int.Parse(x.TrimStart('0').PadLeft(1, '0')))
+                                                                .ToArray();
+                                                        }
+
+                                                        var stationCommodity = new Commodity
+                                                        {
+                                                            Type = type,
+                                                            Price = price
+                                                        };
+                                                        if (timeArray != null)
+                                                        {
+                                                            stationCommodity.Updated = new DateTime(timeArray[0], timeArray[1], timeArray[2], timeArray[3], timeArray[4], 0).ToUniversalTime();
+                                                        }
+
+                                                        switch (status)
+                                                        {
+                                                            case 0:
+                                                                stationCommodity.Supply = CommodityAvailability.High;
+                                                                break;
+                                                            case 1:
+                                                                stationCommodity.Supply = CommodityAvailability.Medium;
+                                                                break;
+                                                            case 2:
+                                                                stationCommodity.Supply = CommodityAvailability.Low;
+                                                                break;
+                                                            case 4:
+                                                                stationCommodity.Demand = CommodityAvailability.Low;
+                                                                break;
+                                                            case 5:
+                                                                stationCommodity.Demand = CommodityAvailability.Medium;
+                                                                break;
+                                                            case 6:
+                                                                stationCommodity.Demand = CommodityAvailability.High;
+                                                                break;
+                                                        }
+
+                                                        stationCommodities.Add(stationCommodity);
+                                                    }
+                                                }
+
+                                                //Update db with commodities
+                                                List<Commodity> removedCommodities = new List<Commodity>();
+                                                foreach (var c in stationCommodities)
+                                                {
+                                                    var existingCommodity = station.Commodities.FirstOrDefault(x => x.Type == c.Type);
+                                                    if (existingCommodity != null && c.Updated >= existingCommodity.Updated)
+                                                    {
+                                                        if (c.Demand == CommodityAvailability.None && c.Supply == CommodityAvailability.None)
+                                                        {
+                                                            removedCommodities.Add(existingCommodity);
+                                                        }
+                                                        else
+                                                        {
+                                                            existingCommodity.Demand = c.Demand;
+                                                            existingCommodity.Supply = c.Supply;
+                                                            existingCommodity.Price = c.Price;
+                                                        }
+                                                    }
+                                                    else if (c.Demand != CommodityAvailability.None || c.Supply != CommodityAvailability.None)
+                                                    {
+                                                        station.Commodities.Add(c);
+                                                    }
+                                                }
+                                                if (removedCommodities.Count > 0)
+                                                {
+                                                    station.Commodities = station.Commodities.Except(removedCommodities).ToList();
+                                                }
+
+                                                if (!saved.ContainsKey(systemName))
+                                                {
+                                                    saved.Add(systemName, new List<string>());
+                                                }
+                                                saved[systemName].Add(stationName);
+                                            }
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        failed.Add(stationName);
+                                    }
+                                }
+                                session.SaveChanges();
+                            }
+                        }
+                    }
+                    catch {
+                        //Failed system
+                    }
+                }
+            }
+
+            ViewBag.Saved = saved;
+            ViewBag.Skipped = skipped;
+            ViewBag.Failed = failed;
+            return View("CommandersLogSuccess");
         }
         #endregion
 

@@ -404,6 +404,8 @@
     <Content Include="Views\Resource\View.cshtml" />
     <Content Include="Views\Data\Import.cshtml" />
     <Content Include="Views\SolarSystem\Market.cshtml" />
+    <Content Include="Views\Data\CommandersLogError.cshtml" />
+    <Content Include="Views\Data\CommandersLogSuccess.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -7,7 +7,7 @@
         <h1>Solar systems</h1>
         <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
     </div>
-    @using (Html.BeginForm("Index", "SolarSystem", FormMethod.Get, new { @class = "form-inline" }))
+    @using (Html.BeginForm("Index", "SolarSystem", FormMethod.Get, new { @class = "form-inline search" }))
     {
         <div class="form-group">
             @Html.TextBox("query", Model.Query.Query ?? "", new { @class = "form-control", placeholder = "Search" })
