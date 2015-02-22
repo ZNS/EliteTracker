@@ -22,10 +22,6 @@ namespace ZNS.EliteTracker.Controllers
         #region Import
         public ActionResult Import()
         {
-            if (!User.IsInRole("administrator"))
-            {
-                return new HttpUnauthorizedResult();
-            }
             return View();
         }
 

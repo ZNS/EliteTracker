@@ -185,6 +185,7 @@
     <Content Include="Content\Js\Controllers\Commander_Edit.js" />
     <Content Include="Content\Js\Controllers\Comment.js" />
     <Content Include="Content\Js\Controllers\Comment_Index.js" />
+    <Content Include="Content\Js\Controllers\Data_Import.js" />
     <Content Include="Content\Js\Controllers\Resource_View.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_Edit.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_View.js" />
@@ -257,6 +258,7 @@
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
     <Compile Include="Models\Indexes\Faction_State.cs" />
+    <Compile Include="Models\Indexes\Influence_Report.cs" />
     <Compile Include="Models\Indexes\SolarSystem_Query.cs" />
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\Views\CommanderViewView.cs" />
