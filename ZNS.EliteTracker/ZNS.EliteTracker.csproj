@@ -202,6 +202,7 @@
     <Content Include="Content\Js\lib\moment.min.js" />
     <Content Include="Content\Js\lib\ng-tags-input.js" />
     <Content Include="Global.asax" />
+    <Content Include="license.xml" />
     <Content Include="tools.js" />
     <Content Include="Web.config" />
   </ItemGroup>
