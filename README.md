@@ -1,4 +1,4 @@
-# EliteTracker
+# Elite Tracker
 Elite Tracker is a group community tool for Elite Dangerous. It is built on ASP.NET MVC and powered by <a href="http://www.ravendb.net">RavenDB</a>. To run this you'll need a RavenDB license. Please contact them for an open source license.
 
 <h2>Features</h2>
