@@ -1,0 +1,46 @@
+﻿@model ZNS.EliteTracker.Models.Documents.TradeRoute
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="TradeView">
+    <div class="page-header">
+        <h1>@Model.Name</h1>
+        <a href="@Url.Action("Edit", new { id = Model.Id })"><span class="fa fa-pencil-square-o"></span></a>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Notes</div>
+        <div class="panel-body">
+            @Html.RenderBBCode(Model.Notes)
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Routes</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Commodity</th>
+                    <th>Distance</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ms in Model.Milestones)
+                {
+                    var stationFrom = ms.From.GetStation();
+                    var stationTo = ms.To.GetStation();
+                    var distance = Math.Round(ms.GetDistance(),1);
+                    var profit = ms.GetProfit(stationFrom, stationTo);
+                    <tr>
+                        <td>@Html.ActionLink(@ms.From.SolarSystem.Name, "View", "SolarSystem", new { id = ms.From.SolarSystem.Id }, null) - @stationFrom.Name (@(stationFrom.Distance)ls)</td>
+                        <td>@Html.ActionLink(@ms.To.SolarSystem.Name, "View", "SolarSystem", new { id = ms.To.SolarSystem.Id }, null) - @stationTo.Name (@(stationTo.Distance)ls)</td>
+                        <td>@ms.Commodity</td>
+                        <td>@(distance > 0 ? distance.ToString() + "ls" : "Unknown")</td>
+                        <td>@(profit > 0 ? profit.ToString() + "cr/ton" : "Unknown")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-﻿@model ZNS.EliteTracker.Models.Views.SolarSystemCommentsView
+﻿@model ZNS.EliteTracker.Models.Views.SolarSystemTradeRoutesView
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -8,9 +8,14 @@
 <ul class="nav nav-tabs">
     <li><a href="@Url.Action("View", new { id = Model.SolarSystem.Id })">Overview</a></li>
     <li><a href="@Url.Action("Distance", new { id = Model.SolarSystem.Id })">Nearby</a></li>
-    <li class="active"><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
+    <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
     <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
     <li><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
-    <li><a href="@Url.Action("TradeRoutes", new { id = Model.SolarSystem.Id })">Trade routes</a></li>
+    <li class="active"><a href="@Url.Action("TradeRoutes", new { id = Model.SolarSystem.Id })">Trade routes</a></li>
 </ul>
-@Html.Partial("Partials/_Comments", Model.Comments)
+<div class="items">
+    @foreach (var route in Model.Routes)
+    {
+        @Html.Partial("Partials/_TradeRouteItem", route)
+    }
+</div>

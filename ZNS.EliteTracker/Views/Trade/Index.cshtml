@@ -1,0 +1,19 @@
+﻿@model ZNS.EliteTracker.Models.Views.TradeIndexView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="TradeIndex">
+    <div class="page-header">
+        <h1>Trade routes</h1>
+        <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
+    </div>
+    <div class="items">
+        @foreach (var route in Model.Routes)
+        {
+            @Html.Partial("Partials/_TradeRouteItem", route)
+        }
+    </div>
+    <div class="clearfix">
+        @Html.Partial("Partials/_Pager", Model.Pager)
+    </div>
+</div>

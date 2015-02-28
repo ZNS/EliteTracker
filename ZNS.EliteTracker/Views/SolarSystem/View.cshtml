@@ -23,6 +23,7 @@
         <li><a href="@Url.Action("Comments", new { id = Model.Id })">Comments</a></li>
         <li><a href="@Url.Action("Tasks", new { id = Model.Id })">Tasks</a></li>
         <li><a href="@Url.Action("Market", new { id = Model.Id })">Market</a></li>
+        <li><a href="@Url.Action("TradeRoutes", new { id = Model.Id })">Trade routes</a></li>
     </ul>
     <ul class="info">
         <li><b>Population</b> <span>@Model.Population <i class="fa @(Model.Population > Model.PopulationPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>

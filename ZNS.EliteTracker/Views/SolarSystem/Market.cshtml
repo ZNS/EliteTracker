@@ -18,6 +18,7 @@
         <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
         <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
         <li class="active"><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
+        <li><a href="@Url.Action("TradeRoutes", new { id = Model.SolarSystem.Id })">Trade routes</a></li>
     </ul>
 
     @if (station != null)
@@ -44,7 +45,8 @@
                     <th>Commodity</th>
                     <th>Supply</th>
                     <th>Demand</th>
-                    <!--<th>Price</th>-->
+                    <th>Price</th>
+                    <th>Age</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,7 +69,8 @@
                         <td>@e.ToString()</td>
                         <td>@Html.EnumDropDown("c__" + ((int)e).ToString() + "_supply", typeof(ZNS.EliteTracker.Models.Documents.CommodityAvailability), new { @class = "form-control" }, null, commodity != null ? (int)commodity.Supply : 0)</td>
                         <td>@Html.EnumDropDown("c__" + ((int)e).ToString() + "_demand", typeof(ZNS.EliteTracker.Models.Documents.CommodityAvailability), new { @class = "form-control" }, null, commodity != null ? (int)commodity.Demand : 0)</td>
-                        <!--<td>@Html.TextBox("c__" + ((int)e).ToString() + "_price", commodity != null ? commodity.Price : 0, new { @class = "form-control" })</td>-->
+                        <td>@Html.TextBox("c__" + ((int)e).ToString() + "_price", commodity != null ? commodity.Price : 0, new { @class = "form-control" })</td>
+                        <td time-ago>@(commodity != null ? commodity.Updated.ToString() : "")</td>
                     </tr>
                 }
             </tbody>

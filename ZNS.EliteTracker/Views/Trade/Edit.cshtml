@@ -1,0 +1,68 @@
+﻿@model ZNS.EliteTracker.Models.Views.TradeEditView
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="TradeEdit" ng-controller="tradeEdit" ng-init="init(@Model.Route.Id)">
+    <div class="panel panel-default">
+        <div class="panel-heading">Info</div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    <label for="Name">Name</label>
+                    @Html.TextBoxFor(x => x.Route.Name, new { @class = "form-control" })
+                </div>
+                if (Model.Route.Id != 0)
+                { 
+                <div class="form-group">
+                    <label for="Notes">Notes</label>
+                    @Html.TextAreaFor(x => x.Route.Notes, new { @class = "form-control", rows = 7, wysibb = "wysibb", wysibb_editor = "1" })
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger pull-right" ng-click="deleteRoute()">Delete</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">Create and add routes</button>
+                }
+            }
+        </div>
+    </div>
+    @if (Model.Route.Id != 0)
+    {
+    <div class="panel panel-default">
+        <div class="panel-heading">Routes</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Commodity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ms in milestones">
+                    <td>
+                        @Html.DropDownList("solarsystem",
+            Model.SolarSystems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+            new { @class = "form-control", ng_model = "ms.From.SolarSystem.Id" })
+                        <select class="form-control" ng-model="ms.From.StationGuid" station-selector></select>
+                    </td>
+                    <td>
+                        @Html.DropDownList("solarsystem",
+            Model.SolarSystems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
+                        new { @class = "form-control", ng_model = "ms.To.SolarSystem.Id" })
+                        <select class="form-control" ng-model="ms.To.StationGuid" station-selector></select>
+                    </td>
+                    <td>@Html.EnumDropDown("commodity", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control", ng_model = "ms.Commodity" })</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttonrow">
+            <button type="button" class="btn btn-primary" ng-click="saveMilestones()">Save routes</button>
+            <button type="button" class="btn btn-default" ng-click="addMilestone()">Add route</button>
+        </div>
+    </div>
+    }
+    <div class="alert fixed" ng-class="{'alert-success':msgStatus=1,'alert-error':msgStatus=2}" ng-show="showMsg">{{msg}}</div>
+</div>

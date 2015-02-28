@@ -335,7 +335,7 @@ namespace ZNS.EliteTracker.Controllers
                                                     {
                                                         var status = Convert.ToInt32(((JValue)objCommodity.Value.SelectToken("status")).Value);
                                                         var price = 0;
-                                                        var tokenPrice = objCommodity.Value.SelectToken("status");
+                                                        var tokenPrice = objCommodity.Value.SelectToken("price");
                                                         if (tokenPrice != null)
                                                         {
                                                             int.TryParse(((JValue)tokenPrice).Value.ToString(), out price);

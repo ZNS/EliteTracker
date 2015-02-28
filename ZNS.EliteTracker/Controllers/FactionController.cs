@@ -57,7 +57,7 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     view.Faction = session.Load<Faction>(id);
                 }
-                view.Systems = session.Query<SolarSystem>().OrderBy(x => x.Name).ToList();
+                view.Systems = session.Query<SolarSystem>().OrderBy(x => x.Name).Take(512).ToList();
             }
             if (!String.IsNullOrEmpty(status))
             {

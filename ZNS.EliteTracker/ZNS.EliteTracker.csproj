@@ -191,7 +191,9 @@
     <Content Include="Content\Js\Controllers\SolarSystem_View.js" />
     <Content Include="Content\Js\Controllers\Task_Edit.js" />
     <Content Include="Content\Js\Controllers\Task_View.js" />
+    <Content Include="Content\Js\Controllers\Trade_Edit.js" />
     <Content Include="Content\Js\Directives\Clock.js" />
+    <Content Include="Content\Js\Directives\StationSelector.js" />
     <Content Include="Content\Js\Directives\TimeAgo.js" />
     <Content Include="Content\Js\Directives\Wysibb.js" />
     <Content Include="Content\Js\lib\angular-chart.js" />
@@ -202,7 +204,6 @@
     <Content Include="Content\Js\lib\moment.min.js" />
     <Content Include="Content\Js\lib\ng-tags-input.js" />
     <Content Include="Global.asax" />
-    <Content Include="license.xml" />
     <Content Include="tools.js" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -221,6 +222,7 @@
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Controllers\SolarSystemController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\TradeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -253,11 +255,14 @@
     <Compile Include="Models\Documents\SolarSystemStatus.cs" />
     <Compile Include="Models\Documents\Station.cs" />
     <Compile Include="Models\Documents\StationEconomy.cs" />
+    <Compile Include="Models\Documents\StationRef.cs" />
     <Compile Include="Models\Documents\StationType.cs" />
     <Compile Include="Models\Documents\Task.cs" />
     <Compile Include="Models\Documents\TaskPriority.cs" />
     <Compile Include="Models\Documents\TaskStatus.cs" />
     <Compile Include="Models\Documents\TaskType.cs" />
+    <Compile Include="Models\Documents\TradeMilestone.cs" />
+    <Compile Include="Models\Documents\TradeRoute.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
     <Compile Include="Models\Indexes\Faction_State.cs" />
     <Compile Include="Models\Indexes\Influence_Report.cs" />
@@ -274,6 +279,9 @@
     <Compile Include="Models\Views\ResourceViewView.cs" />
     <Compile Include="Models\Views\SolarSystemCommentsView.cs" />
     <Compile Include="Models\Views\SolarSystemDistanceView.cs" />
+    <Compile Include="Models\Views\SolarSystemTradeRoutesView.cs" />
+    <Compile Include="Models\Views\TradeEditView.cs" />
+    <Compile Include="Models\Views\TradeIndexView.cs" />
     <Compile Include="Models\Views\SolarSystemIndexView.cs" />
     <Compile Include="Models\Views\SolarSystemMarketView.cs" />
     <Compile Include="Models\Views\SolarSystemTasksView.cs" />
@@ -410,6 +418,11 @@
     <Content Include="Views\SolarSystem\Market.cshtml" />
     <Content Include="Views\Data\CommandersLogError.cshtml" />
     <Content Include="Views\Data\CommandersLogSuccess.cshtml" />
+    <Content Include="Views\Trade\Edit.cshtml" />
+    <Content Include="Views\Trade\View.cshtml" />
+    <Content Include="Views\Trade\Index.cshtml" />
+    <Content Include="Views\Shared\Partials\_TradeRouteItem.cshtml" />
+    <Content Include="Views\SolarSystem\TradeRoutes.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

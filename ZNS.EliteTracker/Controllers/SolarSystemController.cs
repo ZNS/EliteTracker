@@ -197,6 +197,21 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        public ActionResult TradeRoutes(int id)
+        {
+            var view = new SolarSystemTradeRoutesView();
+            using (var session = DB.Instance.GetSession())
+            {
+                view.SolarSystem = session.Load<SolarSystem>(id);
+                view.Routes = session.Query<TradeRoute>()
+                    .Where(x => x.Milestones.Any(m => m.From.SolarSystem.Id == id) || x.Milestones.Any(m => m.To.SolarSystem.Id == id))
+                    .OrderBy(x => x.Name)
+                    .Take(50)
+                    .ToList();
+            }
+            return View(view);
+        }
+
         #region Market
         public ActionResult Market(int id, string guid)
         {

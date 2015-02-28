@@ -1,0 +1,8 @@
+﻿@model ZNS.EliteTracker.Models.Documents.TradeRoute
+@{
+    var ms = Model.Milestones.First();
+    var count = Model.Milestones.Count;
+}
+<div class="route">
+    <h4><a href="@Url.Action("View", "Trade", new { id = Model.Id })">@Model.Name</a> <small>@ms.From.SolarSystem.Name to @ms.To.SolarSystem.Name @(count > 1 ? " and " + (count - 1) + " more" : "")</small></h4>
+</div>
