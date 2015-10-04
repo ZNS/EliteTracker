@@ -14,6 +14,7 @@ namespace ZNS.EliteTracker.Models.Documents
         Civil_Unrest = 5,
         Civil_War = 6,
         War = 7,
-        Outbreak = 8
+        Outbreak = 8,
+        Election = 9
     }
 }

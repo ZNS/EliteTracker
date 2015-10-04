@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Raven.Client;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
+using ZNS.EliteTracker.Models.Indexes;
 using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
@@ -19,12 +20,16 @@ namespace ZNS.EliteTracker.Controllers
             using (var session = DB.Instance.GetSession())
             {
                 RavenQueryStatistics stats = null;
-                var query = session.Query<Faction>()
+                var query = session.Query<Faction_Query.Result, Faction_Query>()
                     .Statistics(out stats)
-                    .OrderBy(x => x.HomeSolarSystem.Name)
+                    .OrderBy(x => x.HomeSystem)
                     .ThenBy(x => x.Name)
                     .Skip(page.Value * 25)
                     .Take(25);
+                if (!String.IsNullOrEmpty(form.Query))
+                {
+                    query = query.Where(x => x.Name == form.Query || x.NamePartial == form.Query);
+                }
                 if (form.Attitude != 0)
                 {
                     var enumAttitude = (FactionAttitude)Enum.Parse(typeof(FactionAttitude), form.Attitude.ToString());
@@ -36,7 +41,7 @@ namespace ZNS.EliteTracker.Controllers
                     query = query.Where(x => x.State == enumState);
                 }
 
-                view.Factions = query.ToList();
+                view.Factions = query.OfType<Faction>().ToList();
                 view.Query = form;
                 view.Pager = new Pager
                 {

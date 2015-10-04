@@ -351,6 +351,15 @@ namespace ZNS.EliteTracker.Controllers
         #endregion
 
         #region Client requests
+        public ActionResult GetSystems()
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var systems = session.Query<SolarSystem_Query.Result, SolarSystem_Query>().Where(x => x.HasCoordinates).OfType<SolarSystem>().Take(512).ToList();
+                return new JsonResult { Data = systems, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+        }
+
         [HttpPost]
         public ActionResult SaveStation(int id, Station station)
         {
@@ -428,6 +437,11 @@ namespace ZNS.EliteTracker.Controllers
                         faction.State = factionStatus.State;
                         faction.PendingStates = factionStatus.PendingStates;
                     }
+                    //Trim zeros from pending states
+                    if (factionStatus.PendingStates != null && factionStatus.PendingStates.Count > 0)
+                    {
+                        factionStatus.PendingStates = factionStatus.PendingStates.Where(x => x != 0).ToList();
+                    }
                 }
                 session.Store(status);
                 session.SaveChanges();
@@ -444,16 +458,29 @@ namespace ZNS.EliteTracker.Controllers
             }                
         }
 
-        public ActionResult GetStatus(int id, DateTime from, DateTime to)
+        public ActionResult GetStatus(int id, int? page)
         {
+            page = page.HasValue ? page.Value : 0;
+            int pageSize = 35;
             using (var session = DB.Instance.GetSession())
             {
-                var status = session.Query<SolarSystemStatus>().Where(x => x.SolarSystem == id && x.Date >= from && x.Date <= to).OrderBy(x => x.Date).ToList();
+                RavenQueryStatistics stats = null;
+                var status = session.Query<SolarSystemStatus>()
+                    .Statistics(out stats)
+                    .Where(x => x.SolarSystem == id)
+                    .OrderByDescending(x => x.Date)
+                    .Skip(page.Value * pageSize)
+                    .Take(pageSize)
+                    .ToList()
+                    .OrderBy(x => x.Date);
+
+                int pageCount = Convert.ToInt32(Math.Ceiling((double)stats.TotalResults / (double)pageSize));
+
                 //Use Newtonsoft for serializing dates
                 return new ContentResult
                 {
                     ContentType = "application/json",
-                    Content = Newtonsoft.Json.JsonConvert.SerializeObject(status)
+                    Content = Newtonsoft.Json.JsonConvert.SerializeObject(new { pageCount = pageCount, result = status })
                 };
             }
         }

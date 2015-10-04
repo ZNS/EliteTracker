@@ -26,7 +26,7 @@ namespace ZNS.EliteTracker.Models
                 DataDirectory = "App_Data/DB",
                 RunInMemory = false,
                 UseEmbeddedHttpServer = true,
-                Configuration = {  Port = 8080 }
+                Configuration = {  Port = 8081 }
             };
 #else
             _Store = new EmbeddableDocumentStore
@@ -40,6 +40,7 @@ namespace ZNS.EliteTracker.Models
             
             //Create indexes
             new SolarSystem_Query().Execute(_Store);
+            new Faction_Query().Execute(_Store);
         }
 
         public IDocumentSession GetSession()

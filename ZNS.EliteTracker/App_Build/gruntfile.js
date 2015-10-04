@@ -9,7 +9,9 @@
                     "bower_components/angular/angular.min.js",
                     "bower_components/moment/min/moment.min.js",
                     "bower_components/chartjs/chart.min.js",
-                    "bower_components/angular-chart.js/dist/angular-chart.js"
+                    "bower_components/angular-chart.js/dist/angular-chart.js",
+                    "bower_components/angular-google-chart/ng-google-chart.js",
+                    "bower_components/checklist-model/checklist-model.js"
                     ],
                 dest: "../Content/Js/lib/",
                 expand: true,

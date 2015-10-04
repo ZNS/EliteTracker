@@ -20,7 +20,7 @@
     @using (Html.BeginForm())
     {
     <div class="panel panel-default">
-        <div class="panel-heading">@Model.Name info</div>
+        <div class="panel-heading clearfix">@Model.Name info <a href="@Url.Action("View", new { id = Model.Id })" class="btn btn-primary btn-sm" style="float:right;">View</a></div>
         <div class="panel-body">
             <div class="form-group">
                 <label for="Name">Name</label>
@@ -60,6 +60,7 @@
                     <th>Name</th>
                     <th>Economy</th>
                     <th>Type</th>
+                    <th>Outfitting</th>
                     <th>Faction</th>
                     <th>Distance</th>
                     <th title="Check if this is the main/controlling station in the system">Is Main</th>
@@ -69,13 +70,14 @@
             <tbody>
                 <tr ng-repeat="station in stations">
                     <td><input type="hidden" ng-model="station.Guid" /><input type="text" class="form-control" ng-model="station.Name" /></td>
-                    <td>
+                    <td width="20%">
                         <tags-input min-tags="1" max-tags="2" add-from-autocomplete-only="true" ng-model="station.EconomyTags" placeholder="Add economy">
                             <auto-complete source="loadEconomies()" min-length="1"></auto-complete>
                         </tags-input>
                     </td>
-                    <td>@Html.EnumDropDown("type", typeof(ZNS.EliteTracker.Models.Documents.StationType), new { @class = "form-control", ng_model = "station.Type" })</td>
-                    <td>@Html.DropDownList("faction", factionSelectList, new { @class = "form-control", ng_model = "station.Faction.Id" })</td>
+                    <td>@Html.EnumDropDown("type", typeof(ZNS.EliteTracker.Models.Documents.StationType), new { @class = "form-control", ng_model = "station.Type", string_int = "string-int" })</td>
+                    <td>@Html.EnumDropDown("outfitting", typeof(ZNS.EliteTracker.Models.Documents.StationOutfitting), new { @class = "form-control", ng_model = "station.Outfitting", string_int = "string-int"})</td>
+                    <td>@Html.DropDownList("faction", factionSelectList, new { @class = "form-control", ng_model = "station.Faction.Id", string_int = "string-int" })</td>
                     <td><input type="text" class="form-control" ng-model="station.Distance" /></td>
                     <td><input type="checkbox" class="form-control" ng-model="station.Main" /></td>
                     <td><a href="javascript://remove" ng-click="removeStation($index)"><span class="fa fa-remove"></span></a></td>

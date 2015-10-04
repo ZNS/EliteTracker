@@ -12,6 +12,7 @@ namespace ZNS.EliteTracker.Models.Views
         {
             public int State { get; set; }
             public int Attitude { get; set; }
+            public string Query { get; set; }
         }
 
         public List<Faction> Factions { get; set; }

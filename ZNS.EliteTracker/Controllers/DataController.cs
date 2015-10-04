@@ -177,6 +177,7 @@ namespace ZNS.EliteTracker.Controllers
         #endregion
 
         #region Restore
+        [AllowAnonymous]
         public async Task<ActionResult> Restore(string key, string path)
         {
             if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
@@ -449,6 +450,54 @@ namespace ZNS.EliteTracker.Controllers
             ViewBag.Skipped = skipped;
             ViewBag.Failed = failed;
             return View("CommandersLogSuccess");
+        }
+        #endregion
+
+        #region restore json files
+        [AllowAnonymous]
+        public ActionResult RestoreJson(string key, string path)
+        {
+            if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
+            {
+                return new JsonResult { Data = new { status = "unauthorized" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+            if (ConfigurationManager.AppSettings["installation"] == null || ConfigurationManager.AppSettings["installation"] != "1")
+            {
+                return new JsonResult { Data = new { status = "need to be in installation mode" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+
+            RestoreDocs<Commander>(Server.MapPath("/app_data/backup/commander.json"));
+            RestoreDocs<Faction>(Server.MapPath("/app_data/backup/faction.json"));
+            RestoreDocs<SolarSystem>(Server.MapPath("/app_data/backup/solarsystem.json"));
+            RestoreDocs<ZNS.EliteTracker.Models.Documents.Task>(Server.MapPath("/app_data/backup/task.json"));
+            RestoreDocs<Resource>(Server.MapPath("/app_data/backup/resource.json"));
+            RestoreDocs<SolarSystemStatus>(Server.MapPath("/app_data/backup/solarsystemstatus.json"));
+            RestoreDocs<Comment>(Server.MapPath("/app_data/backup/comment.json"));
+            RestoreDocs<TradeRoute>(Server.MapPath("/app_data/backup/traderoute.json"));
+
+            return new JsonResult { Data = new { status = "ok" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        private void RestoreDocs<T>(string filePath)
+        {
+            if (!System.IO.File.Exists(filePath))
+            {
+                return;
+            }
+
+            using (var reader = new StreamReader(System.IO.File.OpenRead(filePath)))
+            {
+                string json = null;
+                while ((json = reader.ReadLine()) != null)
+                {
+                    var doc = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+                    using (var session = DB.Instance.GetSession())
+                    {
+                        session.Store(doc);
+                        session.SaveChanges();
+                    }
+                }
+            }
         }
         #endregion
 

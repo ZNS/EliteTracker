@@ -10,12 +10,15 @@
     @using (Html.BeginForm("Index", "Faction", FormMethod.Get, new { @class = "form-inline search" }))
     {
         <div class="form-group">
+            @Html.TextBox("query", Model.Query.Query ?? "", new { @class = "form-control", placeholder = "Search" })
+        </div>
+        <div class="form-group">
             @Html.EnumDropDown("attitude", typeof(ZNS.EliteTracker.Models.Documents.FactionAttitude), new { @class = "form-control" }, "All attitudes", Model.Query.Attitude)
         </div>
         <div class="form-group">
             @Html.EnumDropDown("state", typeof(ZNS.EliteTracker.Models.Documents.FactionState), new { @class = "form-control" }, "All states", Model.Query.State)
         </div>
-        <button type="submit" class="btn btn-primary">Filter</button>
+        <button type="submit" class="btn btn-primary">Search</button>
     }
     <div class="items">
         @foreach (var faction in Model.Factions)

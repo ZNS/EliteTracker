@@ -45,16 +45,16 @@
                     <td>
                         @Html.DropDownList("solarsystem",
             Model.SolarSystems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-            new { @class = "form-control", ng_model = "ms.From.SolarSystem.Id" })
+ new { @class = "form-control", ng_model = "ms.From.SolarSystem.Id", string_int = "string-int" })
                         <select class="form-control" ng-model="ms.From.StationGuid" station-selector></select>
                     </td>
                     <td>
                         @Html.DropDownList("solarsystem",
             Model.SolarSystems.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }),
-                        new { @class = "form-control", ng_model = "ms.To.SolarSystem.Id" })
+             new { @class = "form-control", ng_model = "ms.To.SolarSystem.Id", string_int = "string-int" })
                         <select class="form-control" ng-model="ms.To.StationGuid" station-selector></select>
                     </td>
-                    <td>@Html.EnumDropDown("commodity", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control", ng_model = "ms.Commodity" })</td>
+                    <td>@Html.EnumDropDown("commodity", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control", ng_model = "ms.Commodity", string_int = "string-int" })</td>
                 </tr>
             </tbody>
         </table>

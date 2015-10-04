@@ -21,6 +21,8 @@ namespace ZNS.EliteTracker.Models.Documents
         Federal_Dropship = 12,
         Orca = 13,
         Python = 14,
-        Anaconda = 15
+        Anaconda = 15,
+        Vulture = 16,
+        Fer_De_Lance = 17
     }
 }

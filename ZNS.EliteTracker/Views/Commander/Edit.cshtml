@@ -52,9 +52,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="ship in ships">
-                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipModel), new { @class = "form-control", ng_model = "ship.Model" })</td>
+                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipModel), new { @class = "form-control", ng_model = "ship.Model", string_int = "string-int" })</td>
                     <td><input type="text" name="name" class="form-control" ng-model="ship.Name" /></td>
-                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipFittings), new { @class = "form-control", ng_model = "ship.Fittings" })</td>
+                    <td>@Html.EnumDropDown("model", typeof(ZNS.EliteTracker.Models.Documents.ShipFittings), new { @class = "form-control", ng_model = "ship.Fittings", string_int = "string-int" })</td>
                     <td><a href="javascript://remove" ng-click="removeShip($index)"><span class="fa fa-remove"></span></a></td>
                 </tr>
             </tbody>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
@@ -42,6 +43,19 @@ namespace ZNS.EliteTracker.Models.Extensions
                 items.Insert(0, new SelectListItem() { Text = defaultItem, Value = "0", Selected = selectedValue == 0 });
             }
             return html.DropDownList(name, items, htmlAttributes);
+        }
+
+        public static IHtmlString EnumNgCheckboxList(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null)
+        {
+            var values = Enum.GetValues(tEnum).Cast<Object>();
+            StringBuilder sbHtml = new StringBuilder();
+            foreach (var val in values)
+            {
+                var attrs = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
+                attrs.Add("value", (int)val);
+                sbHtml.Append("<label>" + html.CheckBox(name, false, attrs).ToHtmlString() + " " + Enum.GetName(tEnum, val) + "</label>");
+            }
+            return new HtmlString(sbHtml.ToString());
         }
 
         public static IHtmlString RenderBBCode(this System.Web.Mvc.HtmlHelper html, string bbcode)

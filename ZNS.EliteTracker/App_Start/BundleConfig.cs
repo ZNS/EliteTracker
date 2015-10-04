@@ -24,10 +24,10 @@ namespace ZNS.EliteTracker
             js.Include("~/Content/Js/lib/jquery.min.js");
             js.Include("~/Content/Js/lib/angular.min.js");
             js.Include("~/Content/Js/lib/moment.min.js");
-            js.Include("~/Content/Js/lib/chart.min.js");
-            js.Include("~/Content/Js/lib/angular-chart.js");
             js.Include("~/Content/Js/lib/jquery.wysibb.min.js");
             js.Include("~/Content/Js/lib/ng-tags-input.js");
+            js.Include("~/Content/Js/lib/ng-google-chart.js");
+            js.Include("~/Content/Js/lib/checklist-model.js");
             js.Include("~/Content/Js/app.js");
             js.IncludeDirectory("~/Content/Js/Controllers", "*.js");
             js.IncludeDirectory("~/Content/Js/Directives", "*.js");
