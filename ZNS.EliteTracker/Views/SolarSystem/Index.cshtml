@@ -24,6 +24,15 @@
         <div class="form-group">
             @Html.EnumDropDown("demand", typeof(ZNS.EliteTracker.Models.Documents.CommodityType), new { @class = "form-control" }, "Unspecific demand", Model.Query.Demand)
         </div>
+        <div class="form-group">
+            @Html.EnumDropDown("powerplayleader", typeof(ZNS.EliteTracker.Models.Documents.PowerPlayLeader), new { @class = "form-control" }, "Unspecified power", Model.Query.PowerPlayLeader)
+        </div>
+        <div class="form-group">
+            @Html.EnumDropDown("powerplaystate", typeof(ZNS.EliteTracker.Models.Documents.PowerPlayState), new { @class = "form-control" }, "Unspecific state", Model.Query.PowerPlayState)
+        </div>
+        <div class="form-group">
+            @Html.EnumDropDown("outfitting", typeof(ZNS.EliteTracker.Models.Documents.StationOutfitting), new { @class = "form-control" }, "All outfitters", Model.Query.Outfitting)
+        </div>
         <button type="submit" class="btn btn-primary">Search</button>
     }
     <div class="items">

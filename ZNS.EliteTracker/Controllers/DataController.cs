@@ -56,9 +56,9 @@ namespace ZNS.EliteTracker.Controllers
                             population = !String.IsNullOrEmpty(cols[5]) ? long.Parse(cols[5].Replace(".", "").Replace(",", "")) : 0;
                         }
                         catch { }
-                        int coordX = !String.IsNullOrEmpty(cols[11]) ? int.Parse(cols[11]) : 0;
-                        int coordY = !String.IsNullOrEmpty(cols[12]) ? int.Parse(cols[12]) : 0;
-                        int coordZ = !String.IsNullOrEmpty(cols[13]) ? int.Parse(cols[13]) : 0;
+                        float coordX = !String.IsNullOrEmpty(cols[11]) ? float.Parse(cols[11], NumberFormatInfo.InvariantInfo) : 0f;
+                        float coordY = !String.IsNullOrEmpty(cols[12]) ? float.Parse(cols[12], NumberFormatInfo.InvariantInfo) : 0f;
+                        float coordZ = !String.IsNullOrEmpty(cols[13]) ? float.Parse(cols[13], NumberFormatInfo.InvariantInfo) : 0f;
 
                         if (String.IsNullOrEmpty(systemName))
                             continue;

@@ -5,8 +5,11 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using CodeKicker.BBCode;
 using ZNS.EliteTracker.Models.Documents;
+using ZNS.EliteTracker.Models.Extensions;
 
 namespace ZNS.EliteTracker.Models.Extensions
 {
@@ -31,13 +34,21 @@ namespace ZNS.EliteTracker.Models.Extensions
 
         public static IHtmlString EnumDropDown(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null, string defaultItem = null, int selectedValue = 0)
         {
+            var items = new List<SelectListItem>();
             var values = Enum.GetValues(tEnum).Cast<Object>();
-            var items = values.Select(x => new SelectListItem
+            foreach (var val in values)
             {
-                Text = Enum.GetName(tEnum, x),
-                Value = ((int)x).ToString(),
-                Selected = selectedValue == (int)x
-            }).ToList();
+                var text = Enum.GetName(tEnum, val);
+                var enumAttr = tEnum.GetMember(val.ToString()).First().GetCustomAttribute<DisplayAttribute>();
+                if (enumAttr != null)
+                    text = enumAttr.GetName();
+                items.Add(new SelectListItem
+                {
+                    Text = text,
+                    Value = ((int)val).ToString(),
+                    Selected = selectedValue == (int)val
+                });
+            }
             if (!String.IsNullOrEmpty(defaultItem))
             {
                 items.Insert(0, new SelectListItem() { Text = defaultItem, Value = "0", Selected = selectedValue == 0 });
@@ -51,9 +62,13 @@ namespace ZNS.EliteTracker.Models.Extensions
             StringBuilder sbHtml = new StringBuilder();
             foreach (var val in values)
             {
+                var text = Enum.GetName(tEnum, val);
+                var enumAttr = tEnum.GetMember(val.ToString()).First().GetCustomAttribute<DisplayAttribute>();
+                if (enumAttr != null)
+                    text = enumAttr.GetName();
                 var attrs = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
                 attrs.Add("value", (int)val);
-                sbHtml.Append("<label>" + html.CheckBox(name, false, attrs).ToHtmlString() + " " + Enum.GetName(tEnum, val) + "</label>");
+                sbHtml.Append("<label>" + html.CheckBox(name, false, attrs).ToHtmlString() + " " + text + "</label>");
             }
             return new HtmlString(sbHtml.ToString());
         }

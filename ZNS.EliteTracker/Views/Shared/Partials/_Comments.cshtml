@@ -1,5 +1,6 @@
 ﻿@model ZNS.EliteTracker.Models.Views.CommentView
 <div ng-controller="comment" ng-init="documentId='@Model.DocumentId'">
+    <a name="commentform"></a>
     <div class="form-group">
         <label for="body">Awaiting input...</label>
         <textarea id="commentBody" name="body" class="form-control" rows="4" wysibb></textarea>
@@ -9,13 +10,20 @@
     <div id="comments">
         @foreach (var comment in Model.Comments)
         {
-            <div class="comment media">
+            <div class="comment media" id="comment_@comment.Id">
                 <div class="media-left">
                     <img src="/commander/image/@(comment.Commander.Id)" alt="" width="50" />
                 </div>
                 <div class="media-body">
-                    <span><b><a href="@Url.Action("View", "Commander", new { id = comment.Commander.Id })">@comment.Commander.Name</a></b> <i time-ago>@comment.Date</i></span>
-                    <p>@Html.RenderBBCode(comment.Body)</p>
+                    <span>
+                        <b><a href="@Url.Action("View", "Commander", new { id = comment.Commander.Id })">@comment.Commander.Name</a></b>
+                        <i time-ago>@comment.Date</i>
+                        @if (comment.Commander.Id == ViewBag.CommanderId)
+                        {
+                            <a href="#commentform"><span class="fa fa-edit" ng-click="edit(@comment.Id)"></span></a>
+                        }
+                    </span>
+                    <p class="comment-body">@Html.RenderBBCode(comment.Body)</p>
                 </div>
             </div>
         }

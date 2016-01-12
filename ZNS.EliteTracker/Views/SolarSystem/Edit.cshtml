@@ -35,6 +35,14 @@
                 @Html.EnumDropDownListFor(x => x.Security, new { @class = "form-control" })
             </div>
             <div class="form-group">
+                <label for="PowerPlayLeader">Power play leader</label>
+                @Html.EnumDropDownListFor(x => x.PowerPlayLeader, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="PowerPlayLeader">Power play state</label>
+                @Html.EnumDropDownListFor(x => x.PowerPlayState, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
                 <label for="Population">Coordinate X</label>
                 @Html.TextBoxFor(x => x.Coordinates.X, new { @class = "form-control" })
             </div>

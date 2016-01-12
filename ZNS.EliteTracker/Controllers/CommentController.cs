@@ -40,19 +40,44 @@ namespace ZNS.EliteTracker.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult Post(Comment comment)
+        public ActionResult Get(int id)
         {
-            comment.Date = DateTime.UtcNow;
-            comment.Commander = new CommanderRef
-            {
-                Id = CommanderId,
-                Name = User.Identity.Name
-            };
+            Comment comment = null;
             using (var session = DB.Instance.GetSession())
             {
-                session.Store(comment);
-                session.SaveChanges();
+                comment = session.Load<Comment>(id);
+            }
+            return new JsonResult { Data = comment, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        [HttpPost]
+        public ActionResult Post(int? id, Comment comment)
+        {
+            if (!id.HasValue)
+            {
+                comment.Date = DateTime.UtcNow;
+                comment.Commander = new CommanderRef
+                {
+                    Id = CommanderId,
+                    Name = User.Identity.Name
+                };
+                using (var session = DB.Instance.GetSession())
+                {
+                    session.Store(comment);
+                    session.SaveChanges();
+                }
+            }
+            else
+            {
+                using (var session = DB.Instance.GetSession())
+                {
+                    var c = session.Load<Comment>(id.Value);
+                    if (c.Commander.Id == CommanderId)
+                    {
+                        c.Body = comment.Body;
+                    }
+                    session.SaveChanges();
+                }
             }
             return new JsonResult { Data = new { status = "ok" } };
         }

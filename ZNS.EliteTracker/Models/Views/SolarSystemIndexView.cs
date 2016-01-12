@@ -16,6 +16,9 @@ namespace ZNS.EliteTracker.Models.Views
             public int Status { get; set; }
             public int Supply { get; set; }
             public int Demand { get; set; }
+            public int PowerPlayState { get; set; }
+            public int PowerPlayLeader { get; set; }
+            public int Outfitting { get; set; }
         }
 
         public List<SolarSystem> SolarSystems { get; set; }

@@ -45,6 +45,22 @@ namespace ZNS.EliteTracker.Controllers
                     var enumDemand = (CommodityType)Enum.Parse(typeof(CommodityType), form.Demand.ToString());
                     query = query.Where(x => x.Demand.Any(s => s == enumDemand));
                 }
+                if (form.PowerPlayLeader != 0)
+                {
+                    var enumLeader = (PowerPlayLeader)Enum.Parse(typeof(PowerPlayLeader), form.PowerPlayLeader.ToString());
+                    query = query.Where(x => x.PowerPlayLeader == enumLeader);
+                }
+                if (form.PowerPlayState != 0)
+                {
+                    var enumState = (PowerPlayState)Enum.Parse(typeof(PowerPlayState), form.PowerPlayState.ToString());
+                    query = query.Where(x => x.PowerPlayState == enumState);
+                }
+                if (form.Outfitting != 0)
+                {
+                    var enumOutfitting = (StationOutfitting)Enum.Parse(typeof(StationOutfitting), form.Outfitting.ToString());
+                    query = query.Where(x => x.Outfitting.Any(s => s == enumOutfitting));
+                }
+
                 switch (form.Status)
                 {
                     case 1:
@@ -331,6 +347,8 @@ namespace ZNS.EliteTracker.Controllers
                     system.Population = input.Population;
                     system.SecurityPrev = system.Security;
                     system.Security = input.Security;
+                    system.PowerPlayLeader = input.PowerPlayLeader;
+                    system.PowerPlayState = input.PowerPlayState;
                     if (system.Coordinates == null)
                     {
                         system.Coordinates = new Coordinate();

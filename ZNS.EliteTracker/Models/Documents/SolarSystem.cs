@@ -16,7 +16,8 @@ namespace ZNS.EliteTracker.Models.Documents
         public List<Station> Stations { get; set; }
         public List<CommanderRef> ActiveCommanders { get; set; }
         public List<FactionRef> Factions { get; set; }
-
+        public PowerPlayLeader PowerPlayLeader { get; set; }
+        public PowerPlayState PowerPlayState { get; set; }
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public double Distance { get; set; }
@@ -69,6 +70,8 @@ namespace ZNS.EliteTracker.Models.Documents
             Stations = new List<Station>();
             ActiveCommanders = new List<CommanderRef>();
             Factions = new List<FactionRef>();
+            PowerPlayLeader = Documents.PowerPlayLeader.None;
+            PowerPlayState = Documents.PowerPlayState.None;
         }
 
         public override bool Equals(object obj)

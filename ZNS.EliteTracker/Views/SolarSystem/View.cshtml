@@ -28,6 +28,8 @@
     <ul class="info">
         <li><b>Population</b> <span>@Model.Population <i class="fa @(Model.Population > Model.PopulationPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
         <li><b>Security</b> <span>@Model.Security <i class="fa @((int)Model.Security > (int)Model.SecurityPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
+        <li><b>Power play leader</b> <span>@Model.PowerPlayLeader.GetDisplayName()</span></li>
+        <li><b>Power play state</b> <span>@Model.PowerPlayState.GetDisplayName()</span></li>
     </ul>
     <div class="panel panel-default chart-panel">
         <div class="panel-heading">

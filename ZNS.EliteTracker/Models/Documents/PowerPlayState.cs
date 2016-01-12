@@ -6,13 +6,12 @@ using System.Web;
 
 namespace ZNS.EliteTracker.Models.Documents
 {
-    public enum StationType
+    public enum PowerPlayState
     {
-        Coriolis = 1,
-        Orbis = 2,
-        Ocellus = 3,
-        Outpost = 4,
-        [Display(Name = "Planetary Outpost")]
-        PlanetaryOutpost = 5
+        None = 1,
+        [Display(Name = "Control System")]
+        ControlSystem = 2,
+        Exploited = 3,
+        Expansion = 4
     }
 }

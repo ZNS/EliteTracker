@@ -31,14 +31,18 @@
                     var stationFrom = ms.From.GetStation();
                     var stationTo = ms.To.GetStation();
                     var distance = Math.Round(ms.GetDistance(),1);
-                    var profit = ms.GetProfit(stationFrom, stationTo);
-                    <tr>
-                        <td>@Html.ActionLink(@ms.From.SolarSystem.Name, "View", "SolarSystem", new { id = ms.From.SolarSystem.Id }, null) - @stationFrom.Name (@(stationFrom.Distance)ls)</td>
-                        <td>@Html.ActionLink(@ms.To.SolarSystem.Name, "View", "SolarSystem", new { id = ms.To.SolarSystem.Id }, null) - @stationTo.Name (@(stationTo.Distance)ls)</td>
-                        <td>@ms.Commodity</td>
-                        <td>@(distance > 0 ? distance.ToString() + "ls" : "Unknown")</td>
-                        <td>@(profit > 0 ? profit.ToString() + "cr/ton" : "Unknown")</td>
-                    </tr>
+                    int profit = 0;
+                    if (stationFrom != null && stationTo != null)
+                    {
+                        profit = ms.GetProfit(stationFrom, stationTo);
+                        <tr>
+                            <td>@Html.ActionLink(@ms.From.SolarSystem.Name, "View", "SolarSystem", new { id = ms.From.SolarSystem.Id }, null) - @stationFrom.Name (@(stationFrom.Distance)ls)</td>
+                            <td>@Html.ActionLink(@ms.To.SolarSystem.Name, "View", "SolarSystem", new { id = ms.To.SolarSystem.Id }, null) - @stationTo.Name (@(stationTo.Distance)ls)</td>
+                            <td>@ms.Commodity</td>
+                            <td>@(distance > 0 ? distance.ToString() + "ls" : "Unknown")</td>
+                            <td>@(profit > 0 ? profit.ToString() + "cr/ton" : "Unknown")</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

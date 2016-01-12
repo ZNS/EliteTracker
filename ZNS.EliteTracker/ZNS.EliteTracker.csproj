@@ -250,7 +250,9 @@
     <Compile Include="Models\Documents\FactionRef.cs" />
     <Compile Include="Models\Documents\FactionStatus.cs" />
     <Compile Include="Models\Documents\ICommentable.cs" />
+    <Compile Include="Models\Documents\PowerPlayLeader.cs" />
     <Compile Include="Models\Documents\Power.cs" />
+    <Compile Include="Models\Documents\PowerPlayState.cs" />
     <Compile Include="Models\Documents\Resource.cs" />
     <Compile Include="Models\Documents\ResourceEdit.cs" />
     <Compile Include="Models\Documents\Ship.cs" />
@@ -272,6 +274,7 @@
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Documents\TradeMilestone.cs" />
     <Compile Include="Models\Documents\TradeRoute.cs" />
+    <Compile Include="Models\Extensions\EnumExtensions.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
     <Compile Include="Models\Indexes\Faction_Query.cs" />
     <Compile Include="Models\Indexes\Faction_State.cs" />

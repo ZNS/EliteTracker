@@ -23,6 +23,21 @@ namespace ZNS.EliteTracker.Models.Documents
         Python = 14,
         Anaconda = 15,
         Vulture = 16,
-        Fer_De_Lance = 17
+        Fer_De_Lance = 17,
+        ASP_Scout = 18,
+        Cobra_MKIV = 19,
+        Diamondback_Explorer = 20,
+        Diamondback_Scout = 21,
+        Federal_Assault_Ship = 22,
+        Federal_Corvette = 23,
+        Federal_Gunship = 24,
+        Imperial_Courier = 25,
+        Imperial_Cutter = 26,
+        Imperial_Eagle = 27,
+        Keelback = 28,
+        Viper_MKIV = 29,
+        Beluga_Liner = 30,
+        Dolphin = 31,
+        Panter_Clipper = 32
     }
 }
