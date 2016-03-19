@@ -336,12 +336,14 @@ namespace ZNS.EliteTracker.Controllers
 
                 if (!id.HasValue)
                 {
+                    input.Updated = DateTime.UtcNow;
                     session.Store(input);
                     session.SaveChanges();
                 }
                 else
                 {
                     var system = session.Load<SolarSystem>(id);
+                    system.Updated = DateTime.UtcNow;
                     system.Name = input.Name;
                     system.PopulationPrev = system.Population;
                     system.Population = input.Population;
@@ -554,6 +556,50 @@ namespace ZNS.EliteTracker.Controllers
             return new JsonResult { Data = new { status = "ok" } };
         }
 
+        public ActionResult GetMapData()
+        {
+            dynamic mapdata = new {
+                categories = new
+                {
+                    Attitude =  new Dictionary<string, dynamic>()
+                    {
+                        { "1", new { name = "Ally", color = "009900" } },
+                        { "2", new  { name = "Friendly", color = "009999" } },
+                        { "4", new { name = "Hostile", color = "990000" } },
+                        { "3", new { name = "Neutral", color = "ffffff" } },
+                        { "0", new { name = "Other", color = "999999" } }
+                    }
+                },
+                systems = new List<dynamic>()
+            };
+
+            using (var session = DB.Instance.GetSession())
+            {
+                var result = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
+                    .Where(x => x.HasCoordinates)
+                    .OrderBy(x => x.Name)
+                    .Take(1024)
+                    .OfType<SolarSystem>()
+                    .ToList();
+
+                foreach (var sys in result)
+                {
+                    mapdata.systems.Add(new
+                    {
+                        name = sys.Name,
+                        coords = new
+                        {
+                            x = sys.Coordinates.X,
+                            y = sys.Coordinates.Y,
+                            z = sys.Coordinates.Z
+                        },
+                        cat = new List<int> { (int)sys.Attitude }
+                    });
+                }
+            }
+
+            return new JsonResult { Data = mapdata, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
         #endregion
     }
 }

@@ -9,8 +9,7 @@ namespace ZNS.EliteTracker.Models.Documents
     public enum PowerPlayState
     {
         None = 1,
-        [Display(Name = "Control System")]
-        ControlSystem = 2,
+        Control = 2,
         Exploited = 3,
         Expansion = 4
     }

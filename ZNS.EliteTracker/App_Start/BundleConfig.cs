@@ -16,6 +16,7 @@ namespace ZNS.EliteTracker
             css.Include("~/Content/Css/Bootstrap/bootstrap.less");
             css.Include("~/Content/Css/Fontawesome/css/font-awesome.css");
             css.IncludeDirectory("~/Content/Css/Plugins", "*.css");
+            css.Include("~/Content/ed3d/css/styles.css");
             css.IncludeDirectory("~/Content/Css", "*.less");
             css.Orderer = new NullOrderer();
             bundles.Add(css);

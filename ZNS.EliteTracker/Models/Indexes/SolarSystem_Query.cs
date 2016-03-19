@@ -43,8 +43,10 @@ namespace ZNS.EliteTracker.Models.Indexes
                                  Outfitting = system.Stations.Select(x => x.Outfitting).Distinct()
                              };
 
-            Indexes.Add(x => x.NamePartial, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);
+            Indexes.Add(x => x.Name, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);
+            Analyzers.Add(x => x.Name, "KeywordAnalyzer");
 
+            Indexes.Add(x => x.NamePartial, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);
             Analyzers.Add(x => x.NamePartial, "Xemio.RavenDB.NGramAnalyzer.NGramAnalyzer,Xemio.RavenDB.NGramAnalyzer");
         }
     }

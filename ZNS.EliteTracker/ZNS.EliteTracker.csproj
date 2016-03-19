@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -179,6 +180,48 @@
     <Content Include="Content\Css\Plugins\ng-tags-input.bootstrap.css" />
     <Content Include="Content\Css\Plugins\ng-tags-input.base.css" />
     <Content Include="Content\Css\Plugins\wbbtheme.css" />
+    <Content Include="Content\ed3d\css\styles.css" />
+    <Content Include="Content\ed3d\js\components\action.class.js" />
+    <Content Include="Content\ed3d\js\components\galaxy.class.js" />
+    <Content Include="Content\ed3d\js\components\grid.class.js" />
+    <Content Include="Content\ed3d\js\components\hud.class.js" />
+    <Content Include="Content\ed3d\js\components\icon.class.js" />
+    <Content Include="Content\ed3d\js\components\route.class.js" />
+    <Content Include="Content\ed3d\js\components\system.class.js" />
+    <Content Include="Content\ed3d\js\ed3dmap.js" />
+    <Content Include="Content\ed3d\js\ed3dmap.min.js" />
+    <Content Include="Content\ed3d\textures\heightmap2.jpg" />
+    <Content Include="Content\ed3d\textures\heightmap7.jpg" />
+    <Content Include="Content\ed3d\textures\lensflare\flare.png" />
+    <Content Include="Content\ed3d\textures\lensflare\flare2.png" />
+    <Content Include="Content\ed3d\textures\lensflare\flare3.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare0.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare1.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare2.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare3.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare_white.png" />
+    <Content Include="Content\ed3d\textures\lensflare\lensflare_white2.png" />
+    <Content Include="Content\ed3d\textures\lensflare\star_grey.png" />
+    <Content Include="Content\ed3d\textures\lensflare\star_grey2.png" />
+    <Content Include="Content\ed3d\textures\lensflare\star_yellow.png" />
+    <Content Include="Content\ed3d\vendor\three-js\CSS3DRenderer.js" />
+    <Content Include="Content\ed3d\vendor\three-js\FontUtils.js" />
+    <Content Include="Content\ed3d\vendor\three-js\helvetiker_regular.typeface.js" />
+    <Content Include="Content\ed3d\vendor\three-js\OrbitControls.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\AdaptiveToneMappingPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\BloomPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\BokehPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\EffectComposer.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\MaskPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\RenderPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\postprocessing\ShaderPass.js" />
+    <Content Include="Content\ed3d\vendor\three-js\Projector.js" />
+    <Content Include="Content\ed3d\vendor\three-js\RaytracingRenderer.js" />
+    <Content Include="Content\ed3d\vendor\three-js\ShaderMaterial.js" />
+    <Content Include="Content\ed3d\vendor\three-js\shaders\BokehShader.js" />
+    <Content Include="Content\ed3d\vendor\three-js\shaders\CopyShader.js" />
+    <Content Include="Content\ed3d\vendor\three-js\TextGeometry.js" />
+    <Content Include="Content\ed3d\vendor\tween-js\Tween.js" />
     <Content Include="Content\Images\commander_placeholder.png" />
     <Content Include="Content\Images\dark_mosaic.png" />
     <Content Include="Content\Js\app.js" />
@@ -186,6 +229,7 @@
     <Content Include="Content\Js\Controllers\Comment.js" />
     <Content Include="Content\Js\Controllers\Comment_Index.js" />
     <Content Include="Content\Js\Controllers\Data_Import.js" />
+    <Content Include="Content\Js\Controllers\Map_View.js" />
     <Content Include="Content\Js\Controllers\Resource_View.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_Edit.js" />
     <Content Include="Content\Js\Controllers\SolarSystem_View.js" />
@@ -210,6 +254,8 @@
     <Content Include="OrbitControls.js" />
     <Content Include="tools.js" />
     <None Include="Properties\PublishProfiles\goldfinger.pubxml" />
+    <Content Include="Views\DB\Index.cshtml" />
+    <Content Include="Views\Map\Index.cshtml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
@@ -223,10 +269,12 @@
     <Compile Include="Controllers\CommanderController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\DataController.cs" />
+    <Compile Include="Controllers\DBController.cs" />
     <Compile Include="Controllers\ExeController.cs" />
     <Compile Include="Controllers\FactionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JobController.cs" />
+    <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Controllers\SolarSystemController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
@@ -274,16 +322,22 @@
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Documents\TradeMilestone.cs" />
     <Compile Include="Models\Documents\TradeRoute.cs" />
+    <Compile Include="Models\EDDB\EDDBSystem.cs" />
+    <Compile Include="Models\EDDB\EDSMSystem.cs" />
     <Compile Include="Models\Extensions\EnumExtensions.cs" />
     <Compile Include="Models\Extensions\HtmlExtensions.cs" />
+    <Compile Include="Models\Indexes\EDDB_Query.cs" />
     <Compile Include="Models\Indexes\Faction_Query.cs" />
     <Compile Include="Models\Indexes\Faction_State.cs" />
     <Compile Include="Models\Indexes\Influence_Report.cs" />
     <Compile Include="Models\Indexes\SolarSystem_Query.cs" />
+    <Compile Include="Models\Json\JsonStreamReader.cs" />
+    <Compile Include="Models\Json\TimestampJsonConverter.cs" />
     <Compile Include="Models\Password.cs" />
     <Compile Include="Models\Views\CommanderViewView.cs" />
     <Compile Include="Models\Views\CommentIndexView.cs" />
     <Compile Include="Models\Views\CommentView.cs" />
+    <Compile Include="Models\Views\DBIndexView.cs" />
     <Compile Include="Models\Views\FactionEditView.cs" />
     <Compile Include="Models\Views\HomeView.cs" />
     <Compile Include="Models\Views\LoginView.cs" />

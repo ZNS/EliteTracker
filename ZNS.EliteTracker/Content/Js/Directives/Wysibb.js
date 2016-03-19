@@ -5,7 +5,7 @@
         link: function (scope, $element, attrs) {
             var buttons = "bold,italic,underline,strike,|,fontsize,|,img,video,link,|,quote";
             if (attrs.wysibbEditor && attrs.wysibbEditor == "1") {
-                buttons = "bold,italic,underline,strike,|,fontsize,|,bullist,numlist,|,img,video,link,|,quote";
+                buttons = "bold,italic,underline,strike,|,fontsize,|,bullist,numlist,|,img,video,link,|,quote,|,table";
             }
             $element.wysibb({
                 buttons: buttons

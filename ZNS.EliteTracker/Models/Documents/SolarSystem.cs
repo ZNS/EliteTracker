@@ -18,6 +18,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public List<FactionRef> Factions { get; set; }
         public PowerPlayLeader PowerPlayLeader { get; set; }
         public PowerPlayState PowerPlayState { get; set; }
+        public DateTime Updated { get; set; }
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public double Distance { get; set; }
@@ -72,6 +73,7 @@ namespace ZNS.EliteTracker.Models.Documents
             Factions = new List<FactionRef>();
             PowerPlayLeader = Documents.PowerPlayLeader.None;
             PowerPlayState = Documents.PowerPlayState.None;
+            Updated = DateTime.MinValue;
         }
 
         public override bool Equals(object obj)

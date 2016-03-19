@@ -7,6 +7,10 @@
         <h1>Solar systems</h1>
         <a href="@Url.Action("edit")"><span class="fa fa-plus-square-o"></span></a>
     </div>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="@Url.Action("Index")">Tracked systems</a></li>
+        <li><a href="@Url.Action("Index", "DB")">EDDB systems</a></li>
+    </ul>
     @using (Html.BeginForm("Index", "SolarSystem", FormMethod.Get, new { @class = "form-inline search" }))
     {
         <div class="form-group">

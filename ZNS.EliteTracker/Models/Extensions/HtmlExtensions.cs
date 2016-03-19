@@ -29,7 +29,10 @@ namespace ZNS.EliteTracker.Models.Extensions
             new BBTag("video", "<div class=\"embed-responsive embed-responsive-16by9\"><iframe class=\"embed-responsive-item\" width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/${content}\" frameborder=\"0\" allowfullscreen></iframe></div>", "", false, true),
             new BBTag("hr", "<hr/>", "", true, false),
             new BBTag("list", "<ul>", "</ul>", true, true, (content => content.Replace("<br/>", ""))),
-            new BBTag("*", "<li>", "</li>")
+            new BBTag("*", "<li>", "</li>"),
+            new BBTag("table", "<table>", "</table>"),
+            new BBTag("tr", "<tr>", "</tr>"),
+            new BBTag("td", "<td>", "</td>")
         });
 
         public static IHtmlString EnumDropDown(this System.Web.Mvc.HtmlHelper html, string name, Type tEnum, object htmlAttributes = null, string defaultItem = null, int selectedValue = 0)

@@ -12,6 +12,6 @@
         "fontawesome": "4.3.0",
         "moment": "~2.9",
         "angular-google-chart": "~0.1",
-        "checklist-model":  "~0"
+        "checklist-model": "~0"
     }
 }

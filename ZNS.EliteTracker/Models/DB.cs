@@ -41,6 +41,7 @@ namespace ZNS.EliteTracker.Models
             //Create indexes
             new SolarSystem_Query().Execute(_Store);
             new Faction_Query().Execute(_Store);
+            new EDDB_Query().Execute(_Store);
         }
 
         public IDocumentSession GetSession()

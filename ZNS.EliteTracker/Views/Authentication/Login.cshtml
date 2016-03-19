@@ -13,7 +13,7 @@
     <div class="login">
         <div>
             <h4>Elite tracker</h4>  
-            @using (Html.BeginForm("Login", "Authentication", FormMethod.Post, new { @class = "form-horizontal" }))
+            @using (Html.BeginForm("Login", "Authentication", new { returnUrl = Request.QueryString["ReturnUrl"] }, FormMethod.Post, new { @class = "form-horizontal" }))
             {
                 <div class="form-group">
                     <label for="CommanderName" class="col-sm-4 control-label">CMDR:</label>
