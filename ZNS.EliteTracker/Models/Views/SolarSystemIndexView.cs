@@ -19,6 +19,8 @@ namespace ZNS.EliteTracker.Models.Views
             public int PowerPlayState { get; set; }
             public int PowerPlayLeader { get; set; }
             public int Outfitting { get; set; }
+            public int FactionId { get; set; }
+            public string FactionName { get; set; }
         }
 
         public List<SolarSystem> SolarSystems { get; set; }

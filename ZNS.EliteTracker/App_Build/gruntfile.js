@@ -11,9 +11,18 @@
                     "bower_components/chartjs/chart.min.js",
                     "bower_components/angular-chart.js/dist/angular-chart.js",
                     "bower_components/angular-google-chart/ng-google-chart.js",
-                    "bower_components/checklist-model/checklist-model.js"
+                    "bower_components/checklist-model/checklist-model.js",
+                    "bower_components/easyautocomplete/dist/jquery.easy-autocomplete.min.js"
                     ],
                 dest: "../Content/Js/lib/",
+                expand: true,
+                flatten: true
+            },
+            css: {
+                src: [
+                    "bower_components/easyautocomplete/dist/easy-autocomplete.css"
+                ],
+                dest: "../Content/Css/Plugins",
                 expand: true,
                 flatten: true
             },

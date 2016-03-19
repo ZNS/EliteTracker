@@ -60,6 +60,10 @@ namespace ZNS.EliteTracker.Controllers
                     var enumOutfitting = (StationOutfitting)Enum.Parse(typeof(StationOutfitting), form.Outfitting.ToString());
                     query = query.Where(x => x.Outfitting.Any(s => s == enumOutfitting));
                 }
+                if (form.FactionId != 0)
+                {
+                    query = query.Where(x => x.Factions.Any(f => f == form.FactionId));
+                }
 
                 switch (form.Status)
                 {
@@ -561,30 +565,46 @@ namespace ZNS.EliteTracker.Controllers
             dynamic mapdata = new {
                 categories = new
                 {
+                    OnOff = new Dictionary<string, dynamic>
+                    {
+                        { "on", new { name= "On" } }
+                    },
                     Attitude =  new Dictionary<string, dynamic>()
                     {
-                        { "1", new { name = "Ally", color = "009900" } },
-                        { "2", new  { name = "Friendly", color = "009999" } },
-                        { "4", new { name = "Hostile", color = "990000" } },
-                        { "3", new { name = "Neutral", color = "ffffff" } },
-                        { "0", new { name = "Other", color = "999999" } }
-                    }
+                        { "a1", new { name = "Ally", color = "009900" } },
+                        { "a2", new  { name = "Friendly", color = "009999" } },
+                        { "a4", new { name = "Hostile", color = "990000" } },
+                        { "a3", new { name = "Neutral", color = "ffffff" } },
+                        { "a0", new { name = "Other", color = "999999" } }
+                    },
+                    Faction = new Dictionary<string, dynamic>()
                 },
                 systems = new List<dynamic>()
             };
 
             using (var session = DB.Instance.GetSession())
             {
+                var factions = session.Query<Faction_Query.Result, Faction_Query>()
+                    .Where(x => x.Attitude == FactionAttitude.Ally)
+                    .Take(1024)
+                    .OfType<Faction>()
+                    .ToList()
+                    .OrderBy(x => x.Name);
+                foreach (var faction in factions)
+                {
+                    mapdata.categories.Faction.Add("f" + faction.Id.ToString(), new { name = faction.Name });
+                }
+
                 var result = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
                     .Where(x => x.HasCoordinates)
-                    .OrderBy(x => x.Name)
                     .Take(1024)
+                    .OrderBy(x => x.Name)
                     .OfType<SolarSystem>()
                     .ToList();
 
                 foreach (var sys in result)
                 {
-                    mapdata.systems.Add(new
+                    var data = new
                     {
                         name = sys.Name,
                         coords = new
@@ -593,8 +613,10 @@ namespace ZNS.EliteTracker.Controllers
                             y = sys.Coordinates.Y,
                             z = sys.Coordinates.Z
                         },
-                        cat = new List<int> { (int)sys.Attitude }
-                    });
+                        cat = new List<string> { "a" + (int)sys.Attitude, "on" },
+                    };
+                    data.cat.AddRange(sys.Factions.Where(x => mapdata.categories.Faction.ContainsKey("f" + x.Id)).Select(x => "f" + x.Id));
+                    mapdata.systems.Add(data);
                 }
             }
 

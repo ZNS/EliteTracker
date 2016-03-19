@@ -15,6 +15,7 @@ namespace ZNS.EliteTracker.Models.Indexes
             public string NamePartial { get; set; }
             public IEnumerable<StationEconomy> Economies { get; set; }
             public FactionAttitude Attitude { get; set; }
+            public IEnumerable<int> Factions { get; set; }
             public bool HasAlly { get; set; }
             public bool HasCoordinates { get; set; }
             public List<CommodityType> Supply { get; set; }
@@ -33,6 +34,7 @@ namespace ZNS.EliteTracker.Models.Indexes
                                  Name = system.Name,
                                  NamePartial = system.Name,
                                  Economies = system.Stations.SelectMany(x => x.Economy).Distinct(),
+                                 Factions = system.Factions.Select(x => x.Id),
                                  Attitude = system.Stations.Where(x => x.Main).Select(x => x.Faction.Attitude).FirstOrDefault(),
                                  HasAlly = system.Factions.Any(x => x.Attitude == FactionAttitude.Ally),
                                  HasCoordinates = (system.Coordinates != null && !(system.Coordinates.X == 0 && system.Coordinates.Y == 0 && system.Coordinates.Z == 0)),

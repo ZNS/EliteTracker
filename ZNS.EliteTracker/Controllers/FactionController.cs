@@ -155,5 +155,21 @@ namespace ZNS.EliteTracker.Controllers
             }
             return RedirectToAction("Edit", new { id = faction.Id, status = "saved" });
         }
+
+        public ActionResult Typeahead(string q)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                var result = session.Query<Faction_Query.Result, Faction_Query>()
+                    .Where(x => x.Name == q || x.NamePartial == q)
+                    .OrderBy(x => x.Name)
+                    .Take(20)
+                    .OfType<Faction>()
+                    .ToList()
+                    .Select(x => new { id = x.Id, name = x.Name });
+
+                return new JsonResult { Data = result, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            }
+        }
     }
 }

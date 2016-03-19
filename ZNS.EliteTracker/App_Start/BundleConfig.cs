@@ -29,6 +29,7 @@ namespace ZNS.EliteTracker
             js.Include("~/Content/Js/lib/ng-tags-input.js");
             js.Include("~/Content/Js/lib/ng-google-chart.js");
             js.Include("~/Content/Js/lib/checklist-model.js");
+            js.Include("~/Content/Js/lib/jquery.easy-autocomplete.min.js");
             js.Include("~/Content/Js/app.js");
             js.IncludeDirectory("~/Content/Js/Controllers", "*.js");
             js.IncludeDirectory("~/Content/Js/Directives", "*.js");
