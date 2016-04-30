@@ -135,7 +135,7 @@ namespace ZNS.EliteTracker.Controllers
                 }
                 try
                 {
-                    wc.DownloadFile(new Uri("http://www.edsm.net/api-v1/systems/?showid=1"), edsm_systems_path + ".tmp");
+                    wc.DownloadFile(new Uri("http://www.edsm.net/dump/systemsWithCoordinates.json"), edsm_systems_path + ".tmp");
                     System.IO.File.Delete(edsm_systems_path);
                     System.IO.File.Move(edsm_systems_path + ".tmp", edsm_systems_path);
                 }

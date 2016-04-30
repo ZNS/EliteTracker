@@ -76,12 +76,15 @@ namespace ZNS.EliteTracker.Controllers
                     if (form.Ly.HasValue && form.Ly.Value > 0)
                     {
                         var origin = view.Result.FirstOrDefault(x => x.Name.Equals(form.System, StringComparison.InvariantCultureIgnoreCase));
-                        foreach (var system in view.Result)
+                        if (origin != null)
                         {
-                            system.Distance = Math.Round(Math.Sqrt(
-                            Math.Pow(((double)system.X - (double)origin.X), 2) +
-                            Math.Pow(((double)system.Y - (double)origin.Y), 2) +
-                            Math.Pow(((double)system.Z - (double)origin.Z), 2)), 2);
+                            foreach (var system in view.Result.Where(x => x.X.HasValue && x.Y.HasValue && x.Z.HasValue))
+                            {
+                                system.Distance = Math.Round(Math.Sqrt(
+                                Math.Pow(((double)system.X - (double)origin.X), 2) +
+                                Math.Pow(((double)system.Y - (double)origin.Y), 2) +
+                                Math.Pow(((double)system.Z - (double)origin.Z), 2)), 2);
+                            }
                         }
 
                         //Sort
