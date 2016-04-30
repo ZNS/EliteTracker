@@ -7,6 +7,7 @@ using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 using ZNS.EliteTracker.Models.Views;
 using ZNS.EliteTracker.Models.Extensions;
+using Raven.Client.Linq;
 
 namespace ZNS.EliteTracker.Controllers
 {
@@ -32,6 +33,19 @@ namespace ZNS.EliteTracker.Controllers
                 if (!User.IsAnyRole("user,administrator"))
                 {
                     view.Comments.RemoveAll(x => x.Entity == null || x.Entity is Task);
+                }
+
+                if (CommanderSystemGroups.Count > 0)
+                {
+                    var remove = new List<Comment>();
+                    foreach (var comment in view.Comments)
+                    {
+                        if (comment.Entity is SolarSystem && !((SolarSystem)comment.Entity).Groups.Any(g => CommanderSystemGroups.Contains(g)))
+                        {
+                            remove.Add(comment);
+                        }
+                    }
+                    view.Comments.RemoveAll(x => remove.Contains(x));
                 }
 
                 //Systems

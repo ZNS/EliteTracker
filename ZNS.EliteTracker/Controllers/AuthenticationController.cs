@@ -73,7 +73,8 @@ namespace ZNS.EliteTracker.Controllers
                     var identity = new ClaimsIdentity(
                         new[] {
                         new Claim(ClaimTypes.Name, commander.Name),
-                        new Claim(ClaimTypes.NameIdentifier, commander.Id.ToString())
+                        new Claim(ClaimTypes.NameIdentifier, commander.Id.ToString()),
+                        new Claim(ClaimTypes.GroupSid, String.Join(",", commander.SolarSystemGroups))
                         },
                         DefaultAuthenticationTypes.ApplicationCookie,
                         ClaimTypes.Name, ClaimTypes.Role);

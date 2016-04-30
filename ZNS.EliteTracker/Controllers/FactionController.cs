@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Raven.Client;
+using Raven.Client.Linq;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 using ZNS.EliteTracker.Models.Indexes;
@@ -26,6 +27,10 @@ namespace ZNS.EliteTracker.Controllers
                     .ThenBy(x => x.Name)
                     .Skip(page.Value * 25)
                     .Take(25);
+                if (CommanderSystemGroups.Count > 0)
+                {
+                    query = query.Where(x => x.SystemGroups.In(CommanderSystemGroups));
+                }
                 if (!String.IsNullOrEmpty(form.Query))
                 {
                     query = query.Where(x => x.Name == form.Query || x.NamePartial == form.Query);
@@ -62,7 +67,12 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     view.Faction = session.Load<Faction>(id);
                 }
-                view.Systems = session.Query<SolarSystem>().OrderBy(x => x.Name).Take(512).ToList();
+                var systemsQuery = session.Query<SolarSystem_Query.Result, SolarSystem_Query>();
+                if (CommanderSystemGroups.Count > 0)
+                {
+                    systemsQuery = systemsQuery.Where(x => x.Groups.In(CommanderSystemGroups));
+                }
+                view.Systems = systemsQuery.OrderBy(x => x.Name).OfType<SolarSystem>().Take(512).ToList();
             }
             if (!String.IsNullOrEmpty(status))
             {

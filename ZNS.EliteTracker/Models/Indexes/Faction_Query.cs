@@ -16,6 +16,7 @@ namespace ZNS.EliteTracker.Models.Indexes
             public string HomeSystem { get; set; }
             public FactionAttitude Attitude { get; set; }
             public FactionState State { get; set; }
+            public List<int> SystemGroups { get; set; }
         }
 
         public Faction_Query()
@@ -27,7 +28,8 @@ namespace ZNS.EliteTracker.Models.Indexes
                                   NamePartial = faction.Name,
                                   HomeSystem = faction.HomeSolarSystem.Name,
                                   Attitude = faction.Attitude,
-                                  State = faction.State
+                                  State = faction.State,
+                                  SystemGroups = faction.SolarSystems.SelectMany(x => LoadDocument<SolarSystem>("SolarSystems/" + x.Id).Groups).Distinct()
                               };
 
             Indexes.Add(x => x.Name, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);

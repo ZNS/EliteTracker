@@ -1,6 +1,8 @@
 ﻿@model ZNS.EliteTracker.Models.Documents.Commander
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var groups = (List<ZNS.EliteTracker.Models.Documents.SolarSystemGroup>)ViewBag.SourceGroups;
+    var groupsSelectList = groups.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
 }
 <!-- HACKS -->
 <script type="text/javascript">
@@ -45,6 +47,10 @@
                 new SelectListItem { Text = "Administrator", Value = "administrator", Selected = Model.Roles.Contains("administrator") }
             },
             new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="SolarSystemGroups">System groups (Leave empty to allow all)</label>
+        @Html.ListBoxFor(x => x.SolarSystemGroups, groupsSelectList, new { @class = "form-control" })
     </div>
     <div class="checkbox">
         <label>

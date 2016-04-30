@@ -33,6 +33,15 @@
         <li><b>Security</b> <span>@Model.Security <i class="fa @((int)Model.Security > (int)Model.SecurityPrev ? new HtmlString("fa-angle-up") : new HtmlString("fa-angle-down"))"></i></span></li>
         <li><b>Power play leader</b> <span>@Model.PowerPlayLeader.GetDisplayName()</span></li>
         <li><b>Power play state</b> <span>@Model.PowerPlayState.GetDisplayName()</span></li>
+        @if (Model.GroupIncludes != null && Model.GroupIncludes.Count > 0)
+        {
+        <li>
+            <b>Groups</b>
+            <span>
+                @String.Join(",", Model.GroupIncludes.OrderBy(x => x.Name).Select(x => x.Name))
+            </span>
+        </li>
+        }
     </ul>
     <div class="panel panel-default chart-panel">
         <div class="panel-heading">

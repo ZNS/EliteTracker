@@ -20,6 +20,9 @@ namespace ZNS.EliteTracker.Models.Documents
         public PowerPlayState PowerPlayState { get; set; }
         public DateTime Updated { get; set; }
         public List<int> Groups { get; set; }
+
+        [Raven.Imports.Newtonsoft.Json.JsonIgnore]
+        public List<SolarSystemGroup> GroupIncludes { get; set; }
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public double Distance { get; set; }

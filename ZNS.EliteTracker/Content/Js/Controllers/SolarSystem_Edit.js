@@ -8,24 +8,26 @@
     //Load stations
     $scope.init = function (id) {
         $scope.systemId = id;
-        $http({ method: 'GET', url: '/solarsystem/getstations/' + $scope.systemId })
-        .success(function (data) {
-            $scope.stations = data;
-            //Fix economy
-            $scope.loadEconomies().then(function (result) {
-                angular.forEach($scope.stations, function (s) {
-                    s.EconomyTags = [];
-                    angular.forEach(s.Economy, function (i) {
-                        angular.forEach(result.data, function (tag) {
-                            if (i == tag.value) {
-                                s.EconomyTags.push(tag);
-                                return false;
-                            }
+        if (id !== 0) {
+            $http({ method: 'GET', url: '/solarsystem/getstations/' + $scope.systemId })
+            .success(function (data) {
+                $scope.stations = data;
+                //Fix economy
+                $scope.loadEconomies().then(function (result) {
+                    angular.forEach($scope.stations, function (s) {
+                        s.EconomyTags = [];
+                        angular.forEach(s.Economy, function (i) {
+                            angular.forEach(result.data, function (tag) {
+                                if (i == tag.value) {
+                                    s.EconomyTags.push(tag);
+                                    return false;
+                                }
+                            });
                         });
                     });
                 });
             });
-        });
+        }
     }
 
     $scope.eddb = function () {

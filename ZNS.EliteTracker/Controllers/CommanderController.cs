@@ -62,6 +62,7 @@ namespace ZNS.EliteTracker.Controllers
         {            
             using (var session = DB.Instance.GetSession())
             {
+                ViewBag.SourceGroups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
                 if (id.HasValue)
                 {
                     return View(session.Load<Commander>(id));
@@ -74,11 +75,6 @@ namespace ZNS.EliteTracker.Controllers
         [HttpPost]
         public ActionResult Manage(int? id, FormCollection form)
         {
-            if (!@User.IsInRole("administrator"))
-            {
-                return new HttpUnauthorizedResult("I'm sorry, " + User.Identity.Name + ". I'm afraid I can't do that. ");
-            }
-
             var commander = new Commander();
             using (var session = DB.Instance.GetSession())
             {
@@ -91,6 +87,11 @@ namespace ZNS.EliteTracker.Controllers
                 commander.Roles.Clear();
                 commander.Roles.Add(form["Role"]);
                 commander.Enabled = form["Enabled"].Split(',').Contains("true");
+                commander.SolarSystemGroups.Clear();
+                if (!String.IsNullOrEmpty(form["SolarSystemGroups"]))
+                {
+                    commander.SolarSystemGroups = form["SolarSystemGroups"].Split(new char[] { ',', }, StringSplitOptions.RemoveEmptyEntries).Select(x => int.Parse(x)).ToList();
+                }
                 
                 var password = form["pwd"].Trim();
                 if (!String.IsNullOrEmpty(password))

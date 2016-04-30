@@ -14,10 +14,10 @@ using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
-    [Authorize(Roles = "administrator,user")]
     public class DBController : Controller
     {
         // GET: DB
+        [Authorize(Roles = "administrator,user")]
         public ActionResult Index(DBIndexView.Form form)
         {
             var view = new DBIndexView();
@@ -92,6 +92,7 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        [Authorize(Roles = "administrator")]
         public ActionResult GetMostValuable(string system)
         {
             List<dynamic> result = new List<dynamic>();

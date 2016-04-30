@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Raven.Client;
+using Raven.Client.Linq;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 using ZNS.EliteTracker.Models.Indexes;
@@ -68,6 +69,10 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     query = query.Where(x => x.Groups.Any(g => g == form.Group));
                 }
+                else if (CommanderSystemGroups.Count > 0)
+                {
+                    query = query.Where(x => x.Groups.In(CommanderSystemGroups));
+                }
 
                 switch (form.Status)
                 {
@@ -107,6 +112,10 @@ namespace ZNS.EliteTracker.Controllers
 
                 //Groups
                 var groups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
+                if (CommanderSystemGroups.Count > 0)
+                {
+                    groups.RemoveAll(x => !CommanderSystemGroups.Contains(x.Id));
+                }
                 groups.Insert(0, new SolarSystemGroup { Id = 0, Name = "All" });
                 view.Groups = new SelectList(groups, "Id", "Name", form.Group);
 
@@ -120,7 +129,20 @@ namespace ZNS.EliteTracker.Controllers
             ViewBag.Factions = new List<Faction>();
             using (var session = DB.Instance.GetSession())
             {
-                system = session.Load<SolarSystem>(id);
+                system = session
+                    .Include<SolarSystem, SolarSystemGroup>(x => x.Groups)
+                    .Load<SolarSystem>(id);
+
+                if (system.Groups != null && system.Groups.Count > 0)
+                {
+                    system.GroupIncludes = session.Load<SolarSystemGroup>(system.Groups.Select(x => "SolarSystemGroups/" + x)).ToList();
+                }
+
+                if (CommanderSystemGroups.Count > 0 && !system.Groups.Any(g => CommanderSystemGroups.Contains(g)))
+                {
+                    return new HttpUnauthorizedResult();
+                }
+
                 ViewBag.Factions = session.Query<Faction>().Where(x => x.SolarSystems.Any(s => s.Id == id)).ToList();
             }
             return View(system);
@@ -321,10 +343,16 @@ namespace ZNS.EliteTracker.Controllers
         public ActionResult Edit(int? id)
         {
             SolarSystem system = new SolarSystem();
-            ViewBag.Factions = new List<Faction>();
+            ViewBag.SourceFactions = new List<Faction>();
             using (var session = DB.Instance.GetSession())
             {
-                ViewBag.SourceGroups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
+                var groups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
+                if (CommanderSystemGroups.Count > 0)
+                {
+                    groups.RemoveAll(x => !CommanderSystemGroups.Contains(x.Id));
+                }
+                ViewBag.SourceGroups = groups;
+
                 if (id.HasValue)
                 {
                     system = session.Load<SolarSystem>(id.Value);
@@ -349,6 +377,12 @@ namespace ZNS.EliteTracker.Controllers
                     {
                         return RedirectToAction("Edit", new { status = "Solar system already exists" });
                     }
+                }
+
+                //Group validation
+                if (CommanderSystemGroups.Count > 0 && (input.Groups.Count == 0 || input.Groups.All(x => x == 0)))
+                {
+                    return RedirectToAction("Edit", new { status = "You must select a group" });
                 }
 
                 if (!id.HasValue)
