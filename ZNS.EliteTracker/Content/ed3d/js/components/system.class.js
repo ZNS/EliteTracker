@@ -25,14 +25,16 @@ var System = {
     var y = parseInt(val.coords.y);
     var z = -parseInt(val.coords.z); //-- Revert Z coord
 
-    //-- Particle for far view far
+    //--------------------------------------------------------------------------
+    //-- Particle for near and far view
+
     var colors = [];
     if(this.particleGeo !== null) {
 
       //-- If system with info already registered, concat datas
       var idSys = x+'_'+y+'_'+z;
       if(val.infos != undefined && this.particleInfos[idSys]) {
-        var indexParticle = this.particleInfos[idSys]
+        var indexParticle = this.particleInfos[idSys];
         this.particleGeo.vertices[indexParticle].infos += val.infos;
         if(val.cat != undefined) Ed3d.addObjToCategories(indexParticle,val.cat);
         return;
@@ -45,16 +47,18 @@ var System = {
       if(val.cat != undefined && val.cat[0] != undefined && Ed3d.colors[val.cat[0]] != undefined) {
         this.particleColor[this.count] = Ed3d.colors[val.cat[0]];
       } else {
-        this.particleColor[this.count] = new THREE.Color('#eeeeee');
+        this.particleColor[this.count] = new THREE.Color(Ed3d.systemColor);
       }
 
       //-- If system got some categories, add it to cat list and save his main color
+
       if(val.cat != undefined) {
         Ed3d.addObjToCategories(this.count,val.cat);
         particle.color = this.particleColor[this.count];
       }
 
       //-- Attach name and set point as clickable
+
       particle.clickable = true;
       particle.visible = true;
       particle.name = val.name;
@@ -68,6 +72,20 @@ var System = {
       this.count++;
     }
 
+    //--------------------------------------------------------------------------
+    //-- Check if we have to add coords for a route
+
+    if(Route.active == true) {
+
+      if(Route.systems[val.name] != undefined) {
+        Route.systems[val.name] = [x,y,z]
+      }
+
+    }
+
+    //--------------------------------------------------------------------------
+    //-- Build a sphere if needed
+
     if(withSolid) {
 
       //-- Add glow sprite from first cat color if defined, else take white glow
@@ -80,6 +98,7 @@ var System = {
       scene.add(sprite); // this centers the glow at the mesh
 
       //-- Sphere
+
       var geometry = new THREE.SphereGeometry(2, 10, 10);
 
       var sphere = new THREE.Mesh(geometry, Ed3d.material.white);

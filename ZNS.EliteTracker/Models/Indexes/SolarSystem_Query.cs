@@ -23,6 +23,7 @@ namespace ZNS.EliteTracker.Models.Indexes
             public PowerPlayLeader PowerPlayLeader { get; set; }
             public PowerPlayState PowerPlayState { get; set; }
             public IEnumerable<StationOutfitting> Outfitting { get; set; }
+            public List<int> Groups { get; set; }
         };
 
         public SolarSystem_Query()
@@ -42,7 +43,8 @@ namespace ZNS.EliteTracker.Models.Indexes
                                  Demand = system.Stations.SelectMany(x => x.Commodities).Where(x => x.Demand != CommodityAvailability.None).Select(x => x.Type).Distinct(),
                                  PowerPlayLeader = system.PowerPlayLeader,
                                  PowerPlayState = system.PowerPlayState,
-                                 Outfitting = system.Stations.Select(x => x.Outfitting).Distinct()
+                                 Outfitting = system.Stations.Select(x => x.Outfitting).Distinct(),
+                                 Groups = system.Groups
                              };
 
             Indexes.Add(x => x.Name, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);

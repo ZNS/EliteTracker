@@ -10,6 +10,7 @@ using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
+    [Authorize(Roles ="user,administrator")]
     public class TaskController : BaseController
     {
         public ActionResult Index(int? page, TaskIndexView.Form form)

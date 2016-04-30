@@ -1,0 +1,25 @@
+﻿@model List<ZNS.EliteTracker.Models.Documents.SolarSystemGroup>
+@{
+    ViewBag.Title = "Solar system groups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="SolarSystemGroup">
+    <div class="page-header">
+        <h1>Solar system groups</h1>
+        <a href="@Url.Action("group")"><span class="fa fa-plus-square-o"></span></a>
+    </div>
+    <ul class="nav nav-tabs">
+        <li><a href="@Url.Action("Index")">Tracked systems</a></li>
+        <li class="active"><a href="@Url.Action("Groups")">Groups</a></li>
+        <li><a href="@Url.Action("Index", "DB")">EDDB systems</a></li>
+    </ul>
+    <div class="items">
+        @foreach (var group in Model)
+        {
+            <div class="group">
+                <h4><a href="@Url.Action("Group", new { id = group.Id })">@group.Name</a></h4>
+            </div>
+        }
+    </div>
+</div>

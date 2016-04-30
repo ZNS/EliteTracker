@@ -19,6 +19,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public PowerPlayLeader PowerPlayLeader { get; set; }
         public PowerPlayState PowerPlayState { get; set; }
         public DateTime Updated { get; set; }
+        public List<int> Groups { get; set; }
         
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]
         public double Distance { get; set; }
@@ -74,6 +75,7 @@ namespace ZNS.EliteTracker.Models.Documents
             PowerPlayLeader = Documents.PowerPlayLeader.None;
             PowerPlayState = Documents.PowerPlayState.None;
             Updated = DateTime.MinValue;
+            Groups = new List<int>();
         }
 
         public override bool Equals(object obj)

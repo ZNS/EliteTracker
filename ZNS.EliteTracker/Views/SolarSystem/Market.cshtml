@@ -16,9 +16,12 @@
         <li><a href="@Url.Action("View", new { id = Model.SolarSystem.Id })">Overview</a></li>
         <li><a href="@Url.Action("Distance", new { id = Model.SolarSystem.Id })">Nearby</a></li>
         <li><a href="@Url.Action("Comments", new { id = Model.SolarSystem.Id })">Comments</a></li>
+        @if (User.IsAnyRole("user,administrator"))
+        {
         <li><a href="@Url.Action("Tasks", new { id = Model.SolarSystem.Id })">Tasks</a></li>
-        <li class="active"><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
         <li><a href="@Url.Action("TradeRoutes", new { id = Model.SolarSystem.Id })">Trade routes</a></li>
+        }
+        <li class="active"><a href="@Url.Action("Market", new { id = Model.SolarSystem.Id })">Market</a></li>
     </ul>
 
     @if (station != null)

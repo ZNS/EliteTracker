@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ZNS.EliteTracker.Models;
 using ZNS.EliteTracker.Models.Documents;
 using ZNS.EliteTracker.Models.Views;
+using ZNS.EliteTracker.Models.Extensions;
 
 namespace ZNS.EliteTracker.Controllers
 {
@@ -26,6 +27,11 @@ namespace ZNS.EliteTracker.Controllers
                 foreach (var comment in view.Comments)
                 {
                     comment.Entity = session.Load<ICommentable>(comment.DocumentId);
+                }
+
+                if (!User.IsAnyRole("user,administrator"))
+                {
+                    view.Comments.RemoveAll(x => x.Entity == null || x.Entity is Task);
                 }
 
                 //Systems

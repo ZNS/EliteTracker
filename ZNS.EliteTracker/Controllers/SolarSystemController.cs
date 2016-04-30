@@ -64,6 +64,10 @@ namespace ZNS.EliteTracker.Controllers
                 {
                     query = query.Where(x => x.Factions.Any(f => f == form.FactionId));
                 }
+                if (form.Group != 0)
+                {
+                    query = query.Where(x => x.Groups.Any(g => g == form.Group));
+                }
 
                 switch (form.Status)
                 {
@@ -100,6 +104,12 @@ namespace ZNS.EliteTracker.Controllers
                     new SelectListItem { Text = "Not hostile", Value = "3", Selected = form.Status == 3 },
                     new SelectListItem { Text = "Allied faction not in control", Value = "4", Selected = form.Status == 4 }
                 };
+
+                //Groups
+                var groups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
+                groups.Insert(0, new SolarSystemGroup { Id = 0, Name = "All" });
+                view.Groups = new SelectList(groups, "Id", "Name", form.Group);
+
                 return View(view); 
             }
         }
@@ -145,6 +155,7 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        [Authorize(Roles = "user,administrator")]
         public ActionResult Tasks(int id, int? page)
         {
             page = page ?? 0;
@@ -217,6 +228,7 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        [Authorize(Roles = "user,administrator")]
         public ActionResult TradeRoutes(int id)
         {
             var view = new SolarSystemTradeRoutesView();
@@ -311,11 +323,12 @@ namespace ZNS.EliteTracker.Controllers
             SolarSystem system = new SolarSystem();
             ViewBag.Factions = new List<Faction>();
             using (var session = DB.Instance.GetSession())
-            {                
+            {
+                ViewBag.SourceGroups = session.Query<SolarSystemGroup>().OrderBy(x => x.Name).ToList();
                 if (id.HasValue)
                 {
                     system = session.Load<SolarSystem>(id.Value);
-                    ViewBag.Factions = session.Query<Faction>().Where(x => x.SolarSystems.Any(s => s.Id == id.Value)).ToList();
+                    ViewBag.SourceFactions = session.Query<Faction>().Where(x => x.SolarSystems.Any(s => s.Id == id.Value)).ToList();
                 }                
             }
             return View(system);
@@ -341,6 +354,10 @@ namespace ZNS.EliteTracker.Controllers
                 if (!id.HasValue)
                 {
                     input.Updated = DateTime.UtcNow;
+                    if (input.Groups.All(x => x == 0))
+                    {
+                        input.Groups = null;
+                    }
                     session.Store(input);
                     session.SaveChanges();
                 }
@@ -359,6 +376,14 @@ namespace ZNS.EliteTracker.Controllers
                     {
                         system.Coordinates = new Coordinate();
                     }
+                    if (input.Groups.All(x => x == 0))
+                    {
+                        input.Groups = null;
+                    }
+                    else
+                    {
+                        system.Groups = input.Groups;
+                    }
                     system.Coordinates.X = input.Coordinates.X;
                     system.Coordinates.Y = input.Coordinates.Y;
                     system.Coordinates.Z = input.Coordinates.Z;
@@ -371,6 +396,56 @@ namespace ZNS.EliteTracker.Controllers
                 return RedirectToAction("View", "SolarSystem", new { id = id.Value });
             }
             return RedirectToAction("Edit", "SolarSystem", new { id = input.Id });
+        }
+        #endregion
+
+        #region Groups
+        [Authorize(Roles = "administrator")]
+        public ActionResult Groups()
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                //Query
+                var groups = session.Query<SolarSystemGroup>()
+                    .OrderBy(x => x.Name)
+                    .ToList();
+
+                return View(groups);
+            }
+        }
+
+        [Authorize(Roles = "administrator")]
+        public ActionResult Group(int? id)
+        {
+            var group = new SolarSystemGroup();
+            using (var session = DB.Instance.GetSession())
+            {
+                if (id.HasValue)
+                {
+                    group = session.Load<SolarSystemGroup>(id);
+                }
+            }
+            return View(group);
+        }
+
+        [Authorize(Roles = "administrator")]
+        [HttpPost]
+        public ActionResult Group(int? id, SolarSystemGroup group)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                if (id.HasValue)
+                {
+                    var oldGroup = session.Load<SolarSystemGroup>(id);
+                    oldGroup.Name = group.Name;
+                }
+                else
+                {
+                    session.Store(group);
+                }
+                session.SaveChanges();
+            }
+            return RedirectToAction("Groups");
         }
         #endregion
 
@@ -569,6 +644,7 @@ namespace ZNS.EliteTracker.Controllers
                     {
                         { "on", new { name= "On" } }
                     },
+                    Group = new Dictionary<string, dynamic>(),
                     Attitude =  new Dictionary<string, dynamic>()
                     {
                         { "a1", new { name = "Ally", color = "009900" } },
@@ -595,6 +671,14 @@ namespace ZNS.EliteTracker.Controllers
                     mapdata.categories.Faction.Add("f" + faction.Id.ToString(), new { name = faction.Name });
                 }
 
+                var groups = session.Query<SolarSystemGroup>()
+                    .OrderBy(x => x.Name)
+                    .ToList();
+                foreach (var group in groups)
+                {
+                    mapdata.categories.Group.Add("g" + group.Id.ToString(), new { name = group.Name });
+                }
+
                 var result = session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
                     .Where(x => x.HasCoordinates)
                     .Take(1024)
@@ -616,6 +700,10 @@ namespace ZNS.EliteTracker.Controllers
                         cat = new List<string> { "a" + (int)sys.Attitude, "on" },
                     };
                     data.cat.AddRange(sys.Factions.Where(x => mapdata.categories.Faction.ContainsKey("f" + x.Id)).Select(x => "f" + x.Id));
+                    if (sys.Groups != null && sys.Groups.Count > 0)
+                    {
+                        data.cat.AddRange(sys.Groups.Select(x => "g" + x));
+                    }
                     mapdata.systems.Add(data);
                 }
             }

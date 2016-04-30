@@ -14,6 +14,7 @@ using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
+    [Authorize(Roles = "administrator,user")]
     public class DBController : Controller
     {
         // GET: DB

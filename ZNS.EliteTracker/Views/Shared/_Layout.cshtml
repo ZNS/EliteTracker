@@ -17,11 +17,17 @@
                     <ul>
                         <li class="@(controller == "home" ? "active" : "")"><a href="@Url.Action("Index", "Home")"><span class="fa fa-home"></span></a></li>
                         <li class="@(controller == "solarsystem" ? "active" : "")"><a href="@Url.Action("Index", "SolarSystem")"><span class="fa fa-sun-o"></span>Systems</a></li>
+                        @if (User.IsAnyRole("administrator,user"))
+                        {
                         <li class="@(controller == "task" ? "active" : "")"><a href="@Url.Action("Index", "Task")"><span class="fa fa-tasks"></span>Tasks</a></li>
+                        }
                         <li class="@(controller == "commander" ? "active" : "")"><a href="@Url.Action("Index", "Commander")"><span class="fa fa-venus-mars"></span>Commanders</a></li>
                         <li class="@(controller == "faction" ? "active" : "")"><a href="@Url.Action("Index", "Faction")"><span class="fa fa-sitemap"></span>Factions</a></li>
+                        @if (User.IsAnyRole("administrator,user"))
+                        {
                         <li class="@(controller == "resource" ? "active" : "")"><a href="@Url.Action("Index", "Resource")"><span class="fa fa-cube"></span>Resources</a></li>
                         <li class="@(controller == "trade" ? "active" : "")"><a href="@Url.Action("Index", "Trade")"><span class="fa fa-exchange"></span>Trade routes</a></li>
+                        }
                         <li class="@(controller == "map" ? "active" : "")"><a href="@Url.Action("Index", "Map")"><span class="fa fa-map-marker"></span>Map</a></li>
                     </ul>
                 </nav>

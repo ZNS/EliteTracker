@@ -57,13 +57,9 @@ namespace ZNS.EliteTracker.Controllers
             return View(view);
         }
 
+        [Authorize(Roles = "administrator")]
         public ActionResult Manage(int? id)
-        {
-            if (!@User.IsInRole("administrator"))
-            {
-                return new HttpUnauthorizedResult("I'm sorry, " + User.Identity.Name + ". I'm afraid I can't do that. ");
-            }
-            
+        {            
             using (var session = DB.Instance.GetSession())
             {
                 if (id.HasValue)
@@ -74,6 +70,7 @@ namespace ZNS.EliteTracker.Controllers
             }
         }
 
+        [Authorize(Roles = "administrator")]
         [HttpPost]
         public ActionResult Manage(int? id, FormCollection form)
         {

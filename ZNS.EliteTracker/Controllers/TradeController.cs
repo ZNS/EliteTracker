@@ -10,6 +10,7 @@ using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
+    [Authorize(Roles = "user,administrator")]
     public class TradeController : Controller
     {
         public ActionResult Index(int? page)

@@ -8,6 +8,7 @@ var HUD = {
    */
   'init' : function() {
 
+    Loader.update('Init HUD');
     this.initHudAction();
     this.initControls();
 
@@ -20,16 +21,20 @@ var HUD = {
 
     this.container = container;
 
-    $('#'+this.container).append(
-      '  <div id="controls">'+
-      '    <a href="#" data-view="3d" class="view selected">3D</a>'+
-      '    <a href="#" data-view="top" class="view">2D</a>'+
-      '    <a href="#" data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
-      '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
-      '    <div id="options" style="display:none;"></div>'+
-      '  </div>'
-    );
-    this.createSubOptions();
+    if(!$('#'+this.container+' #controls').length) {
+
+      $('#'+this.container).append(
+        '  <div id="controls">'+
+        '    <a data-view="3d" class="view selected">3D</a>'+
+        '    <a data-view="top" class="view">2D</a>'+
+        '    <a data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
+        '    <a data-view="options">'+Ico.cog+'</a>'+
+        '    <div id="options" style="display:none;"></div>'+
+        '  </div>'
+      );
+      this.createSubOptions();
+
+    }
 
     if(!Ed3d.withHudPanel) return;
 
@@ -62,7 +67,6 @@ var HUD = {
     //-- Toggle milky way
     $( "<a></a>" )
       .addClass( "sub-opt active" )
-      .attr('href','#')
       .html('Toggle Milky Way')
       .click(function() {
         var state = Galaxy.milkyway[0].visible;
@@ -76,7 +80,6 @@ var HUD = {
     //-- Toggle Grid
     $( "<a></a>" )
       .addClass( "sub-opt active" )
-      .attr('href','#')
       .html('Toggle grid')
       .click(function() {
         Ed3d.grid1H.toggleGrid();
@@ -108,14 +111,14 @@ var HUD = {
         case 'top':
           Ed3d.isTopView = true;
           var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
-          var moveCoords = {x: controls.center.x, y: controls.center.y+500, z: controls.center.z};
+          var moveCoords = {x: controls.target.x, y: controls.target.y+500, z: controls.target.z};
           HUD.moveCamera(moveFrom,moveCoords);
           break;
 
         case '3d':
           Ed3d.isTopView = false;
           var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
-          var moveCoords = {x: controls.center.x-100, y: controls.center.y+500, z: controls.center.z+500};
+          var moveCoords = {x: controls.target.x-100, y: controls.target.y+500, z: controls.target.z+500};
           HUD.moveCamera(moveFrom,moveCoords);
           break;
 
@@ -210,6 +213,10 @@ var HUD = {
 
       }
 
+
+      var center = null;
+      var nbPoint = 0;
+      var pointFar = null;
       $(Ed3d.catObjs[idCat]).each(function(key, indexPoint) {
 
         obj = System.particleGeo.vertices[indexPoint];
@@ -223,13 +230,54 @@ var HUD = {
 
         System.particleGeo.colorsNeedUpdate = true;
 
+        //-- Sum coords to detect the center & detect the most far point
+        if(center == null) {
+          center   = new THREE.Vector3(obj.x, obj.y, obj.z);
+          pointFar = new THREE.Vector3(obj.x, obj.y, obj.z);
+        } else {
+          center.set(
+            (center.x + obj.x),
+            (center.y + obj.y),
+            (center.z + obj.z)
+          );
+          if(
+            (Math.abs(pointFar.x) - Math.abs(obj.x))+
+            (Math.abs(pointFar.y) - Math.abs(obj.y))+
+            (Math.abs(pointFar.z) - Math.abs(obj.z)) < 0
+          ) {
+            pointFar.set(obj.x, obj.y, obj.z);
+          }
+        }
+        nbPoint++;
 
       });
+
+      //-- Calc center of all selected points
+      center.set(
+        Math.round(center.x/nbPoint),
+        Math.round(center.y/nbPoint),
+        -Math.round(center.z/nbPoint)
+      );
+      console.log(center);
+
       $(this).data('active',active);
       $(this).toggleClass('disabled');
 
       //-- If current selection is no more visible, disable active selection
       if(Action.oldSel != null && !Action.oldSel.visible) Action.disableSelection();
+
+      //-- Calc max distance from center of selection
+      var distance = pointFar.distanceTo( center )+200;
+      console.log(distance);
+
+      //-- Set new camera & target position
+      Ed3d.playerPos = [center.x,center.y,center.z];
+      Ed3d.cameraPos = [
+        center.x + (Math.floor((Math.random() * 100) + 1)-50), //-- Add a small rotation effect
+        center.y + distance,
+        center.z - distance
+      ];
+
       Action.moveInitalPosition();
     });
 
@@ -254,6 +302,8 @@ var HUD = {
 
   'initFilters' : function(categories) {
 
+    Loader.update('HUD Filter...');
+
     var grpNb = 1;
     $.each(categories, function(typeFilter, values) {
 
@@ -274,7 +324,6 @@ var HUD = {
 
 
   },
-
 
   /**
    * Remove filters list

@@ -196,6 +196,8 @@ var Action = {
 
           $('#debug').html(Math.round(intersection.point.x)+' , '+Math.round(-intersection.point.z));
 
+          Route.addPoint(Math.round(intersection.point.x),0,Math.round(-intersection.point.z));
+
         }
       }
 
@@ -252,15 +254,17 @@ var Action = {
    */
   'moveInitalPositionNoAnim' : function (timer) {
 
-    if(Ed3d.playerPos == null) return;
-
+    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, Ed3d.playerPos[2]+500]
+    if(Ed3d.cameraPos != null) {
+      cam = [Ed3d.cameraPos[0], Ed3d.cameraPos[1], -Ed3d.cameraPos[2]];
+    }
 
     var moveTo = {
-      x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: -Ed3d.playerPos[2]+500,
+      x: cam[0], y: cam[1], z: cam[2],
       mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
     };
     camera.position.set(moveTo.x, moveTo.y, moveTo.z);
-    controls.center.set(moveTo.mx, moveTo.my, moveTo.mz);
+    controls.target.set(moveTo.mx, moveTo.my, moveTo.mz);
 
   },
 
@@ -277,26 +281,19 @@ var Action = {
 
     var moveFrom = {
       x: camera.position.x, y: camera.position.y , z: camera.position.z,
-      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+      mx: controls.target.x, my: controls.target.y , mz: controls.target.z
     };
 
     //-- Move to player position if defined, else move to Sol
-
-    if(Ed3d.playerPos != null) {
-
-      var moveCoords = {
-        x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: -Ed3d.playerPos[2]+500,
-        mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
-      };
-
-    } else {
-
-      var moveCoords = {
-        x: 0, y: 500, z: 500,
-        mx: 0, my: 0 , mz: 0
-      };
-
+    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, Ed3d.playerPos[2]+500]
+    if(Ed3d.cameraPos != null) {
+      cam = [Ed3d.cameraPos[0], Ed3d.cameraPos[1], -Ed3d.cameraPos[2]];
     }
+
+    var moveCoords = {
+      x:  cam[0], y:  cam[1], z: cam[2],
+      mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
+    };
 
     controls.enabled = false;
 
@@ -310,7 +307,7 @@ var Action = {
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
-        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+        controls.target.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
       })
       .onComplete(function () {
         controls.enabled = true;
@@ -351,7 +348,7 @@ var Action = {
 
     var moveFrom = {
       x: camera.position.x, y: camera.position.y , z: camera.position.z,
-      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+      mx: controls.target.x, my: controls.target.y , mz: controls.target.z
     };
     var moveCoords = {
       x: goX, y: goY + 15, z: goZ + 15,
@@ -362,7 +359,7 @@ var Action = {
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
-        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+        controls.target.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
       })
       .onComplete(function () {
         controls.update();

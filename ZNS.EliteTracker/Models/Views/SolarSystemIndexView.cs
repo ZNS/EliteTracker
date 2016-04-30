@@ -21,12 +21,14 @@ namespace ZNS.EliteTracker.Models.Views
             public int Outfitting { get; set; }
             public int FactionId { get; set; }
             public string FactionName { get; set; }
+            public int Group { get; set; }
         }
 
         public List<SolarSystem> SolarSystems { get; set; }
         public Pager Pager { get; set; }
         public Form Query { get; set; }
         public List<SelectListItem> Statuses { get; set; }
+        public SelectList Groups { get; set; }
 
         public SolarSystemIndexView()
         {

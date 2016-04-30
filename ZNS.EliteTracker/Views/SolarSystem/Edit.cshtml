@@ -2,13 +2,15 @@
 @model ZNS.EliteTracker.Models.Documents.SolarSystem
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var factions = (List<ZNS.EliteTracker.Models.Documents.Faction>)ViewBag.Factions;
+    var factions = (List<ZNS.EliteTracker.Models.Documents.Faction>)ViewBag.SourceFactions;
     var factionSelectList = factions.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }).ToList();
     factionSelectList.Add(new SelectListItem
     {
         Text = "Undefined",
         Value = "0"
     });
+    var groups = (List<ZNS.EliteTracker.Models.Documents.SolarSystemGroup>)ViewBag.SourceGroups;
+    var groupsSelectList = groups.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() });
 }
 
 <div id="SolarSystemEdit" ng-controller="solarSystemEdit" ng-init="init(@Model.Id)">
@@ -31,6 +33,10 @@
                         <button type="button" class="btn btn-success" ng-click="eddb()">Get data from eddb</button>
                     </span>
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="Groups">Groups</label>
+                @Html.ListBoxFor(x=> x.Groups, groupsSelectList, new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <label for="Population">Population</label>

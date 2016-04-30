@@ -41,6 +41,7 @@
         @Html.DropDownList("Role",
             new List<SelectListItem>() {
                 new SelectListItem { Text = "User", Value = "user", Selected = Model.Roles.Contains("user") },
+                new SelectListItem { Text = "Solar system editor", Value = "systemeditor", Selected = Model.Roles.Contains("systemeditor") },
                 new SelectListItem { Text = "Administrator", Value = "administrator", Selected = Model.Roles.Contains("administrator") }
             },
             new { @class = "form-control" })

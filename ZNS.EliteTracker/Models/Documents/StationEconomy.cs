@@ -17,6 +17,7 @@ namespace ZNS.EliteTracker.Models.Documents
         Tourism = 6,
         Service = 7,
         Military = 8,
-        Industrial = 9
+        Industrial = 9,
+        Colony = 10
     }
 }

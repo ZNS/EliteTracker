@@ -6,6 +6,9 @@
     <h1>Welcome CMDR @ViewBag.CommanderName</h1>
     <button type="button" class="btn btn-primary" ng-click="goTo('@Url.Action("Edit", "Commander")')">Edit profile</button>
 </div>
+
+@if (User.IsAnyRole("user,administrator"))
+{
 <div class="panel panel-default">
     <div class="panel-heading"><span class="fa fa-tasks"></span> <b>Assigned tasks</b></div>
     <div class="panel-body">
@@ -17,6 +20,7 @@
         </div>
     </div>
 </div>
+}
 
 <div class="panel panel-default">
     <div class="panel-heading"><span class="fa fa-sun-o"></span> <b>Solar systems</b></div>
@@ -65,6 +69,8 @@
     </div>
 </div>
 
+@if (User.IsAnyRole("user,administrator"))
+{
 <div class="panel panel-default">
     <div class="panel-heading"><span class="fa fa-tasks"></span> <b>New tasks</b></div>
     <div class="panel-body">
@@ -76,3 +82,4 @@
         </div>
     </div>
 </div>
+}

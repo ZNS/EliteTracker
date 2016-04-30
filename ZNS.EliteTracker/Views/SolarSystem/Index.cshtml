@@ -9,7 +9,14 @@
     </div>
     <ul class="nav nav-tabs">
         <li class="active"><a href="@Url.Action("Index")">Tracked systems</a></li>
+        @if (User.IsInRole("administrator"))
+        {
+        <li><a href="@Url.Action("Groups")">Groups</a></li>
+        }
+        @if (User.IsAnyRole("administrator,user"))
+        {
         <li><a href="@Url.Action("Index", "DB")">EDDB systems</a></li>
+        }
     </ul>
     @using (Html.BeginForm("Index", "SolarSystem", FormMethod.Get, new { @class = "form-inline search" }))
     {
@@ -37,6 +44,9 @@
         </div>
         <div class="form-group">
             @Html.EnumDropDown("outfitting", typeof(ZNS.EliteTracker.Models.Documents.StationOutfitting), new { @class = "form-control" }, "All outfitters", Model.Query.Outfitting)
+        </div>
+        <div class="form-group">
+            @Html.DropDownList("group", Model.Groups, new { @class = "form-control" })
         </div>
         <div class="form-group">
             <faction-typeahead value="@Model.Query.FactionName"></faction-typeahead>

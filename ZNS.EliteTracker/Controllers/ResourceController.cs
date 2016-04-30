@@ -10,6 +10,7 @@ using ZNS.EliteTracker.Models.Views;
 
 namespace ZNS.EliteTracker.Controllers
 {
+    [Authorize(Roles = "user,administrator")]
     public class ResourceController : BaseController
     {
         // GET: Resource
