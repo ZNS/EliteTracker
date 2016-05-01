@@ -410,13 +410,23 @@ namespace ZNS.EliteTracker.Controllers
                     {
                         system.Coordinates = new Coordinate();
                     }
-                    if (input.Groups.All(x => x == 0))
+                    if (input.Groups.Count == 0 || input.Groups.All(x => x == 0))
                     {
                         input.Groups = null;
                     }
                     else
                     {
-                        system.Groups = input.Groups;
+                        if (CommanderSystemGroups.Count > 0 && system.Groups != null && system.Groups.Count > 0)
+                        {
+                            //Remove groups this user might have changed, keep others
+                            system.Groups.RemoveAll(x => CommanderSystemGroups.Contains(x));
+                            //Add groups added by user
+                            system.Groups.AddRange(input.Groups);
+                        }
+                        else
+                        {
+                            system.Groups = input.Groups;
+                        }
                     }
                     system.Coordinates.X = input.Coordinates.X;
                     system.Coordinates.Y = input.Coordinates.Y;
