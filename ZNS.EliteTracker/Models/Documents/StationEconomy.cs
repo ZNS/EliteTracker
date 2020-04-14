@@ -18,6 +18,9 @@ namespace ZNS.EliteTracker.Models.Documents
         Service = 7,
         Military = 8,
         Industrial = 9,
-        Colony = 10
+        Colony = 10,
+        Damaged = 11,
+        Repair = 12,
+        Rescue = 13
     }
 }

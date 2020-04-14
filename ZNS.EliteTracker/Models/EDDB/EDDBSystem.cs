@@ -11,12 +11,11 @@ namespace ZNS.EliteTracker.Models.EDDB
     public class EDDBSystem
     {
         public int Id { get; set; }
-        public int Id_EDSM { get; set; }
+        public int? EDSM_Id { get; set; }
         public string Name { get; set; }
         public float? X { get; set; }
         public float? Y { get; set; }
         public float? Z { get; set; }
-        public string Faction { get; set; }
         public long? Population { get; set; }
         public string Government { get; set; }
         public string Allegiance { get; set; }
@@ -31,5 +30,7 @@ namespace ZNS.EliteTracker.Models.EDDB
         public int CCIncome { get; set; }
         [JsonIgnore]
         public double Distance { get; set; }
+        [JsonProperty(PropertyName = "minor_faction_presences")]
+        public List<EDDBMinorFactionStatus> MinorFactions { get; set; }
     }
 }

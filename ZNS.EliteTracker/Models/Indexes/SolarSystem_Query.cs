@@ -12,6 +12,7 @@ namespace ZNS.EliteTracker.Models.Indexes
         public class Result
         {
             public string Name { get; set; }
+            public string NameExact { get; set; }
             public string NamePartial { get; set; }
             public IEnumerable<StationEconomy> Economies { get; set; }
             public FactionAttitude Attitude { get; set; }
@@ -33,6 +34,7 @@ namespace ZNS.EliteTracker.Models.Indexes
                              select new
                              {
                                  Name = system.Name,
+                                 NameExact = system.Name,
                                  NamePartial = system.Name,
                                  Economies = system.Stations.SelectMany(x => x.Economy).Distinct(),
                                  Factions = system.Factions.Select(x => x.Id),
@@ -48,9 +50,9 @@ namespace ZNS.EliteTracker.Models.Indexes
                              };
 
             Indexes.Add(x => x.Name, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);
-            Analyzers.Add(x => x.Name, "KeywordAnalyzer");
-
+            Indexes.Add(x => x.NameExact, Raven.Abstractions.Indexing.FieldIndexing.Default);
             Indexes.Add(x => x.NamePartial, Raven.Abstractions.Indexing.FieldIndexing.Analyzed);
+
             Analyzers.Add(x => x.NamePartial, "Xemio.RavenDB.NGramAnalyzer.NGramAnalyzer,Xemio.RavenDB.NGramAnalyzer");
         }
     }

@@ -30,6 +30,8 @@ namespace ZNS.EliteTracker.Models.Documents
         [Display(Name = "Zemina Torval")]
         ZeminaTorval = 11,
         [Display(Name = "Valentina Tereshkova")]
-        ValentinaTereshkova = 12
+        ValentinaTereshkova = 12,
+        [Display(Name = "Yuri Grom")]
+        YuriGrom = 13
     }
 }

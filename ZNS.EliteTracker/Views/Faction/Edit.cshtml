@@ -17,6 +17,10 @@
                     @Html.TextBoxFor(x => x.Faction.Name, new { @class = "form-control" })
                 </div>
                 <div class="form-group">
+                    <label for="EDDB_Id">ID from EDDB</label>
+                    @Html.TextBoxFor(x => x.Faction.EDDB_Id, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
                     <label for="Government">Government</label>
                     @Html.EnumDropDownListFor(x => x.Faction.Government, new { @class = "form-control" })
                 </div>

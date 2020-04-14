@@ -15,6 +15,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public FactionState State { get; set; }
         public List<FactionState> PendingStates { get; set; }
         public FactionAttitude Attitude { get; set; }
+        public int EDDB_Id { get; set; }
 
         public Faction()
         {

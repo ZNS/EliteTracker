@@ -21,6 +21,7 @@
     <IISExpressUseClassicPipelineMode />
     <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -327,6 +328,8 @@
     <Compile Include="Models\Documents\TaskType.cs" />
     <Compile Include="Models\Documents\TradeMilestone.cs" />
     <Compile Include="Models\Documents\TradeRoute.cs" />
+    <Compile Include="Models\EDDB\EDDBFaction.cs" />
+    <Compile Include="Models\EDDB\EDDBMinorFactionStatus.cs" />
     <Compile Include="Models\EDDB\EDDBSystem.cs" />
     <Compile Include="Models\EDDB\EDSMSystem.cs" />
     <Compile Include="Models\Extensions\EnumExtensions.cs" />

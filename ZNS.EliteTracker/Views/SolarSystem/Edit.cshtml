@@ -66,6 +66,10 @@
                 <label for="Population">Coordinate Z</label>
                 @Html.TextBoxFor(x => x.Coordinates.Z, new { @class = "form-control" })
             </div>
+            <div class="form-group">
+                <label for="SyncFactionStatus">Sync faction status with EDDB</label>
+                @Html.CheckBoxFor(x => x.SyncFactionStatus)
+            </div>
             <button type="submit" class="btn btn-default btn-primary">Save</button>
         </div>
     </div>

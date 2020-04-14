@@ -19,6 +19,9 @@ namespace ZNS.EliteTracker.Models.Documents
         War = 7,
         Outbreak = 8,
         Election = 9,
-        Bust = 10
+        Bust = 10,
+        Retreat = 11,
+        Investment = 12,
+        Famine = 13
     }
 }

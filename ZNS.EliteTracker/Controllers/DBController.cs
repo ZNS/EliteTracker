@@ -162,5 +162,12 @@ namespace ZNS.EliteTracker.Controllers
             }
             return new JsonResult { Data = null, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
+
+        [Authorize(Roles = "administrator")]
+        public ActionResult Clear()
+        {
+            DB.Instance.GetDatabaseCommands().DeleteByIndex(new EDDB_Query().IndexName, new Raven.Abstractions.Data.IndexQuery());
+            return new JsonResult { Data = new { Status = "OK" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
     }
 }

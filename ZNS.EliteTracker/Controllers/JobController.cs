@@ -108,74 +108,75 @@ namespace ZNS.EliteTracker.Controllers
         #endregion
 
         #region EDDB
-        public ActionResult SyncEDDB(string key)
+        public ActionResult SyncFactions(string key)
         {
             if (!key.Equals(ConfigurationManager.AppSettings["jobkey"], StringComparison.CurrentCulture))
             {
                 return new JsonResult { Data = new { status = "unauthorized" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             }
 
+            //Sync Factions
+            var eddb_factions_path = Server.MapPath("/app_data/eddb/factions.json");
+
+            using (WebClient wc = new WebClient())
+            {
+                try
+                {
+                    wc.DownloadFile(new Uri("https://eddb.io/archive/v5/factions.json"), eddb_factions_path);
+                }
+                catch
+                {
+                    throw new Exception("Unable to download station data from eddb.");
+                }
+            }
+
+            List<EDDBFaction> factions = new List<EDDBFaction>();
+            using (var eddb_factions = new Models.Json.JsonStreamReader<EDDBFaction>(eddb_factions_path))
+            {
+                while (eddb_factions.Next())
+                {
+                    factions.Add(eddb_factions.Current);
+                    if (factions.Count > 149)
+                    {
+                        StoreFactions(factions);
+                        factions.Clear();
+                    }
+                }
+            }
+
+            return new JsonResult { Data = new { status = "ok" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public ActionResult SyncEDDB(string key)
+        {
             var eddb_systems_path = Server.MapPath("/app_data/eddb/systems.json");
-            var edsm_systems_path = Server.MapPath("/app_data/eddb/esdm.json");
 
             var prevSyncDate = DateTime.MinValue;
             if (System.IO.File.Exists(eddb_systems_path))
             {
-                prevSyncDate = System.IO.File.GetLastWriteTimeUtc(eddb_systems_path).AddHours(-12);
+                prevSyncDate = System.IO.File.GetLastWriteTimeUtc(eddb_systems_path).AddHours(-25);
             }
 
             using (WebClient wc = new WebClient())
             {
                 try
                 {
-                    wc.DownloadFile(new Uri("https://eddb.io/archive/v4/systems.json"), eddb_systems_path);
+                    wc.DownloadFile(new Uri("https://eddb.io/archive/v5/systems_populated.json"), eddb_systems_path);
                 }
                 catch {
                     throw new Exception("Unable to download station data from eddb.");
                 }
-                try
-                {
-                    wc.DownloadFile(new Uri("http://www.edsm.net/dump/systemsWithCoordinates.json"), edsm_systems_path + ".tmp");
-                    System.IO.File.Delete(edsm_systems_path);
-                    System.IO.File.Move(edsm_systems_path + ".tmp", edsm_systems_path);
-                }
-                catch { }
-            }
-
-            if (!System.IO.File.Exists(edsm_systems_path))
-            {
-                throw new Exception("No edsm data file found.");
             }
 
             var systems = new List<EDDBSystem>();
-
-            //Read in edsm system data
-            var edsm_systems = new List<EDSMSystem>();
-            using (var edsm_systems_stream = new Models.Json.JsonStreamReader<EDSMSystem>(edsm_systems_path))
-            {
-                while (edsm_systems_stream.Next())
-                {
-                    edsm_systems.Add(edsm_systems_stream.Current);
-                }
-            }
 
             using (var eddb_systems = new Models.Json.JsonStreamReader<EDDBSystem>(eddb_systems_path))
             {
                 while (eddb_systems.Next())
                 {
-                    //Updated?
+                    //Updated? 
                     if (eddb_systems.Current.Updated_At > prevSyncDate)
                     {
-                        //Get edsm id
-                        foreach (var edsm in edsm_systems)
-                        {
-                            if (edsm.Name.Equals(eddb_systems.Current.Name, StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                eddb_systems.Current.Id_EDSM = edsm.Id;
-                                break;
-                            }
-                        }
-
                         //Add additional data
                         if (eddb_systems.Current.Population.HasValue && eddb_systems.Current.Population.Value > 0)
                         {
@@ -198,6 +199,35 @@ namespace ZNS.EliteTracker.Controllers
             return new JsonResult { Data = new { status = "ok" }, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
+        private void StoreFactions(List<EDDBFaction> factions)
+        {
+            using (var session = DB.Instance.GetSession())
+            {
+                List<Faction> localFactions = new List<Faction>();
+                var batches = Math.Ceiling((double)factions.Count / 15);
+                for (var i = 0; i < batches; i++)
+                {
+                    var names = factions.Where(x => !String.IsNullOrEmpty(x.Name))
+                        .Select(y => RavenQuery.Escape(y.Name.ToLower())).Skip(i * 15).Take(15);
+                    var tmpFactions = session.Advanced.DocumentQuery<Faction>("Faction/Query")
+                        .Where("@In<NameExact>:(" + String.Join(",", names) + ")")
+                        .ToList();
+                    localFactions.AddRange(tmpFactions);
+                }
+
+                foreach (var f in factions)
+                {
+                    var localFaction = localFactions.FirstOrDefault(x => x.Name.Equals(f.Name, StringComparison.CurrentCultureIgnoreCase));
+                    if (localFaction != null && localFaction.EDDB_Id == 0)
+                    {
+                        localFaction.EDDB_Id = f.Id;
+                    }
+                }
+
+                session.SaveChanges();
+            }
+        }
+
         private void StoreSystems(List<EDDBSystem> systems)
         {
             using (var session = DB.Instance.GetSession())
@@ -207,10 +237,10 @@ namespace ZNS.EliteTracker.Controllers
                 for (var i = 0; i < batches; i++)
                 {
                     var names = systems.Where(x => !String.IsNullOrEmpty(x.Name)).Select(y => RavenQuery.Escape(y.Name)).Skip(i * 15).Take(15);
-                    solarSystems.AddRange(session.Query<SolarSystem_Query.Result, SolarSystem_Query>()
-                        .Where(x => x.Name != null && x.Name != "" && x.Name.In<string>(names))
-                        .OfType<SolarSystem>()
-                        .ToList());
+                    var tmpSystems = session.Advanced.DocumentQuery<SolarSystem>("SolarSystem/Query")
+                        .Where("@In<NameExact>:(" + String.Join(",", names) + ")")
+                        .ToList();
+                    solarSystems.AddRange(tmpSystems);
                 }
 
                 foreach (var system in systems)
@@ -232,8 +262,7 @@ namespace ZNS.EliteTracker.Controllers
                         }
                         if (!String.IsNullOrEmpty(system.Security))
                         {
-                            SolarSystemSecurity security = SolarSystemSecurity.Medium;
-                            if (Enum.TryParse<SolarSystemSecurity>(system.Security, out security))
+                            if (Enum.TryParse<SolarSystemSecurity>(system.Security, out SolarSystemSecurity security))
                             {
                                 solarSystem.SecurityPrev = solarSystem.Security;
                                 solarSystem.Security = security;
@@ -249,12 +278,51 @@ namespace ZNS.EliteTracker.Controllers
                         }
                         if (!String.IsNullOrEmpty(system.Power_State))
                         {
-                            if (system.Power_State.Equals("Control", StringComparison.InvariantCultureIgnoreCase))
-                                solarSystem.PowerPlayState = PowerPlayState.Control;
-                            else if (system.Power_State.Equals("Exploited", StringComparison.InvariantCultureIgnoreCase))
-                                solarSystem.PowerPlayState = PowerPlayState.Exploited;
-                            else if (system.Power_State.Equals("Expansion", StringComparison.InvariantCultureIgnoreCase))
-                                solarSystem.PowerPlayState = PowerPlayState.Expansion;
+                            if (Enum.TryParse<PowerPlayState>(system.Power_State, out PowerPlayState ppstate))
+                            {
+                                solarSystem.PowerPlayState = ppstate;
+                            }
+                        }
+                    }
+
+                    //Faction status
+                    if (solarSystem != null && solarSystem.SyncFactionStatus && system.MinorFactions != null && system.MinorFactions.Count > 0)
+                    {
+                        var statuses = session.Query<SolarSystemStatus>()
+                            .Where(x => x.SolarSystem == solarSystem.Id && x.Date >= system.Updated_At.Date)
+                            .ToList();
+                        if (statuses == null || statuses.Count == 0)
+                        {
+                            var status = new SolarSystemStatus();
+                            status.SolarSystem = solarSystem.Id;
+                            status.Date = system.Updated_At.Date;
+                            status.FactionStatus = new List<FactionStatus>();
+
+                            var factionIds = system.MinorFactions.Select(x => x.Id);
+                            var localFactions = session.Query<Faction_Query.Result, Faction_Query>()
+                                .Where(x => x.EDDBId.In<int>(factionIds))
+                                .OfType<Faction>()
+                                .ToList();
+
+                            foreach (var f in system.MinorFactions)
+                            {
+                                if (f.Influence.HasValue)
+                                {
+                                    var lf = localFactions.FirstOrDefault(x => x.EDDB_Id == f.Id);
+                                    if (lf != null)
+                                    {
+                                        FactionState state = FactionState.None;
+                                        Enum.TryParse<FactionState>(f.State, true, out state);
+                                        status.FactionStatus.Add(new FactionStatus
+                                        {
+                                            Faction = FactionRef.FromFaction(lf),
+                                            Influence = f.Influence.Value,
+                                            State = state
+                                        });
+                                    }
+                                }
+                            }
+                            session.Store(status);
                         }
                     }
                     session.Store(system);

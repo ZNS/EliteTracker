@@ -19,6 +19,7 @@ namespace ZNS.EliteTracker.Models.Documents
         public PowerPlayLeader PowerPlayLeader { get; set; }
         public PowerPlayState PowerPlayState { get; set; }
         public DateTime Updated { get; set; }
+        public bool SyncFactionStatus { get; set; }
         public List<int> Groups { get; set; }
 
         [Raven.Imports.Newtonsoft.Json.JsonIgnore]

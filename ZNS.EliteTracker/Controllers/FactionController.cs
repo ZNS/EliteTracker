@@ -107,6 +107,7 @@ namespace ZNS.EliteTracker.Controllers
                     faction.Government = input.Faction.Government;
                     faction.Attitude = input.Faction.Attitude;
                     faction.Allegiance = input.Faction.Allegiance;
+                    faction.EDDB_Id = input.Faction.EDDB_Id;
                 }
                 
                 //Solar systems

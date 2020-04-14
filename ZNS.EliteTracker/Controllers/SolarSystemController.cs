@@ -406,6 +406,7 @@ namespace ZNS.EliteTracker.Controllers
                     system.Security = input.Security;
                     system.PowerPlayLeader = input.PowerPlayLeader;
                     system.PowerPlayState = input.PowerPlayState;
+                    system.SyncFactionStatus = input.SyncFactionStatus;
                     if (system.Coordinates == null)
                     {
                         system.Coordinates = new Coordinate();

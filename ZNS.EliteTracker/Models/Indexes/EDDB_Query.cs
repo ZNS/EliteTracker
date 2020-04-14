@@ -26,7 +26,7 @@ namespace ZNS.EliteTracker.Models.Indexes
             Map = systems => from system in systems
                              select new
                              {
-                                 EDSMId = system.Id_EDSM,
+                                 EDSMId = system.EDSM_Id,
                                  Name = system.Name,
                                  NamePartial = system.Name,
                                  Population = system.Population,

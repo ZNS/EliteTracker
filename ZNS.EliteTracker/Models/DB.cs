@@ -3,6 +3,7 @@ using Raven.Client;
 using Raven.Client.Connection;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
+using Raven.Database.Server;
 using ZNS.EliteTracker.Models.Indexes;
 
 namespace ZNS.EliteTracker.Models
@@ -19,8 +20,9 @@ namespace ZNS.EliteTracker.Models
         }
 
         DB()
-        {            
+        {
 #if DEBUG
+            NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8081);
             _Store = new EmbeddableDocumentStore
             {
                 DataDirectory = "App_Data/DB",
